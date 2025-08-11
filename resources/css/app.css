@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Tambahkan utilitas untuk menyembunyikan scrollbar */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  /* Scroll behavior */
+.carousel-container {
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Item transition */
+.carousel-item {
+    transition: transform 0.3s ease;
+}
+
+/* Disabled button state */
+.carousel-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+ @keyframes infinite-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+        }
+
+        .animate-infinite-scroll {
+        animation: infinite-scroll 40s linear infinite;
+        }
+
+        .fade-in-up {
+    /* Dibuat transparan */
+    opacity: 0;
+    /* Digeser sedikit ke bawah */
+    transform: translateY(20px);
+  }
+
+  /* 2. Kelas untuk kondisi akhir (saat terlihat) */
+  .is-visible {
+    /* Dibuat terlihat sepenuhnya */
+    opacity: 1;
+    /* Kembali ke posisi semula (tidak bergeser) */
+    transform: translateY(0);
+  }
+}
