@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\MetaController;
 use App\Http\Controllers\FrontPagesController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Admin\PagesController;
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('menus', MenuController::class);
     Route::resource('pages', PagesController::class);
     Route::resource('pages.sections', PageSectionController::class)->shallow();
+    Route::resource('meta', MetaController::class)->only(['index','edit','update'])
+        ->parameters(['meta' => 'page']); 
+
 
     // Untuk Permission, kita definisikan route custom di atas resource
     Route::post('permissions/store-multiple', [PermissionController::class, 'storeMultiple'])->name('permissions.storeMultiple');

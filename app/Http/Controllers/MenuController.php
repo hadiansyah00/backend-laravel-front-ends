@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 // "use" statement ini sudah benar
 use App\Models\Menu;
+use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class MenuController extends Controller
 {

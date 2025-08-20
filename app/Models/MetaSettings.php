@@ -13,10 +13,9 @@ class MetaSettings extends Model
     protected $table = 'meta_settings';
 
     protected $fillable = [
-        'page_slug',
-        'title',
+        'pages_id',
         'meta_description',
-        'keywords',
+        'meta_keywords',
         'robots',
 
         'og_title',
@@ -39,10 +38,10 @@ class MetaSettings extends Model
      * Jika suatu saat kamu ingin menghubungkan ke Page via slug
      * Pastikan Page juga punya kolom `slug` yang unik
      */
-    public function page()
-    {
-        return $this->belongsTo(Pages::class, 'page_slug', 'slug');
-    }
+    // public function page()
+    // {
+    //     return $this->belongsTo(Pages::class, 'page_slug', 'slug');
+    // }
 
     /**
      * Scope: Get meta default
@@ -50,5 +49,9 @@ class MetaSettings extends Model
     public function scopeDefault($query)
     {
         return $query->where('page_slug', 'default');
+    }
+        public function page()
+    {
+        return $this->belongsTo(Pages::class);
     }
 }

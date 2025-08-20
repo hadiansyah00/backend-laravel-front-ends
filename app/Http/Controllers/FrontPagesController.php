@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http; // Pastikan ini diimport
+use App\Models\Menu;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http; // Pastikan ini diimport
 
 class FrontPagesController extends Controller
 {
@@ -13,6 +14,11 @@ class FrontPagesController extends Controller
      */
     public function index(): View
     {
+         $menus = Menu::whereNull('parent_id')
+            ->where('is_active', 1)
+            ->with('children')
+            ->orderBy('order')
+            ->get();
         try {
             // Ambil data kategori berita
             $response_berita = Http::get('https://perempuanaman.or.id/wp-json/wp/v2/posts', [

@@ -11,8 +11,10 @@ class Pages extends Model
 {
     use HasFactory;
 
-    protected $table = 'pages';
-
+   protected $table = 'pages';
+    protected $primaryKey = 'id'; // default, pastikan ada
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
         'title',
         'slug',
@@ -21,13 +23,6 @@ class Pages extends Model
         'is_published',
     ];
 
-    /**
-     * Relasi ke MetaSetting berdasarkan slug
-     */
-    public function meta()
-    {
-        return $this->hasOne(MetaSettings::class, 'page_slug', 'slug');
-    }
 
     /**
      * Relasi ke section modular jika type = 'modular'
@@ -51,5 +46,12 @@ class Pages extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+     /**
+     * Relasi ke MetaSetting berdasarkan slug
+     */
+        public function meta()
+    {
+        return $this->hasOne(MetaSettings::class);
     }
 }

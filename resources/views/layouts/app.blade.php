@@ -37,4 +37,24 @@
     </div>
 </body>
 
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+            const editorElement = document.querySelector("#editor");
+            if (editorElement) {
+                ClassicEditor
+                    .create(editorElement, {
+                        toolbar: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', 'blockQuote', 'bulletedList', 'numberedList',
+                            '|', 'insertTable', 'undo', 'redo'
+                        ]
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+</script>
+
 </html>

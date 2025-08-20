@@ -150,17 +150,7 @@
                                         {{ __('Kelola Page') }}
                                     </div>
                                 </x-dropdown-link>
-                                {{-- <x-dropdown-link :href="route('admin.sections.show')"
-                                    :active="request()->routeIs('sections.*')">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none"
-                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125a1.125 1.125 0 00-1.125 1.125v12.75c0 .621.504 1.125 1.125 1.125z" />
-                                        </svg>
-                                        {{ __('Kelola Page Sections') }}
-                                    </div>
-                                </x-dropdown-link> --}}
+
                             </x-slot>
                         </x-dropdown>
                     </div>

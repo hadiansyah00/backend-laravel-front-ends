@@ -24,19 +24,15 @@ class Menu extends Model
     /**
      * Menu induk (jika ini submenu)
      */
+    public function children()
+    {
+        return $this->hasMany(Menu::class, 'parent_id')->where('is_active', 1)->orderBy('order');
+    }
+
     public function parent()
     {
         return $this->belongsTo(Menu::class, 'parent_id');
     }
-
-    /**
-     * Submenu (anak dari menu ini)
-     */
-    public function children()
-    {
-        return $this->hasMany(Menu::class, 'parent_id');
-    }
-
     /**
      * Scope untuk hanya menu aktif
      */

@@ -1,71 +1,121 @@
 <nav x-data="{ atTop: true, isMobileMenuOpen: false }" @scroll.window="atTop = (window.scrollY < 50)"
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-    :class="{ 'bg-white/90 shadow-md backdrop-blur-sm': !atTop || isMobileMenuOpen }">
+    @keydown.escape.window="isMobileMenuOpen = false"
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-md bg-white/95 backdrop-blur-sm">
 
     <div class="container flex items-center justify-between px-6 mx-auto transition-all duration-300"
         :class="atTop && !isMobileMenuOpen ? 'py-4' : 'py-2'">
 
-        <a href="{{ route('home') }}">
-            <img x-show="atTop && !isMobileMenuOpen" x-transition src="{{ asset('assets/img/icon/logo.png') }}"
-                alt="Logo Utama" class="w-15 h-15" />
+        {{-- Logo --}}
+        <a href="{{ route('home') }}" @click="isMobileMenuOpen = false">
 
-            <img x-show="!atTop || isMobileMenuOpen" x-transition src="{{ asset('assets/img/icon/logo.png') }}"
-                alt="Logo Sticky" class="w-10 h-10" />
+            {{-- Logo saat di puncak halaman --}}
+            <img x-show="atTop && !isMobileMenuOpen" x-transition
+                src="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}" alt="Logo Utama"
+                class="h-[40px] w-auto transition-all duration-300 mt-2 mb-2" />
+
+            {{-- Logo saat di-scroll atau menu mobile terbuka --}}
+            <img x-show="!atTop || isMobileMenuOpen" x-transition
+                src="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}" alt="Logo Sticky"
+                class="h-[40px] w-auto transition-all duration-300 mt-2 mb-2" />
+
         </a>
 
-        <div class="items-center hidden space-x-8 text-sm font-semibold transition-colors duration-300 md:flex"
-            :class="(atTop && !isMobileMenuOpen) ? 'text-white' : 'text-gray-700'">
-
-            <a href="{{ route('home') }}" class="hover:text-purple-600">Beranda</a>
-
+        {{-- Menu Utama (Desktop) --}}
+        <div class="items-center hidden space-x-8 text-sm font-semibold text-gray-700 md:flex">
+            @foreach($menus as $menu)
+            @if($menu->children->count())
+            {{-- Dropdown Desktop --}}
             <div x-data="{ isOpen: false }" class="relative">
                 <button @mouseenter="isOpen = true" @mouseleave="isOpen = false"
                     class="flex items-center hover:text-purple-600">
-                    Tentang Kami
-                    <svg class="w-5 h-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    {{ $menu->name }}
+                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                             clip-rule="evenodd" />
                     </svg>
                 </button>
-                <div x-show="isOpen" x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 transform -translate-y-2"
-                    x-transition:enter-end="opacity-100 transform translate-y-0"
+                <div x-show="isOpen" @mouseenter="isOpen = true" @mouseleave="isOpen = false"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
                     x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 transform translate-y-0"
-                    x-transition:leave-end="opacity-0 transform -translate-y-2" @mouseenter="isOpen = true"
-                    @mouseleave="isOpen = false"
-                    class="absolute left-0 z-20 w-48 py-2 mt-2 bg-white rounded-md shadow-lg">
-                    <a href="#"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600">Visi &
-                        Misi</a>
-                    <a href="#"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600">Sejarah</a>
-                    <a href="#"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600">Struktur
-                        Organisasi</a>
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 translate-y-2"
+                    class="absolute left-0 z-20 w-48 py-2 mt-2 bg-white rounded-md shadow-lg" style="display: none;">
+                    @foreach($menu->children as $child)
+                    <a href="{{ $child->url ?? '#' }}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        {{ $child->name }}
+                    </a>
+                    @endforeach
                 </div>
             </div>
-            <a href="#" class="hover:text-purple-600">Publikasi</a>
-            <a href="{{ route ('wilayah') }}" class="hover:text-purple-600">Wilayah</a>
-            <a href="#"
-                class="px-5 py-2 font-semibold text-white bg-purple-600 rounded-lg hover:bg-purple-700">Donasi</a>
+            @else
+            {{-- Link Biasa Desktop --}}
+            <a href="{{ $menu->url ?? '#' }}" class="hover:text-purple-600">{{ $menu->name }}</a>
+            @endif
+            @endforeach
+
+            <a href="#" class="px-5 py-2 font-semibold text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+                Daftarc
+            </a>
         </div>
 
+        {{-- Tombol Hamburger (Mobile) --}}
         <div class="md:hidden">
-            <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="focus:outline-none"
-                :class="(atTop && !isMobileMenuOpen) ? 'text-white' : 'text-gray-800'">
-                <svg x-show="!isMobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="text-gray-700 focus:outline-none">
+                <svg x-show="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
-                <svg x-show="isMobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg x-show="isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style="display: none;">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
     </div>
 
-    <div x-show="isMobileMenuOpen" x-transition
-        class="absolute left-0 w-full shadow-lg md:hidden bg-white/95 backdrop-blur-sm top-full">
+    {{-- Menu Mobile --}}
+    <div x-show="isMobileMenuOpen" x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95" class="absolute left-0 w-full bg-white shadow-md top-full md:hidden"
+        style="display: none;">
+        <div class="flex flex-col px-6 pt-2 pb-4 space-y-2">
+            @foreach($menus as $menu)
+            @if($menu->children->count())
+            {{-- Dropdown Mobile (Accordion) --}}
+            <div x-data="{ open: false }" class="text-gray-700">
+                <button @click="open = !open"
+                    class="flex items-center justify-between w-full py-2 font-semibold hover:text-purple-600">
+                    <span>{{ $menu->name }}</span>
+                    <svg class="w-5 h-5 ml-1 transition-transform duration-200" :class="{'rotate-180': open}"
+                        fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div x-show="open" x-transition class="pt-2 pb-1 pl-4 space-y-2">
+                    @foreach($menu->children as $child)
+                    <a href="{{ $child->url ?? '#' }}" class="block py-1 text-sm text-gray-600 hover:text-purple-600">
+                        {{ $child->name }}
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+            @else
+            {{-- Link Biasa Mobile --}}
+            <a href="{{ $menu->url ?? '#' }}" class="block py-2 font-semibold text-gray-700 hover:text-purple-600">{{
+                $menu->name }}</a>
+            @endif
+            @endforeach
+
+            <a href="#"
+                class="block w-full px-5 py-2 mt-2 font-semibold text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+                Donasi
+            </a>
+        </div>
     </div>
 </nav>

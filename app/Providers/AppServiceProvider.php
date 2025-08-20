@@ -23,13 +23,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Grant all permissions to users with the 'admin' role before any other checks
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole('admin') ? true : null;
-        });
-        View::share('dynamic_menus', Menu::whereNull('parent_id') // Hanya ambil menu induk
-        ->with('children') // Langsung ambil relasi submenu
-        ->active()
-        ->orderBy('order')
-        ->get());
+        View::composer('*', function ($view) {
+        $menus = Menu::whereNull('parent_id')
+            ->where('is_active', 1)
+            ->with('children')
+            ->orderBy('order')
+            ->get();
+
+        $view->with('menus', $menus);
+    });
     }
 }
