@@ -23,42 +23,12 @@
         {{-- Menu Utama (Desktop) --}}
         <div class="items-center hidden space-x-8 text-sm font-semibold text-gray-700 md:flex">
             @foreach($menus as $menu)
-            @if($menu->children->count())
-            {{-- Dropdown Desktop --}}
-            <div x-data="{ isOpen: false }" class="relative">
-                <button @mouseenter="isOpen = true" @mouseleave="isOpen = false"
-                    class="flex items-center hover:text-purple-600">
-                    {{ $menu->name }}
-                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <div x-show="isOpen" @mouseenter="isOpen = true" @mouseleave="isOpen = false"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 translate-y-2"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 translate-y-2"
-                    class="absolute left-0 z-20 w-48 py-2 mt-2 bg-white rounded-md shadow-lg" style="display: none;">
-                    @foreach($menu->children as $child)
-                    <a href="{{ $child->url ?? '#' }}"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600">
-                        {{ $child->name }}
-                    </a>
-                    @endforeach
-                </div>
-            </div>
-            @else
-            {{-- Link Biasa Desktop --}}
-            <a href="{{ $menu->url ?? '#' }}" class="hover:text-purple-600">{{ $menu->name }}</a>
-            @endif
+            <x-menu-item :menu="$menu" />
             @endforeach
 
-            <a href="#" class="px-5 py-2 font-semibold text-white bg-purple-600 rounded-lg hover:bg-purple-700">
-                Daftarc
+            <a href="#"
+                class="px-5 py-2 font-semibold text-white transition bg-purple-600 rounded-lg hover:bg-purple-700">
+                Daftar
             </a>
         </div>
 
@@ -106,7 +76,7 @@
                 </div>
             </div>
             @else
-            {{-- Link Biasa Mobile --}}
+            {{-- url Biasa Mobile --}}
             <a href="{{ $menu->url ?? '#' }}" class="block py-2 font-semibold text-gray-700 hover:text-purple-600">{{
                 $menu->name }}</a>
             @endif

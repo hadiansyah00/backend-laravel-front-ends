@@ -48,21 +48,24 @@ class PageSectionController extends Controller
 
     }
 
-    public function update(Request $request, PageSections $section): RedirectResponse
+   public function update(Request $request, PageSections $section): RedirectResponse
     {
         $validated = $request->validate([
             'type'    => 'required|string|max:255',
             'content' => 'required|json',
             'order'   => 'required|integer',
         ]);
-        $page = $section->page; // ambil relasi page
+
+        // decode JSON agar tidak double encode
+        $validated['content'] = json_decode($validated['content'], true);
+
         $section->update($validated);
 
-       return redirect()
-        ->route('admin.pages.sections.index', ['page' => $section->page->slug])
-        ->with('success', 'Section berhasil diperbarui.');
-
+        return redirect()
+            ->route('admin.pages.sections.index', ['page' => $section->page->slug])
+            ->with('success', 'Section berhasil diperbarui.');
     }
+
 
 
     public function destroy(PageSections $section): RedirectResponse

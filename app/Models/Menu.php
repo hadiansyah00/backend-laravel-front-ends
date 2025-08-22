@@ -46,12 +46,18 @@ class Menu extends Model
      */
     public function getLinkAttribute()
     {
-        // Jika ada URL manual, pakai itu
-        if (!empty($this->url)) {
+        if ($this->type === 'slug' && $this->page) {
+            return route('page.show', $this->page->slug);
+        }
+
+        if ($this->type === 'external') {
             return $this->url;
         }
 
-        // Kalau slug ada, buatkan route default
-        return url('/' . ltrim($this->slug, '/'));
+        return '#';
+    }
+    public function page()
+    {
+        return $this->belongsTo(Pages::class);
     }
 }

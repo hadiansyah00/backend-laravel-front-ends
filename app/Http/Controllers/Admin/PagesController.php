@@ -67,4 +67,22 @@ class PagesController extends Controller
         $page->delete();
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dihapus.');
     }
+
+    public function show($slug)
+    {
+        $page = Pages::where('slug', $slug)
+            ->where('status', 'Published')
+            ->firstOrFail();
+
+        // Kalau Modular → load sections
+        if ($page->type === 'Modular') {
+            $sections = $page->sections()->orderBy('order')->get();
+            return view('admin.pages.modular', compact('page', 'sections'));
+        }
+
+        // Kalau Standard → konten langsung
+        return view('admin.pages.standard', compact('page'));
+    }
+
+
 }

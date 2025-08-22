@@ -6,7 +6,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">Untuk Halaman: {{ $page->title }}</p>
             </div>
             <div class="flex items-center space-x-2">
-                <a href="{{ route('admin.pages.edit', $page) }}"
+                <a href="{{ route('admin.pages.index') }}"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">Kembali
                     ke Halaman</a>
                 <a href="{{ route('admin.pages.sections.create', $page) }}"
