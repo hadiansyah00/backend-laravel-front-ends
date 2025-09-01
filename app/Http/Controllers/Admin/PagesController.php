@@ -68,21 +68,31 @@ class PagesController extends Controller
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dihapus.');
     }
 
-    public function show($slug)
+   public function show($slug)
     {
         $page = Pages::where('slug', $slug)
-            ->where('status', 'Published')
+            ->where('is_published', 1)
             ->firstOrFail();
 
-        // Kalau Modular → load sections
-        if ($page->type === 'Modular') {
-            $sections = $page->sections()->orderBy('order')->get();
+        if ($page->type === 'modular') {
+            $sections = $page->sections()->orderBy('order')->get()
+                ->map(function ($section) {
+                    // decode hanya kalau string JSON
+                    if (is_string($section->content)) {
+                        $section->decoded_content = json_decode($section->content, true);
+                    } else {
+                        $section->decoded_content = $section->content; // kalau sudah array
+                    }
+                    return $section;
+                });
+
             return view('admin.pages.modular', compact('page', 'sections'));
         }
 
-        // Kalau Standard → konten langsung
         return view('admin.pages.standard', compact('page'));
     }
+
+
 
 
 }

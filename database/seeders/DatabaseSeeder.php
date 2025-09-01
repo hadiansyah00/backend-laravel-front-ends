@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             // MenuSeeder::class,
             // PageSeeder::class,
             // MetaSettingSeeder::class,
-            PageSectionSeeder::class,
+            FrontSettingsSeeder::class,
         ]);
     }
 }

@@ -46,11 +46,11 @@ class Menu extends Model
      */
     public function getLinkAttribute()
     {
-        if ($this->type === 'slug' && $this->page) {
-            return route('page.show', $this->page->slug);
+        if ($this->type === 'page' && $this->page) {
+            return route('front.pages.show', $this->page->slug);
         }
 
-        if ($this->type === 'external') {
+        if ($this->type === 'link') {
             return $this->url;
         }
 

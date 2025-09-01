@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {{-- Title & Metadata --}}
-    <title>PEREMPUAN AMAN</title>
+    <title>STIKes Bogor Husada</title>
     <meta name="description"
         content="PEREMPUAN AMAN adalah organisasi sayap dari AMAN yang memfasilitasi perempuan adat untuk mengorganisir diri, pengetahuan, dan hak-haknya demi menjaga ketahanan hidup komunitas adat secara turun-temurun.">
     <meta name="keywords"
@@ -14,8 +14,8 @@
     <meta name="author" content="PEREMPUAN AMAN">
 
     {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/icon/logo.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/img/icon/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -109,5 +109,16 @@
 </script>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+{{-- SwiperJS CDN --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script>
+    new Swiper(".mySwiper", {
+                    loop: true,
+                    autoplay: { delay: 5000 },
+                    pagination: { el: ".swiper-pagination", clickable: true },
+                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                });
+</script>
 
 </html>

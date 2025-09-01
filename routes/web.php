@@ -11,20 +11,40 @@ use App\Http\Controllers\FrontPagesController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Admin\PagesController;
 use App\Http\Controllers\Admin\PageSectionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 // ================== FRONTEND ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
 Route::get('/berita', [FrontPagesController::class, 'berita'])->name('berita');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
 
-// Dynamic pages (harus di paling bawah)
-Route::get('/{slug}', [PagesController::class, 'show'])->name('page.show');
+// ================== AUTH ================== //
+// Register
+Route::get('/register', [RegisteredUserController::class, 'create'])
+    ->middleware('guest')
+    ->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->middleware('guest');
 
-// ================== BACKEND ================== //
+// Login
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
+
+// Logout
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Dashboard
 Route::get('/dashboard', fn() => view('dashboard'))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// ================== ADMIN ================== //
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(function () {
 
     // Profile
@@ -36,7 +56,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('menus', MenuController::class);
-    Route::resource('pages', PagesController::class);
+
+    // Index semua halaman (admin list)
+    Route::get('/admin/pages', [PagesController::class, 'index'])->name('pages.index');
+    // Form tambah page
+    Route::get('/admin/pages/create', [PagesController::class, 'create'])->name('pages.create');
+    // Simpan page baru
+    Route::post('/admin/pages', [PagesController::class, 'store'])->name('pages.store');
+    // Edit page
+    Route::get('/admin/pages/{page}/edit', [PagesController::class, 'edit'])->name('pages.edit');
+    // Update page
+    Route::put('/admin/pages/{page}', [PagesController::class, 'update'])->name('pages.update');
+    // Hapus page
+    Route::delete('/admin/pages/{page}', [PagesController::class, 'destroy'])->name('pages.destroy');
+
+
     Route::resource('pages.sections', PageSectionController::class)->shallow();
     Route::resource('meta', MetaController::class)->only(['index','edit','update'])
         ->parameters(['meta' => 'page']);
@@ -44,18 +78,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     // Permissions
     Route::post('permissions/store-multiple', [PermissionController::class, 'storeMultiple'])->name('permissions.storeMultiple');
     Route::resource('permissions', PermissionController::class)->except('show');
-
-    // Contoh khusus
-    Route::get('/users-test', fn() => '<h1>Halaman Kelola User (Hanya Admin)</h1>')
-        ->middleware('role:admin')
-        ->name('users.test');
-
-    Route::get('/publish', fn() => '<h1>Halaman Publikasi Artikel (Hanya Publisher)</h1>')
-        ->middleware('permission:publish articles')
-        ->name('publish');
-
-    // Articles backend
-    Route::resource('articles', ArticleController::class)->middleware('role:admin|writer');
 });
+
+// ================== DYNAMIC PAGES ================== //
+// HARUS PALING BAWAH supaya tidak menimpa /login & /register
+// Route::get('/{page}', [PagesController::class, 'show'])->name('pages.show');
+Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
 
 require __DIR__.'/auth.php';
