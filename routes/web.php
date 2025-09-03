@@ -1,18 +1,30 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\MetaController;
-use App\Http\Controllers\FrontPagesController;
-use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Admin\PagesController;
 use App\Http\Controllers\Admin\PageSectionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
+use App\Http\Controllers\FrontPages\ProgramStudiController;
+use App\Http\Controllers\FrontPages\SliderController;
+use App\Http\Controllers\FrontPages\StatisticController;
+use App\Http\Controllers\FrontPages\TestimonialController;
+use App\Http\Controllers\FrontPagesController;
+use App\Http\Controllers\FrontPages\FrontSettingController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
+
+
+
+
+
 
 // ================== FRONTEND ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
@@ -57,7 +69,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('roles', RoleController::class);
     Route::resource('menus', MenuController::class);
 
-    // Index semua halaman (admin list)
+// Index semua halaman (admin list)
     Route::get('/admin/pages', [PagesController::class, 'index'])->name('pages.index');
     // Form tambah page
     Route::get('/admin/pages/create', [PagesController::class, 'create'])->name('pages.create');
@@ -78,7 +90,65 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     // Permissions
     Route::post('permissions/store-multiple', [PermissionController::class, 'storeMultiple'])->name('permissions.storeMultiple');
     Route::resource('permissions', PermissionController::class)->except('show');
-});
+    Route::prefix('front-pages')->group(function () {
+            // Sliders
+            Route::prefix('sliders')->group(function () {
+                Route::get('/', [SliderController::class, 'index'])->name('sliders.index');
+                Route::get('/create', [SliderController::class, 'create'])->name('sliders.create');
+                Route::post('/', [SliderController::class, 'store'])->name('sliders.store');
+                Route::get('/{id}/edit', [SliderController::class, 'edit'])->name('sliders.edit');
+                Route::put('/{id}', [SliderController::class, 'update'])->name('sliders.update');
+                Route::delete('/{id}', [SliderController::class, 'destroy'])->name('sliders.destroy');
+            });
+
+            // Testimonials
+            Route::prefix('testimonials')->group(function () {
+                Route::get('/', [TestimonialController::class, 'index'])->name('testimonials.index');
+                Route::get('/create', [TestimonialController::class, 'create'])->name('testimonials.create');
+                Route::post('/', [TestimonialController::class, 'store'])->name('testimonials.store');
+                Route::get('/{id}/edit', [TestimonialController::class, 'edit'])->name('testimonials.edit');
+                Route::put('/{id}', [TestimonialController::class, 'update'])->name('testimonials.update');
+                Route::delete('/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
+            });
+
+           // Front Settings
+                Route::prefix('settings')->group(function () {
+                    Route::get('/', [FrontSettingController::class, 'index'])->name('frontsettings.index');
+                    Route::post('/', [FrontSettingController::class, 'update'])->name('frontsettings.update');
+                });
+
+
+            // Program Studi
+            Route::prefix('program-studi')->group(function () {
+                Route::get('/', [ProgramStudiController::class, 'index'])->name('programstudi.index');
+                Route::get('/create', [ProgramStudiController::class, 'create'])->name('programstudi.create');
+                Route::post('/', [ProgramStudiController::class, 'store'])->name('programstudi.store');
+                Route::get('/{id}/edit', [ProgramStudiController::class, 'edit'])->name('programstudi.edit');
+                Route::put('/{id}', [ProgramStudiController::class, 'update'])->name('programstudi.update');
+                Route::delete('/{id}', [ProgramStudiController::class, 'destroy'])->name('programstudi.destroy');
+            });
+
+            // Statistics
+            Route::prefix('statistics')->group(function () {
+                Route::get('/', [StatisticController::class, 'index'])->name('statistics.index');
+                Route::get('/create', [StatisticController::class, 'create'])->name('statistics.create');
+                Route::post('/', [StatisticController::class, 'store'])->name('statistics.store');
+                Route::get('/{id}/edit', [StatisticController::class, 'edit'])->name('statistics.edit');
+                Route::put('/{id}', [StatisticController::class, 'update'])->name('statistics.update');
+                Route::delete('/{id}', [StatisticController::class, 'destroy'])->name('statistics.destroy');
+            });
+
+            // Company Profile Video
+            Route::prefix('company-profile-videos')->group(function () {
+                Route::get('/', [CompanyProfileVideoController::class, 'index'])->name('companyprofile.index');
+                Route::get('/create', [CompanyProfileVideoController::class, 'create'])->name('companyprofile.create');
+                Route::post('/', [CompanyProfileVideoController::class, 'store'])->name('companyprofile.store');
+                Route::get('/{id}/edit', [CompanyProfileVideoController::class, 'edit'])->name('companyprofile.edit');
+                Route::put('/{id}', [CompanyProfileVideoController::class, 'update'])->name('companyprofile.update');
+                Route::delete('/{id}', [CompanyProfileVideoController::class, 'destroy'])->name('companyprofile.destroy');
+            });
+        });
+    });
 
 // ================== DYNAMIC PAGES ================== //
 // HARUS PALING BAWAH supaya tidak menimpa /login & /register

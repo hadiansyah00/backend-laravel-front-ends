@@ -153,6 +153,118 @@
 
                             </x-slot>
                         </x-dropdown>
+                        <x-dropdown align="right" width="48">
+                            {{-- Tombol untuk membuka dropdown --}}
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
+                                    {{-- Ikon Utama Dropdown --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M4 6h16M4 12h16M4 18h16" />
+                                    </svg>
+                                    <div>Kelola Front Pages</div>
+
+                                    {{-- Panah Dropdown --}}
+                                    <div class="ms-1">
+                                        <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            {{-- Konten Dropdown --}}
+                            <x-slot name="content">
+
+                                {{-- Sliders --}}
+                                <x-dropdown-link :href="route('admin.sliders.index')"
+                                    :active="request()->routeIs('admin.sliders.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3 4.5h18m-18 6h18m-18 6h18" />
+                                        </svg>
+                                        {{ __('Kelola Sliders') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Testimonials --}}
+                                <x-dropdown-link :href="route('admin.testimonials.index')"
+                                    :active="request()->routeIs('admin.testimonials.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7.5 8.25h9M7.5 12h6m-6 3.75h3M4.5 6.75A2.25 2.25 0 012.25 9v6a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25V9a2.25 2.25 0 00-2.25-2.25h-15z" />
+                                        </svg>
+                                        {{ __('Kelola Testimoni') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Front Settings --}}
+                                <x-dropdown-link :href="route('admin.frontsettings.index')"
+                                    :active="request()->routeIs('admin.frontsettings.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M11.25 4.5a.75.75 0 011.5 0v15a.75.75 0 01-1.5 0V4.5z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M4.5 12a.75.75 0 000 1.5h15a.75.75 0 000-1.5H4.5z" />
+                                        </svg>
+                                        {{ __('Pengaturan Front Settings') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Program Studi --}}
+                                <x-dropdown-link :href="route('admin.programstudi.index')"
+                                    :active="request()->routeIs('admin.programstudi.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 14.25c1.242 0 2.25-1.008 2.25-2.25S13.242 9.75 12 9.75 9.75 10.758 9.75 12s1.008 2.25 2.25 2.25z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 3v3.75m0 10.5V21m8.25-9H21M3 12h3.75" />
+                                        </svg>
+                                        {{ __('Kelola Program Studi') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Statistics --}}
+                                <x-dropdown-link :href="route('admin.statistics.index')"
+                                    :active="request()->routeIs('admin.statistics.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3 15.75l4.5-4.5L12 15.75l6-6 3 3v6H3v-3z" />
+                                        </svg>
+                                        {{ __('Kelola Statistik') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Company Profile Videos --}}
+                                <x-dropdown-link :href="route('admin.companyprofile.index')"
+                                    :active="request()->routeIs('admin.companyprofile.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.75 10.5l-6 3.75V6.75l6 3.75z" />
+                                        </svg>
+                                        {{ __('Kelola Video Company Profile') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                     @endrole
                 </div>

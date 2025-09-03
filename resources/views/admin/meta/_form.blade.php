@@ -1,4 +1,15 @@
 @csrf
+{{-- [PERBAIKAN] Menambahkan ringkasan semua error di bagian atas form --}}
+@if ($errors->any())
+<div class="p-4 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg" role="alert">
+    <p class="font-bold">Oops! Terjadi kesalahan:</p>
+    <ul class="mt-2 text-sm list-disc list-inside">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 @method('PUT')
 
 {{-- Bagian Meta Dasar --}}
