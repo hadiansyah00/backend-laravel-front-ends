@@ -1,24 +1,25 @@
 <?php
 
-use App\Http\Controllers\Admin\MetaController;
-use App\Http\Controllers\Admin\PagesController;
-use App\Http\Controllers\Admin\PageSectionController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
-use App\Http\Controllers\FrontPages\ProgramStudiController;
-use App\Http\Controllers\FrontPages\SliderController;
-use App\Http\Controllers\FrontPages\StatisticController;
-use App\Http\Controllers\FrontPages\TestimonialController;
-use App\Http\Controllers\FrontPagesController;
-use App\Http\Controllers\FrontPages\FrontSettingController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\MetaController;
+use App\Http\Controllers\FrontPagesController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Admin\PagesController;
+use App\Http\Controllers\PendaftaranEmailController;
+use App\Http\Controllers\Admin\PageSectionController;
+use App\Http\Controllers\FrontPages\SliderController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\FrontPages\StatisticController;
+use App\Http\Controllers\FrontPages\TestimonialController;
+use App\Http\Controllers\FrontPages\FrontSettingController;
+use App\Http\Controllers\FrontPages\ProgramStudiController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 
 
 
@@ -30,7 +31,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
 Route::get('/berita', [FrontPagesController::class, 'berita'])->name('berita');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
-
+Route::prefix('pendaftaran-email')->group(function () {
+    Route::get('/create', [PendaftaranEmailController::class, 'create'])->name('pendaftaran-email.create');
+    Route::post('/', [PendaftaranEmailController::class, 'store'])->name('pendaftaran-email.store');
+});
 // ================== AUTH ================== //
 // Register
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -69,6 +73,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('roles', RoleController::class);
     Route::resource('menus', MenuController::class);
 
+    Route::get('pendaftaran-email', [PendaftaranEmailController::class, 'index'])->name('pendaftaran-email.index');
+    Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('endaftaran-email.show');
+    Route::delete('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'destroy'])->name('pendaftaran-email.destroy');
 // Index semua halaman (admin list)
     Route::get('/admin/pages', [PagesController::class, 'index'])->name('pages.index');
     // Form tambah page
@@ -149,6 +156,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
             });
         });
     });
+
+
+
 
 // ================== DYNAMIC PAGES ================== //
 // HARUS PALING BAWAH supaya tidak menimpa /login & /register
