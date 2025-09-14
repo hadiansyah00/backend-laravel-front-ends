@@ -8,7 +8,8 @@
 {{-- Memanggil komponen Hero Section dari folder partials --}}
 @include('front-pages.partials.hero')
 {{-- @include('front-pages .partials.title') --}}
-@include('front-pages.partials.visi-misi')
+@include('front-pages.partials.program', ['programStudis' => $programStudis])
+{{-- @include('front-pages.partials.visi-misi') --}}
 @include('front-pages.partials.berita', ['berita' => $berita])
 @include('front-pages.partials.video')
 @include('front-pages.partials.buku', ['buku' => $buku])

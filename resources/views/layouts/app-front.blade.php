@@ -6,37 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {{-- Title & Metadata --}}
-    <title>STIKes Bogor Husada</title>
-    <meta name="description"
-        content="PEREMPUAN AMAN adalah organisasi sayap dari AMAN yang memfasilitasi perempuan adat untuk mengorganisir diri, pengetahuan, dan hak-haknya demi menjaga ketahanan hidup komunitas adat secara turun-temurun.">
-    <meta name="keywords"
-        content="Perempuan Adat, AMAN, Nusantara, Komunitas Adat, Hukum Adat, Hak Perempuan, Lingkungan, Organisasi">
-    <meta name="author" content="PEREMPUAN AMAN">
+    <title>{{ setting('meta_title', 'STIKes Bogor Husada') }}</title>
+    <meta name="description" content="{{ setting('meta_description', 'Deskripsi default website') }}">
+    <meta name="keywords" content="{{ setting('meta_keywords', 'kampus, kesehatan, bogor, stikeshusada') }}">
+    <meta name="author" content="STIKes Bogor Husada">
 
-    {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    {{-- Open Graph (Facebook, LinkedIn, WhatsApp) --}}
+    <meta property="og:title" content="{{ setting('og_title', setting('meta_title', 'STIKes Bogor Husada')) }}">
+    <meta property="og:description"
+        content="{{ setting('og_description', setting('meta_description', 'Deskripsi default website')) }}">
+    <meta property="og:image"
+        content="{{ setting('og_image') ? asset('storage/' . setting('og_image')) : asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="{{ setting('twitter_card', 'summary_large_image') }}">
+    <meta name="twitter:title" content="{{ setting('meta_title', 'STIKes Bogor Husada') }}">
+    <meta name="twitter:description" content="{{ setting('meta_description', 'Deskripsi default website') }}">
+    <meta name="twitter:image"
+        content="{{ setting('og_image') ? asset('storage/' . setting('og_image')) : asset('assets/img/icon/logo_sbh_persegi.png') }}">
+
+    {{-- Favicon & App Icons --}}
+    <link rel="icon" type="image/png"
+        href="{{ setting('site_favicon') ? asset('storage/' . setting('site_favicon')) : asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    <link rel="apple-touch-icon"
+        href="{{ setting('site_logo') ? asset('storage/' . setting('site_logo')) : asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#ffffff">
+
+    {{-- Google Analytics (jika ada) --}}
+    @if(setting('google_analytics'))
+    {!! setting('google_analytics') !!}
+    @endif
 
     {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,700&display=swap" rel="stylesheet" />
 
     {{-- Styles --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    {{-- Carousel & Animations --}}
+    {{-- Custom Styles --}}
     <style>
         .carousel-container {
             scroll-behavior: smooth;
             scrollbar-width: none;
-            /* Firefox */
         }
 
         .carousel-container::-webkit-scrollbar {
             display: none;
-            /* Chrome/Safari */
         }
 
         .carousel-item {
@@ -60,8 +80,6 @@
         }
     </style>
 
-    {{-- Alpine.js --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="font-sans antialiased">
@@ -70,55 +88,52 @@
         @yield('content')
     </main>
 
+    {{-- Alpine.js + Intersect Plugin --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+
+    {{-- Alpine Component (Book Carousel) --}}
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('bookCarousel', () => ({
+                currentIndex: 0,
+                totalItems: 0,
+                init() {
+                    this.totalItems = this.$refs.slider.children.length;
+                    this.$refs.slider.addEventListener('scroll', () => {
+                        const itemWidth = this.$refs.slider.children[0].offsetWidth;
+                        this.currentIndex = Math.round(this.$refs.slider.scrollLeft / itemWidth);
+                    });
+                },
+                scrollNext() {
+                    const itemWidth = this.$refs.slider.children[0].offsetWidth + 24;
+                    this.$refs.slider.scrollBy({ left: itemWidth, behavior: 'smooth' });
+                },
+                scrollPrev() {
+                    const itemWidth = this.$refs.slider.children[0].offsetWidth + 24;
+                    this.$refs.slider.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+                }
+            }));
+        });
+    </script>
+
+    {{-- SwiperJS --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        new Swiper(".mySwiper", {
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            pagination: { el: ".swiper-pagination", clickable: true },
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            slidesPerView: 1,
+            spaceBetween: 20,
+            breakpoints: {
+                640: { slidesPerView: 1.2 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
+            }
+        });
+    </script>
 </body>
-<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script>
-    // Letakkan ini di file JS Anda atau di dalam tag <script>
-    document.addEventListener('alpine:init', () => {
-    Alpine.data('bookCarousel', () => ({
-        currentIndex: 0,
-        totalItems: 0,
-
-        // Fungsi yang berjalan saat komponen dimuat
-        init() {
-            // Menghitung jumlah buku di dalam slider
-            this.totalItems = this.$refs.slider.children.length;
-
-            // Menambahkan listener untuk mendeteksi scroll manual
-            // agar tombol bisa update statusnya (aktif/nonaktif)
-            this.$refs.slider.addEventListener('scroll', () => {
-                const itemWidth = this.$refs.slider.children[0].offsetWidth;
-                this.currentIndex = Math.round(this.$refs.slider.scrollLeft / itemWidth);
-            });
-        },
-
-        // Fungsi untuk scroll ke kanan (Next)
-        scrollNext() {
-            const itemWidth = this.$refs.slider.children[0].offsetWidth + 24; // 24 adalah gap (6 * 4)
-            this.$refs.slider.scrollBy({ left: itemWidth, behavior: 'smooth' });
-        },
-
-        // Fungsi untuk scroll ke kiri (Prev)
-        scrollPrev() {
-            const itemWidth = this.$refs.slider.children[0].offsetWidth + 24; // 24 adalah gap (6 * 4)
-            this.$refs.slider.scrollBy({ left: -itemWidth, behavior: 'smooth' });
-        }
-    }));
-});
-</script>
-@vite(['resources/css/app.css', 'resources/js/app.js'])
-
-{{-- SwiperJS CDN --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-<script>
-    new Swiper(".mySwiper", {
-                    loop: true,
-                    autoplay: { delay: 5000 },
-                    pagination: { el: ".swiper-pagination", clickable: true },
-                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-                });
-</script>
 
 </html>

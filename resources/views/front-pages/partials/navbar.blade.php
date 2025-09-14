@@ -10,16 +10,14 @@
 
             {{-- Logo saat di puncak halaman --}}
             <img x-show="atTop && !isMobileMenuOpen" x-transition
-                src="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}" alt="Logo Utama"
-                class="h-[40px] w-auto transition-all duration-300 mt-2 mb-2" />
+                src="{{ setting('logo_main') ? asset('storage/' . setting('logo_main')) : asset('assets/img/icon/logo_sbh_persegi.png') }}"
+                alt="Logo Utama" class="h-[60px] w-auto" />
 
-            {{-- Logo saat di-scroll atau menu mobile terbuka --}}
             <img x-show="!atTop || isMobileMenuOpen" x-transition
-                src="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}" alt="Logo Sticky"
-                class="h-[40px] w-auto transition-all duration-300 mt-2 mb-2" />
+                src="{{ setting('logo_sticky') ? asset('storage/' . setting('logo_sticky')) : asset('assets/img/icon/logo_sbh_persegi.png') }}"
+                alt="Logo Sticky" class="h-[50px] w-auto" />
 
         </a>
-
         {{-- Menu Utama (Desktop) --}}
         <div class="items-center hidden space-x-8 text-sm font-semibold text-gray-700 md:flex">
             @foreach($menus as $menu)

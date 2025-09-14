@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Models\Slider;
 use Illuminate\View\View;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http; // Pastikan ini diimport
 
@@ -58,7 +60,10 @@ class FrontPagesController extends Controller
             ['nama' => 'Mitra 5', 'logo' => '5.png'],
             ['nama' => 'Mitra 6', 'logo' => '6.jpeg'],
         ];
-        return view('front-pages.index', compact('berita', 'buku','mitra'));
+
+            $sliders = Slider::orderBy('order', 'asc')->get();
+            $programStudis = ProgramStudi::all();
+        return view('front-pages.index', compact('berita', 'buku','mitra', 'sliders','programStudis'));
     }
      public function wilayahOrganisasi(): View
     {

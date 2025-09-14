@@ -22,59 +22,48 @@ class FrontSettingController extends Controller
     /**
      * Simpan/update pengaturan.
      */
-    public function update(Request $request)
+  public function update(Request $request)
     {
-        // Validasi dinamis sesuai key
+        // Validasi dinamis sesuai kebutuhan
         $validated = $request->validate([
-            'site_logo'        => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'logo_main'        => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'logo_sticky'      => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
             'site_favicon'     => 'nullable|image|mimes:png,ico|max:1024',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'meta_keywords'    => 'nullable|string|max:255',
+            'og_title'         => 'nullable|string|max:255',
+            'og_description'   => 'nullable|string|max:500',
+            'og_image'         => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'twitter_card'     => 'nullable|string|max:50',
             'google_analytics' => 'nullable|string',
         ]);
 
-        // Simpan site_logo
-        if ($request->hasFile('site_logo')) {
-            $path = $request->file('site_logo')->store('settings', 'public');
-            FrontSetting::updateOrCreate(
-                ['key' => 'site_logo'],
-                ['value' => $path, 'type' => 'image']
-            );
+        // Daftar field yang berupa file upload
+        $fileFields = ['logo_main', 'logo_sticky', 'site_favicon', 'og_image'];
+
+        foreach ($validated as $key => $value) {
+            // Jika field adalah file upload
+            if (in_array($key, $fileFields) && $request->hasFile($key)) {
+                $path = $request->file($key)->store('settings', 'public');
+                FrontSetting::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $path, 'type' => 'image']
+                );
+            }
+            // Jika field text biasa
+            elseif (!in_array($key, $fileFields) && $request->filled($key)) {
+                FrontSetting::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $value, 'type' => 'text']
+                );
+            }
         }
 
-        // Simpan site_favicon
-        if ($request->hasFile('site_favicon')) {
-            $path = $request->file('site_favicon')->store('settings', 'public');
-            FrontSetting::updateOrCreate(
-                ['key' => 'site_favicon'],
-                ['value' => $path, 'type' => 'image']
-            );
-        }
-
-        // Simpan meta_title
-        if ($request->filled('meta_title')) {
-            FrontSetting::updateOrCreate(
-                ['key' => 'meta_title'],
-                ['value' => $request->meta_title, 'type' => 'text']
-            );
-        }
-
-        // Simpan meta_description
-        if ($request->filled('meta_description')) {
-            FrontSetting::updateOrCreate(
-                ['key' => 'meta_description'],
-                ['value' => $request->meta_description, 'type' => 'text']
-            );
-        }
-
-        // Simpan google_analytics
-        if ($request->filled('google_analytics')) {
-            FrontSetting::updateOrCreate(
-                ['key' => 'google_analytics'],
-                ['value' => $request->google_analytics, 'type' => 'text']
-            );
-        }
+        // Hapus cache biar setting() ambil data terbaru
+        cache()->flush();
 
         return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui!');
     }
+
 }
