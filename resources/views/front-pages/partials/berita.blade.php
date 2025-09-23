@@ -1,90 +1,125 @@
-<section class="py-20 bg-white" id="berita">
-    <div class="container mx-auto px-4-lg">
-
-        <div class="mb-12 text-center">
-            <h2 class="text-3xl font-bold text-gray-800 md:text-4xl">Berita & Artikel Terbaru</h2>
-            <p class="mt-2 text-lg text-gray-600">Ikuti perkembangan terbaru dari perjuangan Perempuan Adat Nusantara.
-            </p>
-        </div>
-
+<section class="py-16 bg-white sm:py-24" id="berita">
+    <div class="px-6 mx-auto max-w-7xl lg:px-8">
         @if(isset($berita) && count($berita) > 0)
         @php
-        // Pisahkan berita pertama untuk dijadikan featured
         $featuredArticle = $berita[0];
-        // Ambil 2 berita berikutnya untuk ditampilkan di samping
         $otherArticles = array_slice($berita, 1, 2);
         @endphp
 
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
 
+            {{-- ARTIKEL UTAMA (FEATURED) --}}
             <div class="lg:col-span-2">
-                <div
-                    class="relative h-full overflow-hidden transition-all duration-300 ease-in-out bg-white shadow-lg rounded-2xl group hover:shadow-2xl">
-                    <a href="{{ $featuredArticle['link'] ?? '#' }}" target="_blank" rel="noopener noreferrer"
-                        class="flex flex-col h-full">
+                <a href="{{ $featuredArticle['link'] ?? '#' }}" target="_blank" rel="noopener noreferrer"
+                    class="relative block w-full h-full overflow-hidden shadow-lg group rounded-2xl min-h-[480px]">
 
-                        {{-- Gambar Berita Utama --}}
-                        <div class="overflow-hidden">
-                            @if(isset($featuredArticle['_embedded']['wp:featuredmedia'][0]['source_url']))
-                            <img src="{{ $featuredArticle['_embedded']['wp:featuredmedia'][0]['source_url'] }}"
-                                alt="{!! $featuredArticle['title']['rendered'] ?? 'Gambar Berita' !!}"
-                                class="object-cover w-full h-64 transition-transform duration-500 md:h-80 group-hover:scale-105">
-                            @else
-                            <div class="flex items-center justify-center w-full h-64 text-gray-500 bg-gray-200 md:h-80">
-                                <span>No Image</span>
+                    @if(isset($featuredArticle['_embedded']['wp:featuredmedia'][0]['source_url']))
+                    <img src="{{ $featuredArticle['_embedded']['wp:featuredmedia'][0]['source_url'] }}"
+                        alt="{!! $featuredArticle['title']['rendered'] ?? 'Gambar Berita' !!}"
+                        class="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" />
+                    @endif
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-orange-600/60 via-orange-600/60 to-transparent">
+                    </div>
+
+                    <div class="relative flex flex-col h-full p-6 text-white md:p-8">
+                        <div class="flex items-start justify-between">
+                            {{-- ======================================================= --}}
+                            {{-- == BADGE KATEGORI DINAMIS == --}}
+                            {{-- ======================================================= --}}
+                            <span
+                                class="flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-white rounded-full text-orange backdrop-blur-sm">
+                                <span class="block w-2 h-2 bg-orange-400 rounded-full"></span>
+                                @if(isset($featuredArticle['_embedded']['wp:term'][0][0]['name']))
+                                {{ $featuredArticle['_embedded']['wp:term'][0][0]['name'] }}
+                                @else
+                                Berita
+                                @endif
+                            </span>
+                            <div class="p-2 rounded-md bg-white/10 backdrop-blur-sm">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
                             </div>
-                            @endif
                         </div>
 
-                        {{-- Konten Berita Utama --}}
-                        <div class="flex flex-col flex-grow p-6 md:p-8">
-                            <h3
-                                class="mb-3 text-2xl font-bold leading-tight text-gray-800 transition-colors duration-300 group-hover:text-purple-600">
+                        <div class="mt-auto">
+                            <p class="text-sm text-orange-600">
+                                {{ \Carbon\Carbon::parse($featuredArticle['date'])->translatedFormat('d F Y') }}
+                            </p>
+                            <h3 class="mt-2 text-2xl font-bold leading-tight md:text-4xl line-clamp-3">
                                 {!! $featuredArticle['title']['rendered'] ?? 'Judul Tidak Tersedia' !!}
                             </h3>
-                            {{-- Deskripsi diperpanjang dengan line-clamp-4 --}}
-                            <div class="mb-6 leading-relaxed text-gray-600 line-clamp-4">
-                                {!! isset($featuredArticle['excerpt']['rendered']) ?
-                                strip_tags($featuredArticle['excerpt']['rendered']) : '' !!}
-                            </div>
-                            <div class="mt-auto"> {{-- Mendorong tombol ke bawah --}}
-                                <span
-                                    class="inline-block font-semibold text-purple-600 transition-transform duration-300 group-hover:translate-x-1">
-                                    Selengkapnya &rarr;
-                                </span>
-                            </div>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
             </div>
 
-            <div class="flex flex-col col-span-1 gap-8">
+            {{-- ARTIKEL KECIL DI KANAN --}}
+            <div class="flex flex-col col-span-1 gap-6 lg:gap-8">
                 @foreach($otherArticles as $item)
-                <div
-                    class="relative overflow-hidden transition-all duration-300 ease-in-out shadow-lg rounded-2xl group hover:shadow-2xl">
-                    <a href="{{ $item['link'] ?? '#' }}" target="_blank" rel="noopener noreferrer" class="block h-full">
+                <a href="{{ $item['link'] ?? '#' }}" target="_blank" rel="noopener noreferrer"
+                    class="relative block w-full overflow-hidden shadow-lg group rounded-2xl h-60">
 
-                        @if(isset($item['_embedded']['wp:featuredmedia'][0]['source_url']))
-                        <img src="{{ $item['_embedded']['wp:featuredmedia'][0]['source_url'] }}"
-                            alt="{!! $item['title']['rendered'] ?? 'Gambar Berita' !!}"
-                            class="object-cover w-full h-full transition-transform duration-500 min-h-64 group-hover:scale-105">
-                        @else
-                        <div class="flex items-center justify-center w-full h-full text-gray-500 bg-gray-200 min-h-64">
-                            <span>No Image</span>
+                    @if(isset($item['_embedded']['wp:featuredmedia'][0]['source_url']))
+                    <img src="{{ $item['_embedded']['wp:featuredmedia'][0]['source_url'] }}"
+                        alt="{!! $item['title']['rendered'] ?? 'Gambar Berita' !!}"
+                        class="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" />
+                    @endif
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-orange-600/60 via-orange-600/60 to-transparent">
+                    </div>
+
+                    <div class="relative flex flex-col h-full p-6 text-white">
+                        <div class="flex items-start justify-between">
+                            {{-- ======================================================= --}}
+                            {{-- == BADGE KATEGORI DINAMIS (DALAM LOOP) == --}}
+                            {{-- ======================================================= --}}
+                            <span
+                                class="flex items-center gap-2 px-3 py-1 text-xs font-semibold text-orange-600 bg-white rounded-full backdrop-blur-sm">
+                                <span class="block w-2 h-2 bg-orange-400 rounded-full"></span>
+                                @if(isset($item['_embedded']['wp:term'][0][0]['name']))
+                                {{ $item['_embedded']['wp:term'][0][0]['name'] }}
+                                @else
+                                Berita
+                                @endif
+                            </span>
+                            <div class="p-2 rounded-md bg-white/10 backdrop-blur-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
                         </div>
-                        @endif
-
-                        {{-- Overlay dan Judul --}}
-                        <div
-                            class="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/70 to-transparent">
-                            {{-- Judul bisa sampai 3 baris --}}
-                            <h3 class="text-xl font-bold leading-tight text-white line-clamp-3">
+                        <div class="mt-auto">
+                            <p class="text-xs text-orange-600">
+                                {{ \Carbon\Carbon::parse($item['date'])->translatedFormat('d F Y') }}
+                            </p>
+                            <h3 class="mt-1 text-lg font-bold leading-tight line-clamp-2">
                                 {!! $item['title']['rendered'] ?? 'Judul Tidak Tersedia' !!}
                             </h3>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
                 @endforeach
+            </div>
+        </div>
+
+        {{-- ======================================================= --}}
+        {{-- == TEKS DESKRIPSI DAN TOMBOL BARU == --}}
+        {{-- ======================================================= --}}
+        <div class="flex flex-wrap items-end justify-between gap-8 mt-12">
+            <div class="max-w-2xl text-gray-700">
+                <p>STIKes Bogor Husada berperan aktif dalam inovasi kesehatan yang berdampak, melalui pengembangan
+                    riset, pengabdian masyarakat, dan kolaborasi strategis. Kami berupaya menghasilkan tenaga kesehatan
+                    unggul dan solusi inovatif yang bermanfaat bagi masyarakat luas dan pembangunan nasional.</p>
+            </div>
+            <div>
+                <a href="#"
+                    class="inline-block px-6 py-3 font-semibold text-white transition bg-orange-600 rounded-lg shadow-md hover:bg-orange-600">
+                    STIKes Bogor Husada Berdampak &rarr;
+                </a>
             </div>
         </div>
 

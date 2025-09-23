@@ -5,10 +5,10 @@
     {{-- Asumsi data dinamis dari Controller --}}
     @php
     $socials = [
-    ['icon' => 'fab fa-instagram', 'text' => 'stikesboda', 'url' => '#'],
-    ['icon' => 'fab fa-tiktok', 'text' => 'stikes.boda', 'url' => '#'],
-    ['icon' => 'fab fa-facebook-f', 'text' => 'STIKes Bogor Husada', 'url' => '#'],
-    ['icon' => 'fab fa-youtube', 'text' => 'STTikes Bogor Husada', 'url' => '#'],
+    ['icon' => 'fab fa-instagram', 'text' => 'rsazra', 'url' => '#'],
+    ['icon' => 'fab fa-tiktok', 'text' => 'rsazra.id', 'url' => '#'],
+    ['icon' => 'fab fa-facebook-f', 'text' => 'RS Azra', 'url' => '#'],
+    ['icon' => 'fab fa-youtube', 'text' => 'RSAZRAOfficial', 'url' => '#'],
     ];
     $contacts = [
     ['icon' => 'fas fa-phone', 'text' => '0251-8318456', 'url' => 'tel:02518318456'],
@@ -17,7 +17,7 @@
     @endphp
 
     {{-- TOP BAR --}}
-    <div class="bg-orange-600 text-white text-sm hidden md:block">
+    <div class="bg-primary-dark text-white text-sm hidden md:block">
         <div class="container mx-auto px-6 flex justify-between items-center py-2">
             <div class="flex items-center space-x-4">
                 @foreach ($socials as $social)
@@ -36,8 +36,8 @@
                 </a>
                 @endforeach
                 <a href="#"
-                    class="bg-orange-200 text-black font-semibold rounded-full px-4 py-1 text-xs transition hover:bg-orange-300">
-                    Bisa mereun
+                    class="bg-emerald-500 text-white font-semibold rounded-full px-4 py-1 text-xs transition hover:bg-emerald-600">
+                    Cepat, Ramah, Berkualitas
                 </a>
             </div>
         </div>

@@ -62,7 +62,76 @@
                         @endif
                     </div>
                 </div>
-
+                {{-- ======================================================= --}}
+                {{-- == BAGIAN BARU: INFORMASI FOOTER == --}}
+                {{-- ======================================================= --}}
+                <h3 class="pt-6 text-lg font-semibold text-gray-800 border-t dark:text-gray-200 dark:border-gray-700">
+                    Informasi Footer
+                </h3>
+                <div class="space-y-4">
+                    {{-- Kontak --}}
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Alamat
+                            Kontak</label>
+                        <textarea name="contact_address" rows="3"
+                            class="block w-full text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">{{ old('contact_address', setting('contact_address')) }}</textarea>
+                    </div>
+                    <div class="grid gap-6 sm:grid-cols-2">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Telepon
+                                (Tampilan)</label>
+                            <input type="text" name="contact_phone"
+                                value="{{ old('contact_phone', setting('contact_phone')) }}"
+                                class="block w-full text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Link Telepon
+                                (Format:
+                                `+62...`)</label>
+                            <input type="text" name="contact_phone_link"
+                                value="{{ old('contact_phone_link', setting('contact_phone_link')) }}"
+                                class="block w-full text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Email
+                                (Tampilan)</label>
+                            <input type="email" name="contact_email"
+                                value="{{ old('contact_email', setting('contact_email')) }}"
+                                class="block w-full text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Link
+                                Email</label>
+                            <input type="text" name="contact_email_link"
+                                value="{{ old('contact_email_link', setting('contact_email_link')) }}"
+                                class="block w-full text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        </div>
+                    </div>
+                    {{-- Links & Socials dalam format JSON --}}
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Grup Link Footer
+                            (JSON)</label>
+                        <textarea name="footer_links" rows="8"
+                            class="block w-full font-mono text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">{{ old('footer_links', setting('footer_links')) }}</textarea>
+                        <p class="mt-1 text-xs text-gray-500">Gunakan format JSON. Lihat contoh di dokumentasi atau kode
+                            footer.</p>
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Link Sosial Media
+                            (JSON)</label>
+                        <textarea name="social_links" rows="8"
+                            class="block w-full font-mono text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">{{ old('social_links', setting('social_links')) }}</textarea>
+                        <p class="mt-1 text-xs text-gray-500">Masukkan kode SVG ikon di dalam value "icon_svg".</p>
+                    </div>
+                    {{-- Copyright --}}
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Teks
+                            Copyright</label>
+                        <input type="text" name="copyright_text"
+                            value="{{ old('copyright_text', setting('copyright_text')) }}"
+                            class="block w-full text-sm text-gray-700 border rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                    </div>
+                </div>
                 {{-- === SEO Meta === --}}
                 <h3 class="pt-6 text-lg font-semibold text-gray-800 dark:text-gray-200">SEO Meta</h3>
                 <div class="space-y-4">

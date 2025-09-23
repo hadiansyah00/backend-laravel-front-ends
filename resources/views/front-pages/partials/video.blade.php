@@ -1,35 +1,50 @@
 {{-- Video Section with Thumbnail and Popup Player (Improved & Fixed) --}}
-<section class="py-20 bg-white" x-data="{ videoOpen: false, videoUrl: '' }">
-    <div class="container px-6 mx-auto">
+<section class="py-16 bg-orange-100 sm:py-24" x-data="{ videoOpen: false, videoUrl: '' }">
+    <div class="px-6 mx-auto max-w-7xl lg:px-8">
         <div class="items-center grid-cols-1 gap-12 md:grid md:grid-cols-2">
 
             {{-- Text Content --}}
             <div class="mb-10 text-center md:text-left md:mb-0">
-                <h2 class="mb-4 text-3xl font-bold text-gray-800 md:text-4xl">
-                    Peran Perempuan Adat dalam Penjagaan Pengetahuan
+                {{-- Menggunakan data dinamis untuk judul --}}
+                <h2 class="mb-4 text-3xl font-bold text-orange-600 md:text-4xl">
+                    {!! $videoContent->title ?? 'Judul Video Tidak Tersedia' !!}
                 </h2>
+                {{-- Menggunakan data dinamis untuk deskripsi --}}
                 <p class="text-lg leading-relaxed text-gray-600">
-                    Perempuan Adat sebagai peran kunci penentu kesejahteraan komunitas adatnya adalah melalui
-                    kemandirian ekonomi keluarga dengan terus-menerus mempraktekan pengetahuan yang dimiliki melalui
-                    kegiatan bertadang, bertani, bercocok tanam, berkebun, dan bahkan aktivitas mencari ikan disungai.
+                    {!! $videoContent->description ?? 'Deskripsi video tidak tersedia.' !!}
                 </p>
             </div>
 
             {{-- Video Thumbnail --}}
             <div>
-                <div @click="videoOpen = true; videoUrl = 'https://www.youtube.com/embed/N1icc_fN5GE?autoplay=1&mute=1&rel=0'"
+                @if(isset($videoContent) && $videoContent->video_url)
+                @php
+                // Ekstraksi ID video dari URL YouTube
+                $videoId = '';
+                $pattern =
+                '/(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/';
+                if (preg_match($pattern, $videoContent->video_url, $matches)) {
+                $videoId = $matches[1];
+                }
+
+                // URL thumbnail dan embed yang dinamis
+                $dynamicThumbnailUrl = $videoId ? "https://img.youtube.com/vi/{$videoId}/hqdefault.jpg" :
+                asset('assets/img/background/default_video_thumb.png');
+                $embedUrl = $videoId ? "https://www.youtube.com/embed/{$videoId}?autoplay=1&mute=1&rel=0" : '#';
+                @endphp
+
+                <div @click="videoOpen = true; videoUrl = '{{ $embedUrl }}'"
                     class="relative overflow-hidden transition-all duration-300 ease-in-out bg-gray-200 shadow-lg cursor-pointer rounded-2xl group hover:shadow-2xl">
-                    {{-- YouTube Thumbnail with Fallback --}}
-                    <img src="{{ asset('assets/img/background/thumb_video.png') }}"
-                        alt="Video Thumbnail Peran Perempuan Adat" class="object-cover w-full h-auto min-h-[300px]" {{--
-                        PERBAIKAN: Menggunakan 'onerror' standar, bukan '@error' --}}
-                        onerror="this.onerror=null; this.src='https://img.youtube.com/vi/D1So0f4g3uQ/hqdefault.jpg';"
+                    {{-- YouTube Thumbnail Dinamis dengan Fallback --}}
+                    <img src="{{ $dynamicThumbnailUrl }}" alt="Video Thumbnail {!! $videoContent->title ?? '' !!}"
+                        class="object-cover w-full h-auto min-h-[300px]"
+                        onerror="this.onerror=null; this.src='{{ asset('assets/img/background/default_video_thumb.png') }}';"
                         loading="lazy">
 
                     {{-- Play Button Overlay --}}
                     <div class="absolute inset-0 flex items-center justify-center w-full h-full bg-black/30">
                         <div
-                            class="flex items-center justify-center w-20 h-20 text-white transition-all duration-300 transform bg-purple-600 rounded-full group-hover:scale-110">
+                            class="flex items-center justify-center w-20 h-20 text-white transition-all duration-300 transform bg-orange-600 rounded-full group-hover:scale-110">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-10 h-10 ml-1">
                                 <path fill-rule="evenodd"
@@ -39,6 +54,13 @@
                         </div>
                     </div>
                 </div>
+                @else
+                {{-- Tampilan jika tidak ada video yang tersedia --}}
+                <div
+                    class="flex items-center justify-center w-full min-h-[300px] text-gray-500 bg-gray-100 rounded-2xl shadow-lg">
+                    <span>Video tidak tersedia.</span>
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -61,8 +83,7 @@
             </button>
 
             {{-- Video Iframe --}}
-            <div class="overflow-hidden bg-black rounded-lg shadow-2xl aspect-video">
-                {{-- PERBAIKAN: Hanya memuat iframe jika videoUrl ada, untuk performa lebih baik --}}
+            <div class="overflow-hidden bg-black rounded-lg shadow-2xl aspect-w-16 aspect-h-9">
                 <template x-if="videoUrl">
                     <iframe class="w-full h-full" :src="videoUrl" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

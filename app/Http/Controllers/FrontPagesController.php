@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompanyProfileVideo;
 use App\Models\Menu;
 use App\Models\Slider;
 use Illuminate\View\View;
 use App\Models\ProgramStudi;
+use App\Models\Statistic;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http; // Pastikan ini diimport
 
@@ -16,43 +19,33 @@ class FrontPagesController extends Controller
      */
     public function index(): View
     {
-         $menus = Menu::whereNull('parent_id')
+        $menus = Menu::whereNull('parent_id')
             ->where('is_active', 1)
             ->with('children')
             ->orderBy('order')
             ->get();
+
+        $berita = [];
+        $buku = [];
+
         try {
-            // Ambil data kategori berita
-            $response_berita = Http::get('https://perempuanaman.or.id/wp-json/wp/v2/posts', [
-                'categories' => 179,
+            // Ambil data berita
+            $response_berita = Http::get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
                 '_embed' => true,
                 'per_page' => 6
             ]);
 
-            // Ambil data kategori buku
-            $response_buku = Http::get('https://perempuanaman.or.id/wp-json/wp/v2/posts', [
-                'categories' => 180,
-                '_embed' => true,
-                'per_page' => 6
-            ]);
-
-            $berita = $response_berita->successful() ? $response_berita->json() : [];
-            $buku = $response_buku->successful() ? $response_buku->json() : [];
-
-            if (!$response_berita->successful()) {
+            // Convert JSON
+            if ($response_berita->successful()) {
+                $berita = $response_berita->json();
+            } else {
                 \Log::error('Gagal fetch berita', ['status' => $response_berita->status()]);
             }
-
-            if (!$response_buku->successful()) {
-                \Log::error('Gagal fetch buku', ['status' => $response_buku->status()]);
-            }
-
         } catch (\Exception $e) {
-            $berita = [];
-            $buku = [];
             \Log::error('Catch error', ['message' => $e->getMessage()]);
         }
-         $mitra = [
+
+        $mitra = [
             ['nama' => 'Mitra 1', 'logo' => '1.png'],
             ['nama' => 'Mitra 2', 'logo' => '2.jpeg'],
             ['nama' => 'Mitra 3', 'logo' => '3.png'],
@@ -61,11 +54,15 @@ class FrontPagesController extends Controller
             ['nama' => 'Mitra 6', 'logo' => '6.jpeg'],
         ];
 
-            $sliders = Slider::orderBy('order', 'asc')->get();
-            $programStudis = ProgramStudi::all();
-        return view('front-pages.index', compact('berita', 'buku','mitra', 'sliders','programStudis'));
+        $sliders = Slider::orderBy('order', 'asc')->get();
+        $programStudis = ProgramStudi::all();
+        $statistic = Statistic::all();
+        $videoContent = CompanyProfileVideo::where('is_active', true)->first(); // Ambil satu video aktif
+        $testimonials = Testimonial::all(); // Ambil semua testimonial
+        return view('front-pages.index', compact('berita', 'mitra', 'sliders', 'programStudis', 'menus', 'statistic', 'videoContent', 'testimonials'));
     }
-     public function wilayahOrganisasi(): View
+
+    public function wilayahOrganisasi(): View
     {
         // Di sini Anda bisa mengambil data dari database jika perlu.
         // Untuk saat ini, kita hanya akan menampilkan view-nya.

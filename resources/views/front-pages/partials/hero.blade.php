@@ -1,30 +1,14 @@
-{{--
-Slider Otomatis & Interaktif menggunakan Alpine.js
-
-- activeSlide: Menunjukkan slide yang sedang aktif.
-- slideCount: Jumlah total slide.
-- autoplayInterval: Durasi perpindahan slide otomatis (dalam milidetik).
-- interval: Untuk menyimpan ID dari setInterval agar bisa di-reset.
-
-Fungsi:
-- next(): Pindah ke slide berikutnya.
-- prev(): Pindah ke slide sebelumnya.
-- goToSlide(slide): Lompat ke slide spesifik.
-- resetAutoplay(): Mereset timer setiap kali pengguna berinteraksi (klik tombol/dots).
-- init(): Memulai autoplay saat komponen dimuat.
---}}
 <section x-data="{
         activeSlide: 1,
         slideCount: {{ $sliders->count() }},
         autoplayInterval: 5000,
         interval: null,
-
         next() {
-            this.activeSlide = (this.activeSlide % this.slideCount) + 1;
+            this.activeSlide = this.activeSlide >= this.slideCount ? 1 : this.activeSlide + 1;
             this.resetAutoplay();
         },
         prev() {
-            this.activeSlide = this.activeSlide === 1 ? this.slideCount : this.activeSlide - 1;
+            this.activeSlide = this.activeSlide <= 1 ? this.slideCount : this.activeSlide - 1;
             this.resetAutoplay();
         },
         goToSlide(slide) {
@@ -36,72 +20,65 @@ Fungsi:
             this.startAutoplay();
         },
         startAutoplay() {
-            this.interval = setInterval(() => {
-                this.activeSlide = (this.activeSlide % this.slideCount) + 1;
-            }, this.autoplayInterval);
+            if (this.slideCount > 1) {
+                this.interval = setInterval(() => {
+                    this.next();
+                }, this.autoplayInterval);
+            }
         },
         init() {
-            if (this.slideCount > 1) {
-                this.startAutoplay();
-            }
+            this.startAutoplay();
         }
-    }" x-init="init()" class="relative flex items-center justify-center h-screen overflow-hidden bg-gray-900">
-
-    <div class="absolute inset-0 w-full h-full">
-        @foreach($sliders as $i => $slider)
-        <div x-show="activeSlide === {{ $i + 1 }}" x-transition:enter="transition ease-out duration-1000"
-            x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100"
-            x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95" class="absolute inset-0 w-full h-full" style="z-index: 1;">
-
-            <div class="absolute inset-0 bg-center bg-cover"
-                style="background-image: url('{{ asset('storage/'.$slider->image) }}');">
+    }" x-init="init()" class="relative w-full py-12 bg-white">
+    <div class="relative w-full overflow-hidden mt-auto   ">
+        <div class="flex transition-transform duration-500 ease-in-out"
+            :style="`transform: translateX(-${(activeSlide - 1) * 100}%)`">
+            @foreach($sliders as $i => $slider)
+            <div class="relative w-full flex-shrink-0 px-4 md:px-8">
+                <div class="relative w-full h-auto transition-all duration-500 ease-in-out transform" :class="{
+                            'scale-100 opacity-100': activeSlide === {{ $i + 1 }},
+                            'scale-90 opacity-60': activeSlide !== {{ $i + 1 }}
+                        }">
+                    <div class="aspect-[4/1] w-full overflow-hidden rounded-2xl shadow-lg"> <img
+                            src="{{ asset('storage/'.$slider->image) }}" alt="{{ $slider->title }}"
+                            class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    @if($slider->title || $slider->description)
+                    <div
+                        class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4 rounded-b-2xl">
+                        <h2 class="text-lg font-bold text-white">{{ $slider->title }}</h2>
+                        <p class="text-sm text-white">{{ $slider->description }}</p>
+                    </div>
+                    @endif
+                </div>
             </div>
-
-            <div class="absolute inset-0 bg-black/50"></div>
-
-            <div
-                class="relative z-10 flex flex-col items-center justify-center w-full h-full px-4 text-center text-white">
-                <h1 class="text-5xl font-bold leading-tight tracking-wider md:text-7xl">
-                    {{ $slider->title }}
-                </h1>
-                <p class="mt-4 text-xl font-light md:text-2xl">
-                    {{ $slider->subtitle }}
-                </p>
-                @if($slider->link)
-                <a href="{{ $slider->link }}"
-                    class="inline-block px-8 py-3 mt-8 text-lg font-semibold text-white transition duration-300 bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 hover:scale-105">
-                    Selengkapnya
-                </a>
-                @endif
-            </div>
+            @endforeach
         </div>
-        @endforeach
     </div>
 
-    <div x-show="slideCount > 1" class="absolute inset-0 z-20 flex items-center justify-between w-full px-4">
+    @if($sliders->count() > 1)
+    <div class="absolute inset-0 z-20 flex items-center justify-between px-4 md:px-10 pointer-events-none">
         <button @click="prev()"
-            class="p-2 text-white transition rounded-full bg-black/20 hover:bg-black/50 focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
+            class="p-2 text-white transition rounded-full pointer-events-auto bg-black/30 hover:bg-black/60 focus:outline-none"
+            aria-label="Previous Slide">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </button>
         <button @click="next()"
-            class="p-2 text-white transition rounded-full bg-black/20 hover:bg-black/50 focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
+            class="p-2 text-white transition rounded-full pointer-events-auto bg-black/30 hover:bg-black/60 focus:outline-none"
+            aria-label="Next Slide">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
         </button>
     </div>
-
-    <div x-show="slideCount > 1" class="absolute z-20 flex justify-center space-x-3 bottom-5">
+    <div class="absolute z-20 flex justify-center space-x-2 bottom-6 left-1/2 -translate-x-1/2">
         <template x-for="i in slideCount" :key="i">
-            <button @click="goToSlide(i)" class="w-3 h-3 transition rounded-full"
-                :class="{'bg-white': activeSlide === i, 'bg-white/50 hover:bg-white': activeSlide !== i}">
-            </button>
+            <button @click="goToSlide(i)" class="w-2.5 h-2.5 transition rounded-full"
+                :class="{'bg-purple-400': activeSlide === i, 'bg-gray-500/50 hover:bg-gray-500': activeSlide !== i}"
+                :aria-label="`Go to slide ${i}`"></button>
         </template>
     </div>
-
+    @endif
 </section>
