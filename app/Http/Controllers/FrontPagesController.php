@@ -68,4 +68,31 @@ class FrontPagesController extends Controller
         // Untuk saat ini, kita hanya akan menampilkan view-nya.
         return view('front-pages.wilayah-organisasi.index');
     }
+    public function beritaDetail($slug)
+    {
+        try {
+            $response = Http::get("https://api.sbh.ac.id/wp-json/wp/v2/posts", [
+                'slug' => $slug,
+                '_embed' => true,
+            ]);
+
+            if ($response->successful()) {
+                $posts = $response->json();
+
+                // Pastikan ada data
+                if (!empty($posts)) {
+                    $detail = $posts[0]; // slug selalu unik → ambil index 0
+                    return view('front-pages.berita.index', compact('detail'));
+                } else {
+                    abort(404, 'Berita tidak ditemukan');
+                }
+            } else {
+                \Log::error('Gagal fetch detail berita', ['status' => $response->status()]);
+                abort(500, 'Gagal mengambil data dari server');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Catch error berita detail', ['message' => $e->getMessage()]);
+            abort(500, 'Terjadi kesalahan saat mengambil detail berita');
+        }
+    }
 }

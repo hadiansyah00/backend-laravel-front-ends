@@ -122,12 +122,12 @@ Hero Section - Clean & Modern
 
                 <div class="flex flex-wrap items-center gap-4 mt-10">
                     <a href="#"
-                        class="px-6 py-3 font-semibold text-center text-white transition duration-300 rounded-lg shadow-md bg-emerald-600 hover:bg-emerald-700">
+                        class="px-6 py-3 font-semibold text-center text-white transition duration-300 bg-orange-600 rounded-lg shadow-md hover:bg-orange-700">
                         Daftar PMB →
                     </a>
-                    <a href="https://wa.me/6281234567890"
+                    <a href="https://wa.me/6281110111560"
                         class="flex items-center gap-2 px-6 py-3 font-semibold text-center text-gray-800 transition duration-300 border border-gray-300 rounded-lg hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500" viewBox="0 0 20 20"
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-600" viewBox="0 0 20 20"
                             fill="currentColor">
                             <path
                                 d="M10.25 1.75a.75.75 0 00-1.5 0V2a.75.75 0 001.5 0V1.75zM10 18.25a.75.75 0 01.75-.75h.01a.75.75 0 010 1.5H10.75a.75.75 0 01-.75-.75zM15.383 3.617a.75.75 0 00-1.06 1.06l.001.001.01.01.002.002c.036.035.074.068.114.1.037.032.075.062.115.09a3.486 3.486 0 011.83 2.914.75.75 0 001.498-.058 5.002 5.002 0 00-4.46-4.46.015.015 0 00-.002-.002l-.01-.01-.001-.001zM4.617 15.383a.75.75 0 001.06-1.06l-.001-.001-.01-.01-.002-.002a3.486 3.486 0 01-2.914-1.83.75.75 0 10-1.498.058 5.002 5.002 0 004.46 4.46l.002.002.01.01.001.001z" />

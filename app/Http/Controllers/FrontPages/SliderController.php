@@ -25,6 +25,7 @@ class SliderController extends Controller
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'image_mobile' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'link' => 'nullable|url',
             'order' => 'nullable|integer',
         ]);
@@ -33,10 +34,16 @@ class SliderController extends Controller
             $validated['image'] = $request->file('image')->store('sliders', 'public');
         }
 
+        if ($request->hasFile('image_mobile')) {
+            $validated['image_mobile'] = $request->file('image_mobile')->store('sliders/mobile', 'public');
+        }
+
         Slider::create($validated);
 
         return redirect()->route('admin.sliders.index')->with('success', 'Slider berhasil ditambahkan.');
     }
+
+
 
     public function edit($id)
     {
@@ -44,7 +51,7 @@ class SliderController extends Controller
         return view('admin.sliders.edit', compact('slider'));
     }
 
-   public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $slider = Slider::findOrFail($id);
 
@@ -52,12 +59,17 @@ class SliderController extends Controller
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image_mobile' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'link' => 'nullable|url',
             'order' => 'nullable|integer',
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('sliders', 'public');
+        }
+
+        if ($request->hasFile('image_mobile')) {
+            $validated['image_mobile'] = $request->file('image_mobile')->store('sliders/mobile', 'public');
         }
 
         $slider->update($validated);

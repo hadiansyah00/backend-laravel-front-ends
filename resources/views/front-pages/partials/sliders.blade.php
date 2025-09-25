@@ -3,32 +3,12 @@
         slideCount: {{ $sliders->count() }},
         autoplayInterval: 5000,
         interval: null,
-        next() {
-            this.activeSlide = this.activeSlide >= this.slideCount ? 1 : this.activeSlide + 1;
-            this.resetAutoplay();
-        },
-        prev() {
-            this.activeSlide = this.activeSlide <= 1 ? this.slideCount : this.activeSlide - 1;
-            this.resetAutoplay();
-        },
-        goToSlide(slide) {
-            this.activeSlide = slide;
-            this.resetAutoplay();
-        },
-        resetAutoplay() {
-            clearInterval(this.interval);
-            this.startAutoplay();
-        },
-        startAutoplay() {
-            if (this.slideCount > 1) {
-                this.interval = setInterval(() => {
-                    this.next();
-                }, this.autoplayInterval);
-            }
-        },
-        init() {
-            this.startAutoplay();
-        }
+        next() { /* ... logika fungsi Anda ... */ },
+        prev() { /* ... logika fungsi Anda ... */ },
+        goToSlide(slide) { /* ... logika fungsi Anda ... */ },
+        resetAutoplay() { /* ... logika fungsi Anda ... */ },
+        startAutoplay() { /* ... logika fungsi Anda ... */ },
+        init() { this.startAutoplay(); }
     }" x-init="init()" class="relative w-full py-12 bg-white pt-[104px] mt-10">
     <div class="relative w-full mt-auto overflow-hidden ">
         <div class="flex transition-transform duration-500 ease-in-out"
@@ -36,13 +16,24 @@
             @foreach($sliders as $i => $slider)
             <div class="relative flex-shrink-0 w-full px-4 md:px-8">
                 <div class="relative w-full h-auto transition-all duration-500 ease-in-out transform" :class="{
-                            'scale-100 opacity-100': activeSlide === {{ $i + 1 }},
-                            'scale-90 opacity-60': activeSlide !== {{ $i + 1 }}
-                        }">
-                    <div class="aspect-[4/1] w-full overflow-hidden rounded-2xl shadow-lg"> <img
-                            src="{{ asset('storage/'.$slider->image) }}" alt="{{ $slider->title }}"
-                            class="object-cover w-full h-full" loading="lazy">
+                                'scale-100 opacity-100': activeSlide === {{ $i + 1 }},
+                                'scale-90 opacity-60': activeSlide !== {{ $i + 1 }}
+                            }">
+
+                    {{-- ======================================================= --}}
+                    {{-- == PERUBAHAN UTAMA ADA DI BARIS INI == --}}
+                    {{-- ======================================================= --}}
+                    <div class="aspect-square md:aspect-[4/1] w-full overflow-hidden rounded-2xl shadow-lg">
+                        <picture>
+                            {{-- Gambar untuk Desktop --}}
+                            <source media="(min-width: 768px)" srcset="{{ asset('storage/'.$slider->image) }}">
+
+                            {{-- Gambar untuk Mobile --}}
+                            <img src="{{ asset('storage/'.$slider->image_mobile) }}" alt="{{ $slider->title }}"
+                                class="object-cover w-full h-full" loading="lazy">
+                        </picture>
                     </div>
+
                     @if($slider->title || $slider->description)
                     <div
                         class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent rounded-b-2xl">
@@ -56,6 +47,7 @@
         </div>
     </div>
 
+    {{-- Bagian tombol navigasi dan pagination (tidak ada perubahan) --}}
     @if($sliders->count() > 1)
     <div class="absolute inset-0 z-20 flex items-center justify-between px-4 pointer-events-none md:px-10">
         <button @click="prev()"

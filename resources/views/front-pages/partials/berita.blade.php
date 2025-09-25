@@ -10,8 +10,8 @@
 
             {{-- ARTIKEL UTAMA (FEATURED) --}}
             <div class="lg:col-span-2">
-                <a href="{{ $featuredArticle['link'] ?? '#' }}" target="_blank" rel="noopener noreferrer"
-                    class="relative block w-full h-full overflow-hidden shadow-lg group rounded-2xl min-h-[480px]">
+                <a href="{{ route('berita.detail', $featuredArticle['slug']) }}"
+                    class="relative block w-full overflow-hidden shadow-lg group rounded-2xl min-h-[480px]">
 
                     @if(isset($featuredArticle['_embedded']['wp:featuredmedia'][0]['source_url']))
                     <img src="{{ $featuredArticle['_embedded']['wp:featuredmedia'][0]['source_url'] }}"
@@ -28,12 +28,12 @@
                             {{-- == BADGE KATEGORI DINAMIS == --}}
                             {{-- ======================================================= --}}
                             <span
-                                class="flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-white rounded-full text-orange backdrop-blur-sm">
+                                class="flex items-center gap-2 px-3 py-1 text-xs font-semibold text-orange-600 bg-white rounded-full text-orange backdrop-blur-sm">
                                 <span class="block w-2 h-2 bg-orange-400 rounded-full"></span>
                                 @if(isset($featuredArticle['_embedded']['wp:term'][0][0]['name']))
                                 {{ $featuredArticle['_embedded']['wp:term'][0][0]['name'] }}
                                 @else
-                                Berita
+                                Berita dan Artikel STIkes Bogor Husada
                                 @endif
                             </span>
                             <div class="p-2 rounded-md bg-white/10 backdrop-blur-sm">
@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="mt-auto">
-                            <p class="text-sm text-orange-600">
+                            <p class="text-sm text-white-600">
                                 {{ \Carbon\Carbon::parse($featuredArticle['date'])->translatedFormat('d F Y') }}
                             </p>
                             <h3 class="mt-2 text-2xl font-bold leading-tight md:text-4xl line-clamp-3">
@@ -82,7 +82,7 @@
                                 @if(isset($item['_embedded']['wp:term'][0][0]['name']))
                                 {{ $item['_embedded']['wp:term'][0][0]['name'] }}
                                 @else
-                                Berita
+                                Berita dan Artikel STIkes Bogor Husada
                                 @endif
                             </span>
                             <div class="p-2 rounded-md bg-white/10 backdrop-blur-sm">
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <div class="mt-auto">
-                            <p class="text-xs text-orange-600">
+                            <p class="text-xs text-white">
                                 {{ \Carbon\Carbon::parse($item['date'])->translatedFormat('d F Y') }}
                             </p>
                             <h3 class="mt-1 text-lg font-bold leading-tight line-clamp-2">

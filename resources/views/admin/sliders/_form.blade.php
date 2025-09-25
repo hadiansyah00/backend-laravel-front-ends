@@ -33,6 +33,17 @@
         </div>
         @endif
     </div>
+    <div class="mb-4">
+        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Gambar Mobile</label>
+        <input type="file" name="image_mobile"
+            class="w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200" />
+
+        @if (!empty($slider->image_mobile))
+        <div class="mt-2">
+            <img src="{{ asset('storage/'.$slider->image_mobile) }}" class="h-20 rounded">
+        </div>
+        @endif
+    </div>
 
     <div class="mb-4">
         <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Link (opsional)</label>

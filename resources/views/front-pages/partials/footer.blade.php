@@ -1,4 +1,4 @@
-<footer class="text-white">
+<footer class="text-white" id="page-footer">
     {{-- ============================================= --}}
     {{-- == Bagian Atas (Partner Logos) - bg-orange-800 == --}}
     {{-- ============================================= --}}

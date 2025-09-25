@@ -3,10 +3,9 @@
 @section('content')
 
 {{-- Memanggil komponen Navbar dari folder partials --}}
-@include('front-pages.partials.navbar')
 
 {{-- Memanggil komponen Hero Section dari folder partials --}}
-@include('front-pages.partials.hero')
+@include('front-pages.partials.sliders')
 @include('front-pages.partials.statistic', ['statistic' => $statistic])
 @include('front-pages.partials.title', ['programStudis' => $programStudis])
 @include('front-pages.partials.program', ['programStudis' => $programStudis])
@@ -28,7 +27,6 @@
 
 {{-- Bagian konten utama halaman depan --}}
 {{-- Contoh bagian konten selanjutnya di bawah Hero Section --}}
-@include('front-pages.partials.footer')
 
 {{-- Bagian footer --}}
 {{-- Anda bisa menambahkan bagian lain seperti footer di sini --}}
