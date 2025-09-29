@@ -46,16 +46,29 @@ class Menu extends Model
      */
     public function getLinkAttribute()
     {
-        if ($this->type === 'page' && $this->page) {
-            return route('front.pages.show', $this->page->slug);
+        if ($this->type === 'page') {
+            // 1. Kalau ada relasi page & slugnya ada
+            if ($this->page && $this->page->slug) {
+                return route('front.pages.show', $this->page->slug);
+            }
+
+            // 2. Kalau tidak ada relasi page, coba pakai slug dari menu
+            if ($this->slug) {
+                return route('front.pages.show', $this->slug);
+            }
+
+            // 3. Kalau dua-duanya kosong → fallback
+            return '#';
         }
 
         if ($this->type === 'link') {
-            return $this->url;
+            return $this->url ?: '#';
         }
 
         return '#';
     }
+
+
     public function page()
     {
         return $this->belongsTo(Pages::class);

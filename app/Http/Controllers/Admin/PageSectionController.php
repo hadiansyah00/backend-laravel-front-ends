@@ -26,7 +26,6 @@ class PageSectionController extends Controller
     }
 
     public function store(Request $request, Pages $page): RedirectResponse
-
     {
         $validated = $request->validate([
             'type'    => 'required|string|max:255',
@@ -34,21 +33,23 @@ class PageSectionController extends Controller
             'order'   => 'required|integer',
         ]);
 
+        // decode JSON agar tidak double encode
+        $validated['content'] = json_decode($validated['content'], true);
+
         $page->sections()->create($validated);
+
         return redirect()
-        ->route('admin.pages.sections.index', ['page' => $page->slug])
+            ->route('admin.pages.sections.index', ['page' => $page->slug])
             ->with('success', 'Section berhasil ditambahkan.');
     }
 
     public function edit(PageSections $section): View
-
     {
-            $page = $section->page; // ambil relasi page
-             return view('admin.sections.edit', compact('section', 'page'));
-
+        $page = $section->page; // ambil relasi page
+        return view('admin.sections.edit', compact('section', 'page'));
     }
 
-   public function update(Request $request, PageSections $section): RedirectResponse
+    public function update(Request $request, PageSections $section): RedirectResponse
     {
         $validated = $request->validate([
             'type'    => 'required|string|max:255',
@@ -74,7 +75,7 @@ class PageSectionController extends Controller
         $section->delete();
 
         return redirect()
-        ->route('admin.pages.sections.index', ['page' => $section->page->slug])
-        ->with('success', 'Section berhasil dihapus.');
+            ->route('admin.pages.sections.index', ['page' => $section->page->slug])
+            ->with('success', 'Section berhasil dihapus.');
     }
 }

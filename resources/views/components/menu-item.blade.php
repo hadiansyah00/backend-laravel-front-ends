@@ -5,7 +5,7 @@
 {{-- Dropdown --}}
 <div x-data="{ isOpen: false }" class="relative group">
     <button @mouseenter="isOpen = true" @mouseleave="isOpen = false"
-        class="flex items-center transition-colors duration-200 hover:text-purple-600">
+        class="flex items-center transition-colors duration-200 hover:text-orange-600">
         {{ $menu->name }}
         <svg class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="currentColor"
             viewBox="0 0 20 20">
@@ -34,7 +34,7 @@
 @else
 {{-- Link Biasa --}}
 <a href="{{ $menu->link }}"
-    class="block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-purple-50 hover:text-purple-600">
+    class="block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-orange-50 hover:text-orange-600">
     {{ $menu->name }}
 </a>
 @endif

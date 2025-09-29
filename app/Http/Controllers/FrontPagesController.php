@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CompanyProfileVideo;
 use App\Models\Menu;
 use App\Models\Slider;
-use Illuminate\View\View;
-use App\Models\ProgramStudi;
 use App\Models\Statistic;
+use Illuminate\View\View;
 use App\Models\Testimonial;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
+use App\Models\CompanyProfileVideo;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http; // Pastikan ini diimport
 
 class FrontPagesController extends Controller
@@ -19,47 +20,46 @@ class FrontPagesController extends Controller
      */
     public function index(): View
     {
+        // Ambil berita dengan cache 10 menit
+        $berita = Cache::remember('berita_terbaru', 600, function () {
+            try {
+                $response = Http::get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
+                    '_embed' => true,
+                    'per_page' => 6
+                ]);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                \Log::error('Gagal fetch berita', ['status' => $response->status()]);
+            } catch (\Exception $e) {
+                \Log::error('Catch error fetch berita', ['message' => $e->getMessage()]);
+            }
+
+            return []; // default kalau gagal
+        });
         $menus = Menu::whereNull('parent_id')
-            ->where('is_active', 1)
+            ->active()
             ->with('children')
             ->orderBy('order')
             ->get();
 
-        $berita = [];
-        $buku = [];
-
-        try {
-            // Ambil data berita
-            $response_berita = Http::get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
-                '_embed' => true,
-                'per_page' => 6
-            ]);
-
-            // Convert JSON
-            if ($response_berita->successful()) {
-                $berita = $response_berita->json();
-            } else {
-                \Log::error('Gagal fetch berita', ['status' => $response_berita->status()]);
-            }
-        } catch (\Exception $e) {
-            \Log::error('Catch error', ['message' => $e->getMessage()]);
-        }
-
-        $mitra = [
-            ['nama' => 'Mitra 1', 'logo' => '1.png'],
-            ['nama' => 'Mitra 2', 'logo' => '2.jpeg'],
-            ['nama' => 'Mitra 3', 'logo' => '3.png'],
-            ['nama' => 'Mitra 4', 'logo' => '4.png'],
-            ['nama' => 'Mitra 5', 'logo' => '5.png'],
-            ['nama' => 'Mitra 6', 'logo' => '6.jpeg'],
-        ];
-
-        $sliders = Slider::orderBy('order', 'asc')->get();
+        $sliders       = Slider::orderBy('order')->get();
         $programStudis = ProgramStudi::all();
-        $statistic = Statistic::all();
-        $videoContent = CompanyProfileVideo::where('is_active', true)->first(); // Ambil satu video aktif
-        $testimonials = Testimonial::all(); // Ambil semua testimonial
-        return view('front-pages.index', compact('berita', 'mitra', 'sliders', 'programStudis', 'menus', 'statistic', 'videoContent', 'testimonials'));
+        $statistic     = Statistic::all();
+        $videoContent  = CompanyProfileVideo::where('is_active', true)->first();
+        $testimonials  = Testimonial::all();
+
+        return view('front-pages.index', compact(
+            'berita',
+            'menus',
+            'sliders',
+            'programStudis',
+            'statistic',
+            'videoContent',
+            'testimonials'
+        ));
     }
 
     public function wilayahOrganisasi(): View

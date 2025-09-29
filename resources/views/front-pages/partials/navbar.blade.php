@@ -66,10 +66,10 @@ $contacts = [
                     <a href="{{ route('home') }}" @click="isMobileMenuOpen = false" class="z-50">
                         <img x-show="atTop && !isMobileMenuOpen" x-transition
                             src="{{ setting('logo_main') ? asset('storage/' . setting('logo_main')) : asset('assets/img/icon/logo_sbh_persegi.png') }}"
-                            alt="Logo Utama" class="h-[40px] w-auto" />
+                            alt="Logo Utama" class="h-[30px] w-auto" />
                         <img x-show="!atTop || isMobileMenuOpen" x-transition
                             src="{{ setting('logo_sticky') ? asset('storage/' . setting('logo_sticky')) : asset('assets/img/icon/logo_sbh_persegi.png') }}"
-                            alt="Logo Sticky" class="h-[40px] w-auto" />
+                            alt="Logo Sticky" class="h-[30px] w-auto" />
                     </a>
 
                     <div class="items-center hidden space-x-8 text-sm font-semibold text-gray-700 md:flex">

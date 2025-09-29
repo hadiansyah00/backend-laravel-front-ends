@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use App\Models\Pages;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 
 class PagesController extends Controller
@@ -35,7 +36,7 @@ class PagesController extends Controller
         // Slug dibuat otomatis dari title
         $validated['slug'] = Str::slug($request->title);
 
-        Page::create($validated);
+        Pages::create($validated);
 
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dibuat.');
     }
@@ -68,12 +69,16 @@ class PagesController extends Controller
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dihapus.');
     }
 
-   public function show($slug)
+    public function show($slug)
     {
         $page = Pages::where('slug', $slug)
             ->where('is_published', 1)
             ->firstOrFail();
-
+        $menus = Menu::whereNull('parent_id')
+            ->active()
+            ->with('children')
+            ->orderBy('order')
+            ->get();
         if ($page->type === 'modular') {
             $sections = $page->sections()->orderBy('order')->get()
                 ->map(function ($section) {
@@ -86,13 +91,9 @@ class PagesController extends Controller
                     return $section;
                 });
 
-            return view('admin.pages.modular', compact('page', 'sections'));
+            return view('admin.pages.modular', compact('page', 'sections', 'menus'));
         }
 
         return view('admin.pages.standard', compact('page'));
     }
-
-
-
-
 }
