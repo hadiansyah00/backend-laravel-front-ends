@@ -74,26 +74,34 @@ class PagesController extends Controller
         $page = Pages::where('slug', $slug)
             ->where('is_published', 1)
             ->firstOrFail();
+
         $menus = Menu::whereNull('parent_id')
             ->active()
             ->with('children')
             ->orderBy('order')
             ->get();
+
         if ($page->type === 'modular') {
             $sections = $page->sections()->orderBy('order')->get()
                 ->map(function ($section) {
-                    // decode hanya kalau string JSON
-                    if (is_string($section->content)) {
-                        $section->decoded_content = json_decode($section->content, true);
-                    } else {
-                        $section->decoded_content = $section->content; // kalau sudah array
-                    }
+                    $content = $section->content;
+
+                    $section->decoded_content = match (true) {
+                        is_string($content) => json_decode($content, true) ?? [],
+                        is_array($content) => $content,
+                        default => []
+                    };
+
                     return $section;
                 });
 
-            return view('admin.pages.modular', compact('page', 'sections', 'menus'));
+            $jsonContent = is_string($page->content)
+                ? json_decode($page->content, true)
+                : $page->content;
+
+            return view('admin.pages.modular', compact('page', 'sections', 'menus', 'jsonContent'));
         }
 
-        return view('admin.pages.standard', compact('page'));
+        return view('front-pages.standard', compact('page', 'menus'));
     }
 }

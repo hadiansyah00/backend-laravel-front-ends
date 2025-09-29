@@ -31,8 +31,8 @@
     </section>
     @endif
 
-    @include('admin.pages.partials.hero-sejarah', ['section' => $section])
-
+    @include('admin.pages.sejarah.hero-sejarah', ['section' => $section])
+    @include('admin.pages.sejarah.title-sejarah',['section' => $section])
 
     {{-- ================= FEATURE ================= --}}
     @if ($section->type === 'feature')
