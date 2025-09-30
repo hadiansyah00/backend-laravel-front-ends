@@ -32,8 +32,56 @@
     @endif
 
     @include('admin.pages.sejarah.hero-sejarah', ['section' => $section])
+    @if ($section->type === 'title-sejarah')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'title-sejarah') continue;
+
+    $layout = $data['layout'] ?? 'left';
+    @endphp
     @include('admin.pages.sejarah.title-sejarah',['section' => $section])
 
+    @endif
+
+    @include('admin.pages.profile.hero-visi-misi', ['section' => $section])
+    @if($section->type === 'profil-stikes')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'profil-stikes') continue;
+    @endphp
+    @include('admin.pages.profile.profil-stikes',['section' => $section])
+    @endif
+    {{-- ================= SAMBUTAN PIMPINAN SBH ================= --}}
+    @include('admin.pages.pimpinan.hero-pimpinan', ['section' => $section])
+    @if ($section->type === 'sambutan-ketua')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'sambutan-ketua') continue;
+    @endphp
+    @include('admin.pages.pimpinan.title-pimpinan',['data' => $data])
+    @endif
+    {{-- ================= END SAMBUTAN PIMPINAN SBH ================= --}}
+    {{-- ================= HERO DOSEN ================= --}}
+    @include('admin.pages.dosen.hero-dosen', ['section' => $section])
+    @if ($section->type === 'sdm-stikes')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'sdm-stikes') continue;
+    @endphp
+    @include('admin.pages.dosen.sdm-stikes',['data' => $data])
+    @endif
+    {{-- ================= END HERO DOSEN ================= --}}
+
+    {{-- Program Studi --}}
+
+    @include('admin.pages.program-studi.hero-prodi', ['section' => $section])
+    @if ($section->type === 'program-studi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'program-studi') continue;
+    @endphp
+    @include('admin.pages.program-studi.program-studi',['data' => $data])
+    @endif
     {{-- ================= FEATURE ================= --}}
     @if ($section->type === 'feature')
     <section class="py-16 bg-gray-100">

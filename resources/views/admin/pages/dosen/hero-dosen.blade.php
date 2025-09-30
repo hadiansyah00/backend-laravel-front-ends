@@ -1,4 +1,4 @@
-@if ($section->type === 'hero-sejarah')
+@if ($section->type === 'hero-dosen')
 <section class="relative w-full h-80 md:h-96">
     {{-- Latar Belakang untuk Desktop (md ke atas) --}}
     <div class="absolute inset-0 hidden bg-center bg-cover md:block"

@@ -82,26 +82,32 @@ class PagesController extends Controller
             ->get();
 
         if ($page->type === 'modular') {
-            $sections = $page->sections()->orderBy('order')->get()
+            $sections = $page->sections()
+                ->orderBy('order')
+                ->get()
                 ->map(function ($section) {
-                    $content = $section->content;
-
-                    $section->decoded_content = match (true) {
-                        is_string($content) => json_decode($content, true) ?? [],
-                        is_array($content) => $content,
-                        default => []
-                    };
-
+                    // Pastikan content selalu array
+                    if (is_string($section->content)) {
+                        $decoded = json_decode($section->content, true);
+                        $section->decoded_content = is_array($decoded) ? $decoded : [];
+                    } elseif (is_array($section->content)) {
+                        $section->decoded_content = $section->content;
+                    } else {
+                        $section->decoded_content = [];
+                    }
                     return $section;
                 });
 
-            $jsonContent = is_string($page->content)
-                ? json_decode($page->content, true)
-                : $page->content;
-
-            return view('admin.pages.modular', compact('page', 'sections', 'menus', 'jsonContent'));
+            return view('admin.pages.modular', [
+                'page' => $page,
+                'sections' => $sections,
+                'menus' => $menus,
+            ]);
         }
 
-        return view('front-pages.standard', compact('page', 'menus'));
+        return view('admin.pages.standard', [
+            'page' => $page,
+            'menus' => $menus,
+        ]);
     }
 }
