@@ -29,6 +29,8 @@ use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 
 // ================== FRONTEND ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+
 Route::get('/berita/{slug}', [FrontPagesController::class, 'beritaDetail'])->name('berita.detail');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
 Route::prefix('pendaftaran-email')->group(function () {

@@ -6,6 +6,7 @@ use App\Models\Menu;
 use App\Models\Pages;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
+use App\Models\MetaSettings;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -73,7 +74,12 @@ class PagesController extends Controller
     {
         $page = Pages::where('slug', $slug)
             ->where('is_published', 1)
+            ->with('meta')
             ->firstOrFail();
+
+        // fallback meta default
+        $meta = $page->meta ?? MetaSettings::default()->first();
+
 
         $menus = Menu::whereNull('parent_id')
             ->active()
@@ -102,6 +108,7 @@ class PagesController extends Controller
                 'page' => $page,
                 'sections' => $sections,
                 'menus' => $menus,
+                'meta' => $meta,
             ]);
         }
 

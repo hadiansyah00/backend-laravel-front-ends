@@ -3,12 +3,44 @@
         slideCount: {{ $sliders->count() }},
         autoplayInterval: 5000,
         interval: null,
-        next() { /* ... logika fungsi Anda ... */ },
-        prev() { /* ... logika fungsi Anda ... */ },
-        goToSlide(slide) { /* ... logika fungsi Anda ... */ },
-        resetAutoplay() { /* ... logika fungsi Anda ... */ },
-        startAutoplay() { /* ... logika fungsi Anda ... */ },
-        init() { this.startAutoplay(); }
+
+        next() {
+            if (this.activeSlide >= this.slideCount) {
+                this.activeSlide = 1;
+            } else {
+                this.activeSlide++;
+            }
+            this.resetAutoplay();
+        },
+
+        prev() {
+            if (this.activeSlide <= 1) {
+                this.activeSlide = this.slideCount;
+            } else {
+                this.activeSlide--;
+            }
+            this.resetAutoplay();
+        },
+
+        goToSlide(slide) {
+            this.activeSlide = slide;
+            this.resetAutoplay();
+        },
+
+        resetAutoplay() {
+            clearInterval(this.interval);
+            this.startAutoplay();
+        },
+
+        startAutoplay() {
+            this.interval = setInterval(() => {
+                this.next();
+            }, this.autoplayInterval);
+        },
+
+        init() {
+            this.startAutoplay();
+        }
     }" x-init="init()" class="relative w-full py-12 bg-white pt-[104px] mt-10">
     <div class="relative w-full mt-auto overflow-hidden ">
         <div class="flex transition-transform duration-500 ease-in-out"
@@ -19,10 +51,6 @@
                                 'scale-100 opacity-100': activeSlide === {{ $i + 1 }},
                                 'scale-90 opacity-60': activeSlide !== {{ $i + 1 }}
                             }">
-
-                    {{-- ======================================================= --}}
-                    {{-- == PERUBAHAN UTAMA ADA DI BARIS INI == --}}
-                    {{-- ======================================================= --}}
                     <div class="aspect-square md:aspect-[4/1] w-full overflow-hidden rounded-2xl shadow-lg">
                         <picture>
                             {{-- Gambar untuk Desktop --}}
@@ -47,7 +75,7 @@
         </div>
     </div>
 
-    {{-- Bagian tombol navigasi dan pagination (tidak ada perubahan) --}}
+    {{-- Navigasi dan Pagination --}}
     @if($sliders->count() > 1)
     <div class="absolute inset-0 z-20 flex items-center justify-between px-4 pointer-events-none md:px-10">
         <button @click="prev()"

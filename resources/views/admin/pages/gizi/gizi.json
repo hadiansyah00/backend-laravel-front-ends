@@ -1,0 +1,23 @@
+{
+    "cta": {
+        "url": "/prodi/s1-farmasi#profil",
+        "text": "Lihat Profil Prodi",
+        "style": "primary"
+    },
+    "align": "center",
+    "title": "Program Studi SI Farmasi",
+    "section": "hero-prodi-farmasi",
+    "subtitle": "Mencetak Sarjana Farmasi yang profesional, berkompeten, dan berkarakter dengan wawasan global.",
+    "breadcrumbs": [
+        {
+            "url": "/program-studi",
+            "text": "Program Studi"
+        },
+        {
+            "url": "/s1-farmasi",
+            "text": "SI Farmasi"
+        }
+    ],
+    "background_image": "assets/img/hero/head-1.jpg",
+    "background_image_mobile": "assets/img/hero/head-1-mb.jpg"
+}

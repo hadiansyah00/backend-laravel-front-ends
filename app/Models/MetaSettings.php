@@ -46,11 +46,16 @@ class MetaSettings extends Model
     /**
      * Scope: Get meta default
      */
+
+
     public function scopeDefault($query)
     {
-        return $query->where('page_slug', 'default');
+        return $query->whereNull('pages_id'); // default meta kalau tidak terkait page
     }
-        public function page()
+    /**
+     * Relasi ke Pages
+     */
+    public function page()
     {
         return $this->belongsTo(Pages::class);
     }

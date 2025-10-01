@@ -11,7 +11,7 @@ class Pages extends Model
 {
     use HasFactory;
 
-   protected $table = 'pages';
+    protected $table = 'pages';
     protected $primaryKey = 'id'; // default, pastikan ada
     public $incrementing = true;
     protected $keyType = 'int';
@@ -28,9 +28,9 @@ class Pages extends Model
      * Relasi ke section modular jika type = 'modular'
      */
     public function sections()
-{
-    return $this->hasMany(PageSections::class, 'page_id');
-}
+    {
+        return $this->hasMany(PageSections::class, 'page_id');
+    }
 
     /**
      * Scope published
@@ -47,11 +47,11 @@ class Pages extends Model
     {
         return 'slug';
     }
-     /**
+    /**
      * Relasi ke MetaSetting berdasarkan slug
      */
-        public function meta()
+    public function meta()
     {
-        return $this->hasOne(MetaSettings::class);
+        return $this->hasOne(MetaSettings::class, 'pages_id');
     }
 }

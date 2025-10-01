@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Grant all permissions to users with the 'admin' role before any other checks
-        View::composer('layouts.front', function ($view) {
+        View::composer('layouts.app-front', function ($view) {
             $menus = Menu::whereNull('parent_id')
                 ->active() // pakai scopeActive() biar lebih rapi
                 ->with(['children' => function ($q) {

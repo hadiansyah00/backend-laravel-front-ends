@@ -1,5 +1,5 @@
 {{-- Menggunakan layout utama --}}
-@extends('layouts.app-front')
+@extends('layouts.app-modullar')
 
 {{-- Memulai section untuk konten utama --}}
 @section('content')
@@ -82,6 +82,88 @@
     @endphp
     @include('admin.pages.program-studi.program-studi',['data' => $data])
     @endif
+
+    {{-- ================= END PROGRAM STUDI ================= --}}
+
+    {{-- DII KEBIDANAN --}}
+    @include('admin.pages.kebidanan.hero', ['section' => $section])
+
+    @if ($section->type === 'profil_prodi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section_type']) || $data['section_type'] !== 'profil_prodi') continue;
+    @endphp
+    @include('admin.pages.kebidanan.profile', ['content' => $data])
+    @endif
+
+    @if ($section->type === 'visi-misi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'visi-misi') continue;
+    @endphp
+    @include('admin.pages.kebidanan.visi-misi', ['content' => $data])
+    @endif
+    @if ($section->type === 'peluang-kerja')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section_type']) || $data['section_type'] !== 'peluang-kerja') continue;
+    @endphp
+    @include('admin.pages.kebidanan.peluang-kerja', ['content' => $data])
+    @endif
+    {{-- ================= END DII KEBIDANAN ================= --}}
+    {{-- PROGRAM STUDI FARMASI --}}
+    @include('admin.pages.farmasi.hero', ['section' => $section])
+
+    @if ($section->type === 'profil_prodi_farmasi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section_type']) || $data['section_type'] !== 'profil_prodi_farmasi') continue;
+    @endphp
+    @include('admin.pages.farmasi.profile', ['content' => $data])
+    @endif
+
+    @if ($section->type === 'visi-misi-farmasi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'visi-misi-farmasi') continue;
+    @endphp
+    @include('admin.pages.farmasi.visi-misi', ['content' => $data])
+    @endif
+    @if ($section->type === 'peluang-kerja-farmasi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section_type']) || $data['section_type'] !== 'peluang-kerja-farmasi') continue;
+    @endphp
+    @include('admin.pages.farmasi.peluang-kerja', ['content' => $data])
+    @endif
+    {{-- ================= END FARMASI ================= --}}
+
+    {{-- PROGRAM STUDI GIZI --}}
+    @include('admin.pages.gizi.hero', ['section' => $section])
+
+    @if ($section->type === 'profil_prodi_gizi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section_type']) || $data['section_type'] !== 'profil_prodi_gizi') continue;
+    @endphp
+    @include('admin.pages.gizi.profile', ['content' => $data])
+    @endif
+    @if ($section->type === 'visi-misi-gizi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'visi-misi-gizi') continue;
+    @endphp
+    @include('admin.pages.gizi.visi-misi', ['content' => $data])
+    @endif
+    @if ($section->type === 'peluang-kerja-gizi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section_type']) || $data['section_type'] !== 'peluang-kerja-gizi') continue;
+    @endphp
+    @include('admin.pages.gizi.peluang-kerja', ['content' => $data])
+    @endif
+
+
     {{-- ================= FEATURE ================= --}}
     @if ($section->type === 'feature')
     <section class="py-16 bg-gray-100">
