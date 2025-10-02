@@ -52,6 +52,6 @@ class Pages extends Model
      */
     public function meta()
     {
-        return $this->hasOne(MetaSettings::class, 'pages_id');
+        return $this->morphOne(MetaSettings::class, 'seoable');
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Pages;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 use App\Models\MetaSettings;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -30,12 +31,13 @@ class PagesController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255|unique:pages,title',
             'type' => 'required|in:standard,modular',
+            'slug' => 'nullable|string|max:255|unique:pages,slug',
             'content' => 'nullable|string',
             'is_published' => 'required|boolean',
         ]);
 
         // Slug dibuat otomatis dari title
-        $validated['slug'] = Str::slug($request->title);
+        // $validated['slug'] = Str::slug($request->title);
 
         Pages::create($validated);
 
@@ -52,12 +54,13 @@ class PagesController extends Controller
         // Validasi disederhanakan, hanya untuk field Page
         $validated = $request->validate([
             'title' => 'required|string|max:255|unique:pages,title,' . $page->id,
+            'slug' => 'nullable|string|max:255|unique:pages,slug,' . $page->id,
             'type' => 'required|in:standard,modular',
             'content' => 'nullable|string',
             'is_published' => 'required|boolean',
         ]);
 
-        $validated['slug'] = Str::slug($request->title);
+        // $validated['slug'] = Str::slug($request->title);
 
         $page->update($validated);
 
@@ -103,18 +106,21 @@ class PagesController extends Controller
                     }
                     return $section;
                 });
+            $programStudis = ProgramStudi::all();
 
             return view('admin.pages.modular', [
                 'page' => $page,
                 'sections' => $sections,
                 'menus' => $menus,
                 'meta' => $meta,
+                'programStudis' => $programStudis,
             ]);
         }
 
         return view('admin.pages.standard', [
             'page' => $page,
             'menus' => $menus,
+            'meta' => $meta,
         ]);
     }
 }

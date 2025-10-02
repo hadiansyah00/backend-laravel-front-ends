@@ -31,7 +31,12 @@
 
             </select>
         </div>
-
+        <div class="mb-4">
+            <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Slug</label>
+            <input type="text" name="slug" value="{{ old('slug', $menu->slug ?? '') }}"
+                class="w-full px-3 py-2 border rounded dark:bg-gray-700 dark:text-white">
+            <p class="text-xs text-gray-500">Slug ini akan digunakan untuk URL menu</p>
+        </div>
         {{-- URL (Hanya tampil jika tipe 'link') --}}
         <div x-show="type === 'link'" x-cloak>
             <label for="url" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">URL Manual</label>

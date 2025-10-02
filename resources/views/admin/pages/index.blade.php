@@ -64,7 +64,8 @@
                                     </a>
                                     @endif
                                     {{-- [BARU] Tombol Lihat dengan Ikon Mata --}}
-                                    <a href="{{ route('admin.meta.edit', $page) }}" title="Lihat Halaman"
+                                    <a href="{{ route('admin.seo.edit', ['type' => 'pages', 'id' => $page->id]) }}"
+                                        title="SEO Halaman"
                                         class="flex items-center px-3 py-1 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

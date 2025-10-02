@@ -13,7 +13,6 @@ class MetaSettings extends Model
     protected $table = 'meta_settings';
 
     protected $fillable = [
-        'pages_id',
         'meta_description',
         'meta_keywords',
         'robots',
@@ -47,7 +46,10 @@ class MetaSettings extends Model
      * Scope: Get meta default
      */
 
-
+    public function seoable()
+    {
+        return $this->morphTo();
+    }
     public function scopeDefault($query)
     {
         return $query->whereNull('pages_id'); // default meta kalau tidak terkait page

@@ -40,6 +40,7 @@ class MenuController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'icon_svg' => 'nullable|string',
+            'slug' => 'nullable|string|max:255|unique:menus,slug',
             'parent_id' => 'nullable|exists:menus,id',
             'url' => 'nullable|url',
             'type' => 'required|in:page,link',
@@ -48,7 +49,7 @@ class MenuController extends Controller
         ]);
 
         // Tambahkan slug secara otomatis dari nama
-        $validated['slug'] = Str::slug($request->name);
+        // $validated['slug'] = Str::slug($request->name);
 
         Menu::create($validated);
 
@@ -75,6 +76,7 @@ class MenuController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'icon_svg' => 'nullable|string',
+            'slug' => 'nullable|string|max:255|unique:menus,slug,' . $menu->id,
             'parent_id' => 'nullable|exists:menus,id',
             'url' => 'nullable|url',
             'type' => 'required|in:page,link',
@@ -82,7 +84,7 @@ class MenuController extends Controller
             'is_active' => 'required|boolean',
         ]);
 
-        $validated['slug'] = Str::slug($request->name);
+        // $validated['slug'] = Str::slug($request->name);
 
         $menu->update($validated);
 

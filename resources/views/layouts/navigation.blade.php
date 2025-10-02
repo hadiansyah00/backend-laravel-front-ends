@@ -275,6 +275,74 @@
                                 </x-dropdown-link>
                             </x-slot>
                         </x-dropdown>
+                        {{-- Dropdown Menu Kelola Berita & Artikel --}}
+                        <x-dropdown align="right" width="48">
+                            {{-- Tombol untuk membuka dropdown --}}
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
+                                    {{-- Ikon Utama Dropdown --}}
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M4 6h16M4 12h16M4 18h16" />
+                                    </svg>
+                                    <div>Berita & Artikel</div>
+
+                                    {{-- Panah Dropdown --}}
+                                    <div class="ms-1">
+                                        <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            {{-- Konten Dropdown --}}
+                            <x-slot name="content">
+                                {{-- Artikel & Berita --}}
+                                <x-dropdown-link :href="route('admin.articles.index')"
+                                    :active="request()->routeIs('admin.articles.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                                        </svg>
+                                        {{ __('Kelola Artikel & Berita') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Kategori --}}
+                                <x-dropdown-link :href="route('admin.categories.index')"
+                                    :active="request()->routeIs('admin.categories.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M4 6h16M4 12h16m-7 6h7" />
+                                        </svg>
+                                        {{ __('Kelola Kategori Artikel') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Tags --}}
+                                <x-dropdown-link :href="route('admin.tags.index')"
+                                    :active="request()->routeIs('admin.tags.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7.5 7.5l9 9m0-9l-9 9" />
+                                        </svg>
+                                        {{ __('Kelola Tags Artikel') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                     @endrole
                 </div>

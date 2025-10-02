@@ -25,7 +25,25 @@
         <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
         @enderror
     </div>
-
+    <div>
+        {{-- Slug Halaman --}}
+        <div>
+            <label for="slug" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-gray-200">
+                Slug Halaman
+            </label>
+            <input type="text" name="slug" id="slug" value="{{ old('slug', $page->slug ?? '') }}" class="block w-full p-3 text-sm rounded-lg border
+                      border-gray-300 bg-gray-50 text-gray-900
+                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                      dark:bg-gray-700 dark:border-gray-600 dark:text-white
+                      @error('slug') border-red-500 focus:ring-red-500 @enderror">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Slug ini akan digunakan untuk URL halaman. Jika dikosongkan, slug akan dibuat otomatis dari judul.
+            </p>
+            @error('slug')
+            <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+            @enderror
+        </div>
+    </div>
     {{-- Tipe Halaman --}}
     <div>
         <label for="type" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-gray-200">

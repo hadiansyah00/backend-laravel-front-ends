@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
 
-            FrontSettingsSeeder::class,
+            MetaSettingSeeder::class,
 
         ]);
     }

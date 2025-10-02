@@ -3,9 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TagsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\MetaController;
 use App\Http\Controllers\FrontPagesController;
 use App\Http\Controllers\PermissionController;
@@ -37,6 +41,9 @@ Route::prefix('pendaftaran-email')->group(function () {
     Route::get('/create', [PendaftaranEmailController::class, 'create'])->name('pendaftaran-email.create');
     Route::post('/', [PendaftaranEmailController::class, 'store'])->name('pendaftaran-email.store');
 });
+Route::get('/pendidikan/{slug}', [PagesController::class, 'show'])
+    ->name('pendidikan.show');
+
 // ================== AUTH ================== //
 // Register
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -74,6 +81,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('menus', MenuController::class);
+    Route::resource('articles', ArticleController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('tags', TagsController::class);
 
     Route::get('pendaftaran-email', [PendaftaranEmailController::class, 'index'])->name('pendaftaran-email.index');
     Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('endaftaran-email.show');
@@ -93,8 +103,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
 
 
     Route::resource('pages.sections', PageSectionController::class)->shallow();
-    Route::resource('meta', MetaController::class)->only(['index', 'edit', 'update'])
-        ->parameters(['meta' => 'page']);
+    Route::prefix('seo')->name('seo.')->group(function () {
+        Route::get('{type}/{id}/edit', [MetaController::class, 'edit'])->name('edit');
+        Route::put('{type}/{id}', [MetaController::class, 'update'])->name('update');
+    });
+
 
     // Permissions
     Route::post('permissions/store-multiple', [PermissionController::class, 'storeMultiple'])->name('permissions.storeMultiple');

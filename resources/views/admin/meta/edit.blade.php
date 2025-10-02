@@ -20,9 +20,9 @@
                                         stroke-width="2" d="m1 9 4-4-4-4" />
                                 </svg>
                                 {{-- Menampilkan judul halaman untuk konteks yang lebih baik --}}
-                                <a href="{{ route('admin.pages.edit', $page) }}"
+                                <a href="{{ route('admin.seo.edit', ['type' => 'pages', 'id' => $model->id]) }}"
                                     class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">{{
-                                    $page->title }}</a>
+                                    $model->title }}</a>
                             </div>
                         </li>
                         <li aria-current="page">
@@ -65,7 +65,8 @@
         {{-- Menggunakan max-w-5xl untuk layout form yang lebih ideal --}}
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             {{-- Menambahkan id dan Alpine.js untuk state management --}}
-            <form id="edit-meta-form" method="POST" action="{{ route('admin.meta.update', $page->slug) }}"
+            <form id="edit-meta-form" method="POST"
+                action="{{ route('admin.seo.update', ['type' => 'pages', 'id' => $model->id]) }}"
                 enctype="multipart/form-data" x-data="{ submitting: false }"
                 @submit.prevent="submitting = true; $el.submit()">
                 @csrf
