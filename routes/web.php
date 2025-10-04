@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Article;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
@@ -27,9 +29,50 @@ use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 
 
 
+// ================== API for Frontend ================== //
+Route::get('/api/articles', function (Request $request) {
+    $query = Article::with(['category:id,name,slug']) // hanya ambil field penting
+        ->where('status', 'published');
 
+    // Filter pencarian
+    $query->when($request->filled('search'), function ($q) use ($request) {
+        $search = $request->search;
+        $q->where(function ($q2) use ($search) {
+            $q2->where('title', 'like', "%{$search}%")
+                ->orWhere('excerpt', 'like', "%{$search}%")
+                ->orWhere('content', 'like', "%{$search}%");
+        });
+    });
 
+    // Filter kategori (pakai slug kategori)
+    $query->when($request->filled('category'), function ($q) use ($request) {
+        $q->whereHas('category', function ($q2) use ($request) {
+            $q2->where('slug', $request->category);
+        });
+    });
 
+    // Filter tahun
+    $query->when($request->filled('year'), function ($q) use ($request) {
+        $q->whereYear('published_at', $request->year);
+    });
+
+    // Pagination (default 6)
+    $perPage = $request->get('per_page', 6);
+    $articles = $query->orderBy('published_at', 'desc')->paginate($perPage);
+
+    // Return JSON lebih clean
+    return response()->json([
+        'data' => $articles->items(),
+        'pagination' => [
+            'current_page' => $articles->currentPage(),
+            'last_page'    => $articles->lastPage(),
+            'per_page'     => $articles->perPage(),
+            'total'        => $articles->total(),
+            'next_page_url' => $articles->nextPageUrl(),
+            'prev_page_url' => $articles->previousPageUrl(),
+        ]
+    ]);
+});
 
 // ================== FRONTEND ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
@@ -43,6 +86,10 @@ Route::prefix('pendaftaran-email')->group(function () {
 });
 Route::get('/pendidikan/{slug}', [PagesController::class, 'show'])
     ->name('pendidikan.show');
+
+Route::get('/artikel', [BeritaController::class, 'index'])->name('berita.index');
+Route::get('/artikel/{article:slug}', [BeritaController::class, 'show'])->name('berita.show');
+Route::get('/berita-dan-artikel/filter', [BeritaController::class, 'filter'])->name('berita.filter');
 
 // ================== AUTH ================== //
 // Register

@@ -51,34 +51,31 @@ class ArticleController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
-            'tags' => 'nullable|string', // ubah jadi string
+            'tags' => 'nullable|string', // ← Tagify kirim string, bukan array
         ]);
 
-        if (!$validated['slug']) {
+        if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
         }
 
         if ($request->hasFile('thumbnail')) {
-            $path = $request->file('thumbnail')->store('thumbnails', 'public');
-            $validated['thumbnail'] = $path;
-        } else {
-            // pastikan kita tidak menimpa kolom thumbnail ketika tidak ada upload
-            unset($validated['thumbnail']);
+            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
         }
-
 
         $article = Article::create($validated);
 
-        // proses tags
-        if ($request->filled('tags')) {
-            $tagsInput = explode(',', $request->tags);
-            $tagIds = [];
-            foreach ($tagsInput as $tagName) {
-                $tag = Tags::firstOrCreate(['name' => trim($tagName)]);
-                $tagIds[] = $tag->id;
-            }
-            $article->tags()->sync($tagIds);
-        }
+        // Proses tags
+        $tags = collect(explode(',', $request->tags))
+            ->map(fn($t) => trim($t))
+            ->filter()
+            ->map(function ($tagName) {
+                return Tags::firstOrCreate(
+                    ['slug' => Str::slug($tagName)],
+                    ['name' => $tagName]
+                )->id;
+            })->toArray();
+
+        $article->tags()->sync($tags);
 
         return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil dibuat');
     }
@@ -109,41 +106,52 @@ class ArticleController extends Controller
     public function update(Request $request, Article $article)
     {
         $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:articles,slug,' . $article->id,
-            'excerpt' => 'nullable|string',
-            'content' => 'required|string',
-            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:draft,published',
-            'published_at' => 'nullable|date',
-            'tags' => 'nullable|string', // ubah jadi string
+            'category_id'   => 'required|exists:categories,id',
+            'title'         => 'required|string|max:255',
+            'slug'          => 'nullable|string|max:255|unique:articles,slug,' . $article->id,
+            'excerpt'       => 'nullable|string',
+            'content'       => 'required|string',
+            'thumbnail'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'status'        => 'required|in:draft,published',
+            'published_at'  => 'nullable|date',
+            'tags'          => 'nullable|string', // hasil dari Tagify (comma separated)
         ]);
 
-        if (!$validated['slug']) {
-            $validated['slug'] = Str::slug($validated['title']);
-        }
+        // Slug otomatis kalau kosong
+        $validated['slug'] = $validated['slug'] ?: Str::slug($validated['title']);
 
+        // Upload thumbnail jika ada
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
         }
 
+        // Update artikel
         $article->update($validated);
 
-        // proses tags
+        // === Proses Tags ===
+        $tagIds = [];
         if ($request->filled('tags')) {
-            $tagsInput = explode(',', $request->tags);
-            $tagIds = [];
+            $tagsInput = array_filter(array_map('trim', explode(',', $request->tags)));
+
             foreach ($tagsInput as $tagName) {
-                $tag = Tags::firstOrCreate(['name' => trim($tagName)]);
+                $slug = Str::slug($tagName);
+
+                // pastikan slug unik
+                $tag = Tags::firstOrCreate(
+                    ['slug' => $slug],
+                    ['name' => $tagName]
+                );
+
                 $tagIds[] = $tag->id;
             }
-            $article->tags()->sync($tagIds);
-        } else {
-            $article->tags()->sync([]); // kosongkan kalau tidak ada tags
         }
 
-        return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil diperbarui');
+        // Sync tags (kosong kalau tidak ada tags)
+        $article->tags()->sync($tagIds);
+
+        return redirect()
+            ->route('admin.articles.index')
+            ->with('success', 'Artikel berhasil diperbarui');
     }
 
 

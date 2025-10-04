@@ -65,16 +65,22 @@
         {{-- Menggunakan max-w-5xl untuk layout form yang lebih ideal --}}
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             {{-- Menambahkan id dan Alpine.js untuk state management --}}
-            <form id="edit-meta-form" method="POST"
-                action="{{ route('admin.seo.update', ['type' => 'pages', 'id' => $model->id]) }}"
-                enctype="multipart/form-data" x-data="{ submitting: false }"
-                @submit.prevent="submitting = true; $el.submit()">
-                @csrf
-                @method('PUT')
+            <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+                {{-- Menambahkan id dan Alpine.js untuk state management --}}
+                <form id="edit-meta-form" method="POST"
+                    action="{{ route('admin.seo.update', ['type' => $type, 'id' => $model->id]) }}"
+                    enctype="multipart/form-data" x-data="{ submitting: false }" @submit="submitting = true">
+                    @csrf
+                    @method('PUT')
 
-                {{-- Memuat file form partial --}}
-                @include('admin.meta._form', ['meta' => $meta])
-            </form>
+                    @include('admin.meta._form', ['meta' => $meta])
+
+                    <button type="submit" x-bind:disabled="submitting">
+                        <span x-show="!submitting">Simpan</span>
+                        <span x-show="submitting">Menyimpan...</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
     @vite(['resources/js/ckeditor.js'])

@@ -66,7 +66,7 @@
                             </td>
                             <td class="flex items-center justify-center gap-2 px-4 py-3">
                                 {{-- [BARU] Tombol Lihat dengan Ikon Mata --}}
-                                <a href="{{ route('admin.seo.edit', ['type' => 'article', 'id' => $article->id]) }}"
+                                <a href="{{ route('admin.seo.edit', ['type' => 'articles', 'id' => $article->id]) }}"
                                     title="SEO Artikel"
                                     class="flex items-center px-3 py-1 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none"

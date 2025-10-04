@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Tags;
+use App\Models\ArticleTag;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasMeta;
 
 class Article extends Model
 {
@@ -19,6 +22,9 @@ class Article extends Model
         'status',
         'published_at'
     ];
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
 
     public function category()
     {
@@ -26,16 +32,25 @@ class Article extends Model
     }
 
 
-
+    public function tags()
+    {
+        return $this->belongsToMany(Tags::class, 'article_tag', 'article_id', 'tag_id')
+            ->withTimestamps()
+            ->withPivot('is_featured');
+    }
+    public function featuredTags()
+    {
+        return $this->belongsToMany(Tags::class, 'article_tag', 'article_id', 'tag_id')
+            ->withTimestamps()
+            ->withPivot('is_featured')
+            ->wherePivot('is_featured', true);
+    }
     public function meta()
     {
         return $this->morphOne(MetaSettings::class, 'seoable');
     }
-    public function tags()
+    public function getRouteKeyName()
     {
-        return $this->belongsToMany(Tags::class, 'article_tag')
-            ->using(Article_tag::class) // pakai pivot model custom
-            ->withPivot('is_featured')
-            ->withTimestamps();
+        return 'slug'; // Beritahu Laravel untuk menggunakan kolom 'slug' untuk binding
     }
 }

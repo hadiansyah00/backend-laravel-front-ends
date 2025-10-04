@@ -53,10 +53,11 @@ class MetaController extends Controller
             'twitter_title'       => 'nullable|string|max:255',
             'twitter_description' => 'nullable|string|max:255',
             'twitter_site'        => 'nullable|string|max:50',
-            'og_image'            => 'nullable|image|max:2048',
-            'twitter_image'       => 'nullable|image|max:2048',
+            'og_image'            => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
+            'twitter_image'       => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        // Simpan file kalau ada
         if ($request->hasFile('og_image')) {
             $validated['og_image'] = $request->file('og_image')->store('seo/meta', 'public');
         }
@@ -64,6 +65,7 @@ class MetaController extends Controller
             $validated['twitter_image'] = $request->file('twitter_image')->store('seo/meta', 'public');
         }
 
+        // Gunakan relasi morphOne langsung, biar otomatis isi seoable_id + seoable_type
         $model->meta()->updateOrCreate([], $validated);
 
         return redirect()

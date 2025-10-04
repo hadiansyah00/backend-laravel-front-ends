@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasMeta;
 use App\Models\MetaSettings;
 use App\Models\PageSections;
 use Illuminate\Database\Eloquent\Model;

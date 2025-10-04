@@ -34,14 +34,18 @@
             @error('meta_description')<p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>@enderror
         </div>
 
-        {{-- Keywords --}}
+        {{-- Meta Keywords --}}
         <div class="mb-4">
-            <label for="keywords" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Keywords</label>
-            <input type="text" id="keywords" name="keywords"
+            <label for="meta_keywords" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Keywords
+            </label>
+            <input type="text" id="meta_keywords" name="meta_keywords"
                 class="block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                value="{{ old('keywords', $meta->keywords) }}" placeholder="keyword1, keyword2, keyword3">
+                value="{{ old('meta_keywords', $meta->meta_keywords) }}" placeholder="keyword1, keyword2, keyword3">
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Pisahkan setiap keyword dengan koma.</p>
-            @error('keywords')<p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>@enderror
+            @error('meta_keywords')
+            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+            @enderror
         </div>
 
         {{-- Robots --}}

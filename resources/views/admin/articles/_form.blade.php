@@ -148,11 +148,10 @@ Catatan:
                     <label for="tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
                         Tags
                     </label>
-                    <input x-ref="tagsInput" name="tags" id="tags" {{-- 'old' akan berisi string, 'selectedTags'
-                        sekarang adalah array jadi bisa di-implode --}}
-                        value="{{ old('tags', implode(',', $selectedTags)) }}" {{-- @json sekarang akan bekerja dengan
-                        benar karena $availableTags adalah Collection/Array --}} data-whitelist='@json($availableTags)'
-                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <input x-ref="tagsInput" name="tags" id="tags"
+                        value="{{ old('tags', $selectedTags ? implode(',', $selectedTags) : '') }}"
+                        data-whitelist="{{ $availableTags }}"
+                        class="block w-full p-3 text-sm text-gray-900 border rounded-lg" />
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ketik untuk menambah tag baru atau pilih
                         dari
                         daftar. Tekan enter atau koma untuk konfirmasi.</p>
