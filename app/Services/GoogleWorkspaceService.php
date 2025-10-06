@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Services;
 
-use Google\Service\Directory;
 use Google\Client;
+use Illuminate\Support\Facades\Crypt;
+use Google\Service\Directory\User as GoogleUser;
 
 class GoogleWorkspaceService
 {
@@ -23,13 +25,16 @@ class GoogleWorkspaceService
 
     public function createUser($pendaftaran)
     {
-        $user = new Directory\User([
+        // decrypt password dari database
+        $password = Crypt::decryptString($pendaftaran->password);
+
+        $user = new GoogleUser([
             'primaryEmail' => $pendaftaran->email,
             'name' => [
                 'givenName'  => $pendaftaran->first_name,
                 'familyName' => $pendaftaran->last_name,
             ],
-            'password' => 'PasswordAwal123!', // bisa diganti random generator
+            'password' => $password,
         ]);
 
         return $this->service->users->insert($user);

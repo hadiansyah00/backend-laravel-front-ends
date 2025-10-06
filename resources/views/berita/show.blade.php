@@ -27,9 +27,9 @@
 
                 {{-- Kolom Kiri: Judul dan Meta Info --}}
                 <div class="text-white lg:pr-12">
-                    <h1 class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                    <h2 class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
                         {{ $article->title }}
-                    </h1>
+                    </h2>
 
                     <div class="flex flex-wrap items-center mt-6 text-sm text-orange-100">
                         <div class="flex items-center mr-6">

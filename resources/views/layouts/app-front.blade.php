@@ -5,7 +5,7 @@
     @include('front-pages.partials.head')
 </head>
 
-<body class="font-sans antialiased pt-24" x-data="{ loading: true }"
+<body class="pt-24 font-sans antialiased" x-data="{ loading: true }"
     x-init="window.addEventListener('load', () => { setTimeout(() => loading = false, 500) })">
 
     {{-- ======================================================= --}}
@@ -16,7 +16,7 @@
         x-transition:leave-end="opacity-0">
         {{-- Spinner div dengan transisi tambahan --}}
         <div x-show="loading"
-            class="w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"
+            class="w-12 h-12 border-4 border-orange-600 rounded-full border-t-transparent animate-spin"
             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-90">
         </div>
@@ -36,14 +36,14 @@
     {{-- == KOMPONEN CHAT TOGGLE FLOAT == --}}
     {{-- ======================================================= --}}
     @include('front-pages.partials.chat-toggle')
-
+    @vite(['resources/js/app.js','resources/js/swiper.js'])
 </body>
 {{-- Alpine.js + Intersect Plugin --}}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 
 {{-- Alpine Component (Book Carousel) --}}
-<script>
+{{-- <script>
     document.addEventListener('alpine:init', () => {
             Alpine.data('bookCarousel', () => ({
                 currentIndex: 0,
@@ -65,23 +65,9 @@
                 }
             }));
         });
-</script>
+</script> --}}
 {{-- SwiperJS --}}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-    new Swiper(".mySwiper", {
-            loop: true,
-            autoplay: { delay: 5000, disableOnInteraction: false },
-            pagination: { el: ".swiper-pagination", clickable: true },
-            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-            slidesPerView: 1,
-            spaceBetween: 20,
-            breakpoints: {
-                640: { slidesPerView: 1.2 },
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
-            }
-        });
-</script>
+
 
 </html>

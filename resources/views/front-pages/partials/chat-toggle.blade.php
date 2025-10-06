@@ -2,7 +2,8 @@
     showButton: false,
     chatOpen: false
 }" x-init="window.addEventListener('scroll', () => { showButton = (window.scrollY > 300) })"
-    @keydown.escape.window="chatOpen = false" class="fixed z-50 bottom-8 right-8">
+    @keydown.escape.window="chatOpen = false" {{-- PERUBAHAN DI SINI: menaikkan posisi dari bawah --}}
+    class="fixed z-50 bottom-24 right-8">
 
     <template x-if="showButton">
         <div x-show="showButton" x-transition:enter="transition ease-out duration-300"

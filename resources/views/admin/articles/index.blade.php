@@ -48,9 +48,13 @@
                                 {{ $article->category->name ?? '-' }}
                             </td>
                             <td class="px-4 py-3">
-                                @foreach($article->tags as $tag)
-                                <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded">{{ $tag->name }}</span>
-                                @endforeach
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($article->tags as $tag)
+                                    <span class="px-2 py-1 text-xs text-white bg-orange-500 rounded">
+                                        {{ $tag->name }}
+                                    </span>
+                                    @endforeach
+                                </div>
                             </td>
                             <td class="px-4 py-3">
                                 @if($article->status === 'published')

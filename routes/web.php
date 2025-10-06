@@ -30,37 +30,38 @@ use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 
 
 // ================== API for Frontend ================== //
+
+
+
+
 Route::get('/api/articles', function (Request $request) {
-    $query = Article::with(['category:id,name,slug']) // hanya ambil field penting
-        ->where('status', 'published');
+    $query = Article::with(['category:id,name,slug'])
+        ->where('status', 'published')
+        ->latest();
 
-    // Filter pencarian
-    $query->when($request->filled('search'), function ($q) use ($request) {
-        $search = $request->search;
-        $q->where(function ($q2) use ($search) {
-            $q2->where('title', 'like', "%{$search}%")
-                ->orWhere('excerpt', 'like', "%{$search}%")
-                ->orWhere('content', 'like', "%{$search}%");
+    // Filter kategori (pakai slug)
+    if ($request->filled('category')) {
+        $category = $request->category;
+        $query->whereHas('category', function ($q) use ($category) {
+            $q->where('slug', $category);
         });
-    });
-
-    // Filter kategori (pakai slug kategori)
-    $query->when($request->filled('category'), function ($q) use ($request) {
-        $q->whereHas('category', function ($q2) use ($request) {
-            $q2->where('slug', $request->category);
-        });
-    });
+    }
 
     // Filter tahun
-    $query->when($request->filled('year'), function ($q) use ($request) {
-        $q->whereYear('published_at', $request->year);
-    });
+    if ($request->filled('year')) {
+        $query->whereYear('published_at', $request->year);
+    }
 
-    // Pagination (default 6)
-    $perPage = $request->get('per_page', 6);
-    $articles = $query->orderBy('published_at', 'desc')->paginate($perPage);
+    // Filter pencarian
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->search . '%')
+                ->orWhere('excerpt', 'like', '%' . $request->search . '%');
+        });
+    }
 
-    // Return JSON lebih clean
+    $articles = $query->paginate(6);
+
     return response()->json([
         'data' => $articles->items(),
         'pagination' => [

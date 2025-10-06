@@ -38,7 +38,7 @@
         {{-- Judul dan Deskripsi --}}
         <div class="max-w-3xl mt-4">
             <h1 class="text-4xl font-extrabold leading-tight md:text-5xl">
-                Berita & Informasi
+                Aktivitas & Berita Terbaru
             </h1>
             <p class="mt-2 text-lg text-orange-100 md:text-xl">
                 Informasi terbaru seputar kegiatan, akademik, dan prestasi.
@@ -53,12 +53,12 @@
         <select id="filter-category" class="p-2 border rounded">
             <option value="">Semua Kategori</option>
             @foreach ($categories as $category)
-            <option value="{{ $category->id }}">{{ $category->name }}</option>
+            <option value="{{ $category->slug }}">{{ $category->name }}</option>
             @endforeach
         </select>
 
         <select id="filter-year" class="p-2 border rounded">
-            <option value="">Semua Tahun</option>
+            <option value="">Tahun</option>
             @foreach (range(date('Y'), 2015) as $year)
             <option value="{{ $year }}">{{ $year }}</option>
             @endforeach
@@ -88,9 +88,9 @@
                         <div class="relative">
                             <input type="search" name="search" value="{{ request('search') }}"
                                 placeholder="Ketikkan kata kunci..."
-                                class="block w-full p-3 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                                class="block w-full p-3 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
                             <button type="submit"
-                                class="absolute top-0 bottom-0 right-0 p-3 text-white bg-green-700 rounded-r-lg hover:bg-green-800">
+                                class="absolute top-0 bottom-0 right-0 p-3 text-white bg-orange-700 rounded-r-lg hover:bg-orange-800">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
@@ -102,14 +102,30 @@
 
                 {{-- Widget Kategori --}}
                 <div class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-                    <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Kategori</h3>
-                    <ul class="space-y-2">
+                    <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                        Kategori
+                    </h3>
+
+                    <ul id="category-list" class="space-y-2">
+                        {{-- Semua kategori --}}
+                        <li>
+                            <a href="#" data-id=""
+                                class="flex items-center justify-between px-3 py-2 text-gray-700 transition-colors duration-200 rounded-lg category-link dark:text-gray-300 hover:bg-orange-50 hover:text-orange-700 dark:hover:bg-orange-900/20 dark:hover:text-orange-400">
+                                Semua Kategori
+                                <span class="text-sm text-gray-400 category-count"></span>
+                            </a>
+                        </li>
+
+                        {{-- Daftar kategori --}}
                         @foreach ($categories as $category)
                         <li>
-                            <a href="#"
-                                class="flex justify-between text-gray-600 hover:text-green-700 dark:text-gray-300 dark:hover:text-green-400">
-                                <span>{{ $category->name }}</span>
-                                <span>({{ $category->articles_count }})</span>
+                            <a href="#" data-id="{{ $category->slug }}"
+                                class="flex items-center justify-between px-3 py-2 text-gray-700 transition-colors duration-200 rounded-lg category-link dark:text-gray-300 hover:bg-orange-50 hover:text-orange-700 dark:hover:bg-orange-900/20 dark:hover:text-orange-400">
+                                {{ $category->name }}
+                                @if(isset($category->articles_count))
+                                <span class="text-sm text-gray-400 category-count">{{ $category->articles_count
+                                    }}</span>
+                                @endif
                             </a>
                         </li>
                         @endforeach
@@ -126,7 +142,7 @@
                                 class="object-cover w-16 h-16 mr-4 rounded-lg" alt="{{ $latest->title }}">
                             <div>
                                 <a href="{{ route('berita.show', $latest->slug) }}"
-                                    class="font-semibold text-gray-800 hover:text-green-700 dark:text-white dark:hover:text-green-400">
+                                    class="font-semibold text-gray-800 hover:text-orange-700 dark:text-white dark:hover:text-orange-400">
                                     {{ Str::limit($latest->title, 50) }}
                                 </a>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">

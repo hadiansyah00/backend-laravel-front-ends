@@ -29,8 +29,8 @@
         init() {
             this.startAutoplay();
         }
-    }" x-init="init()" class="relative w-full py-12 bg-white pt-[104px] mt-10">
-    <div class="relative w-full mt-auto overflow-hidden ">
+    }" x-init="init()" class="relative w-full py-12 pt-10 bg-white">
+    <div class="relative w-full mt-5 overflow-hidden ">
         <div class="flex transition-transform duration-500 ease-in-out"
             :style="`transform: translateX(-${(activeSlide - 1) * 100}%)`">
             @foreach($sliders as $i => $slider)

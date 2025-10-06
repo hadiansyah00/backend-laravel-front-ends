@@ -114,13 +114,13 @@
     {{-- == KOMPONEN CHAT TOGGLE FLOAT == --}}
     {{-- ======================================================= --}}
     @include('front-pages.partials.chat-toggle')
-    @vite(['resources/js/app.js'])
+    @vite(['resources/js/app.js','resources/js/berita-filter.js','resources/js/swiper.js'])
 </body>
 {{-- Alpine.js + Intersect Plugin --}}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 {{-- Alpine Component (Book Carousel) --}}
-<script>
+{{-- <script>
     document.addEventListener('alpine:init', () => {
             Alpine.data('bookCarousel', () => ({
                 currentIndex: 0,
@@ -142,124 +142,9 @@
                 }
             }));
         });
-</script>
+</script> --}}
 {{-- SwiperJS --}}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-    new Swiper(".mySwiper", {
-            loop: true,
-            autoplay: { delay: 5000, disableOnInteraction: false },
-            pagination: { el: ".swiper-pagination", clickable: true },
-            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-            slidesPerView: 1,
-            spaceBetween: 20,
-            breakpoints: {
-                640: { slidesPerView: 1.2 },
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
-            }
-        });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-    const articlesContainer = document.getElementById("articlesContainer");
-    const paginationLinks = document.getElementById("paginationLinks");
-    const filterCategory = document.getElementById("filter-category");
-    const filterYear = document.getElementById("filter-year");
-    const searchForm = document.getElementById("search-form");
-
-    function fetchArticles(page = 1) {
-    const category = filterCategory?.value || "";
-    const year = filterYear?.value || "";
-    const search = searchForm?.querySelector("input[name='search']").value || "";
-
-    let url = `/api/articles?page=${page}`;
-    if (category) url += `&category=${category}`;
-    if (year) url += `&year=${year}`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-
-    fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
-    .then(response => response.json())
-    .then(res => {
-    const articles = res.data;
-    const pagination = res.pagination;
-
-    // Kosongkan container
-    articlesContainer.innerHTML = "";
-
-    // Render artikel
-    // Render artikel
-    if (articles.length === 0) {
-    articlesContainer.innerHTML = `<p class="col-span-3 text-center text-gray-500">Tidak ada artikel ditemukan.</p>`;
-    } else {
-    // Kosongkan container sebelum mengisi dengan data baru
-    articlesContainer.innerHTML = '';
-
-    articles.forEach(article => {
-    // Template kartu yang sudah ditingkatkan
-    const card = `
-    <a href="/berita/${article.slug}" class="block group">
-        <div class="flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-xl hover:-translate-y-1">
-
-            <div class="overflow-hidden">
-                <img src="/storage/${article.thumbnail}" alt="${article.title}"
-                    class="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-105">
-            </div>
-
-            <div class="flex flex-col flex-grow p-4">
-                <span
-                    class="inline-block px-2 py-1 mb-3 text-xs font-semibold tracking-wide text-blue-800 uppercase bg-blue-100 rounded-full w-fit">
-                    ${article.category?.name ?? 'Uncategorized'}
-                </span>
-
-                <h2 class="text-lg font-bold text-gray-800 group-hover:text-blue-600">
-                    ${article.title}
-                </h2>
-
-                <p class="mt-2 text-sm text-gray-600 line-clamp-3">
-                    ${article.excerpt}
-                </p>
-
-                <div class="pt-4 mt-auto text-xs text-gray-500">
-                    <span>Diterbitkan pada ${new Date(article.published_at).toLocaleDateString('id-ID', { day: 'numeric',
-                        month: 'long', year: 'numeric' })}</span>
-                </div>
-            </div>
-        </div>
-    </a>
-    `;
-    articlesContainer.insertAdjacentHTML("beforeend", card);
-    });
-    }
-    // Kosongkan pagination
-    paginationLinks.innerHTML = "";
-
-    // Render pagination buttons
-    for (let pageNum = 1; pageNum <= pagination.last_page; pageNum++) { const btn=document.createElement("button");
-        btn.innerText=pageNum; btn.className=`px-3 py-1 rounded ${ pageNum===pagination.current_page
-        ? 'bg-green-600 text-white' : 'bg-gray-200 hover:bg-gray-300' }`; btn.addEventListener("click", ()=>
-        fetchArticles(pageNum));
-        paginationLinks.appendChild(btn);
-        }
-        })
-        .catch(error => console.error("Error fetching articles:", error));
-        }
-
-        // Event listener
-        if (filterCategory) filterCategory.addEventListener("change", () => fetchArticles());
-        if (filterYear) filterYear.addEventListener("change", () => fetchArticles());
-
-        if (searchForm) {
-        searchForm.addEventListener("submit", (e) => {
-        e.preventDefault(); // biar ga reload page
-        fetchArticles();
-        });
-        }
-
-        // Load awal
-        fetchArticles();
-        });
-</script>
 
 
 </html>
