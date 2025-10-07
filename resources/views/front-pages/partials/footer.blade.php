@@ -21,7 +21,7 @@
             'alt' => 'Rumah Sakit AZRA Bogor'
             ],
             [
-            'logo' => asset('assets/img/icon/sdg-bw.webp'),
+            'logo' => asset('assets/img/icon/logo-tagline-sbh.png'),
             'alt' => 'Sustainable Development Goals'
             ],
             ];
