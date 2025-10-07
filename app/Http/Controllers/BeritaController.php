@@ -38,8 +38,12 @@ class BeritaController extends Controller
         $articles = $query->orderBy('published_at', 'desc')->paginate(6);
 
         $categories = Category::all();
-        $latestArticles = Article::latest()->take(5)->get(); // 🔑 bukan paginate
+        $latestArticles = Article::where('status', 'published')
+            ->latest('published_at')
+            ->take(5)
+            ->get();
         $meta = MetaSettings::default()->first();
+
 
         // ✅ untuk ajax return JSON (supaya cocok sama JS fetch)
         if ($request->ajax()) {

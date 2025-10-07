@@ -37,7 +37,8 @@ use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 Route::get('/api/articles', function (Request $request) {
     $query = Article::with(['category:id,name,slug'])
         ->where('status', 'published')
-        ->latest();
+        ->latest('published_at');
+
 
     // Filter kategori (pakai slug)
     if ($request->filled('category')) {

@@ -2,7 +2,7 @@
     <div class="px-6 mx-auto max-w-7xl lg:px-8">
         <div class="flex items-center justify-between pb-6 mb-8 border-b border-gray-200">
             <h2 class="text-3xl font-bold text-orange-700">Berita & Informasi</h2>
-            <a href="{{ url('/berita') }}"
+            <a href="{{ url('/artikel') }}"
                 class="px-4 py-2 text-sm font-semibold text-orange-700 transition-colors bg-orange-100 rounded-full hover:bg-orange-200">
                 Lihat Semua
             </a>

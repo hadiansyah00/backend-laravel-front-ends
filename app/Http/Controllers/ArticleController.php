@@ -15,6 +15,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::with(['category', 'tags'])->latest()->paginate(10);
+        $articles = $articles->sortByDesc('published_at');
         return view('admin.articles.index', compact('articles'));
     }
 
