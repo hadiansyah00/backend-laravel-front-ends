@@ -3,8 +3,9 @@
 
     {{-- Bagian Foto Dosen --}}
     <div class="h-56">
-        <img src="{{ asset($dosen['photo']) }}" alt="{{ $dosen['name'] }}" class="object-cover w-full h-full"
-            loading="lazy">
+        <img src="{{ asset($dosen['photo']) }}"
+            onerror="this.onerror=null;this.src='{{ asset('assets/img/defaults/default-avatar.png') }}';"
+            alt="{{ $dosen['name'] }}" class="object-cover w-full h-full" loading="lazy">
     </div>
 
     {{-- Bagian Informasi Teks --}}

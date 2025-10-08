@@ -22,7 +22,7 @@
 
                 {{-- Wadah Ikon --}}
                 <div class="flex-shrink-0">
-                    <span class="inline-flex items-center justify-center w-12 h-12 bg-indigo-100 rounded-xl">
+                    <span class="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
                         {{--
                         CATATAN: Anda perlu menambahkan key 'icon_svg' pada data Anda.
                         Contoh: $item['icon_svg'] = '<svg>...</svg>';
@@ -32,7 +32,7 @@
                         {!! $item['icon_svg'] !!} {{-- Pastikan SVG ini aman (sanitized) --}}
                         @else
                         {{-- Ikon Placeholder --}}
-                        <svg class="text-indigo-600 w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        <svg class="text-orange-600 w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />

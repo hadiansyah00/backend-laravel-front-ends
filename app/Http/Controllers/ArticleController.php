@@ -9,13 +9,26 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::with(['category', 'tags'])->latest()->paginate(10);
-        $articles = $articles->sortByDesc('published_at');
+        $articles = Article::with(['category', 'tags'])
+            ->latest()
+            ->paginate(10);
+
+        $sorted = $articles->getCollection()->sortByDesc('published_at');
+
+        $articles = new LengthAwarePaginator(
+            $sorted,
+            $articles->total(),
+            $articles->perPage(),
+            $articles->currentPage(),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('admin.articles.index', compact('articles'));
     }
 

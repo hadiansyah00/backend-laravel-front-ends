@@ -59,7 +59,7 @@
                 {{-- Kolom Data Kaprodi & Sambutan --}}
                 <div class="p-8 md:col-span-2 md:p-10">
                     <div>
-                        <p class="text-base font-semibold text-indigo-600">
+                        <p class="text-base font-semibold text-orange-600">
                             {{ $content['head_of_program']['job_title'] ?? 'Ketua Program Studi' }}
                         </p>
                         <h3 class="mt-1 text-2xl font-bold text-gray-900">

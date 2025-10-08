@@ -162,7 +162,17 @@
     @include('admin.pages.gizi.peluang-kerja', ['content' => $data])
     @endif
 
+    {{-- ================= END PROGRAM STUDI GIZI ================= --}}
 
+    {{-- ================= STRUKTUR ORGANISASI ================= --}}
+    @include('admin.pages.struktur-organisasi.hero-organisasi', ['section' => $section])
+    @if ($section->type === 'struktur-organisasi')
+    @php
+    $data = $section->decoded_content;
+    if (empty($data['section']) || $data['section'] !== 'struktur-organisasi') continue;
+    @endphp
+    @include('admin.pages.struktur-organisasi.struktur-organisasi',['data' => $data])
+    @endif
     {{-- ================= FEATURE ================= --}}
     @if ($section->type === 'feature')
     <section class="py-16 bg-gray-100">

@@ -86,7 +86,8 @@
                 @foreach ($data['tenaga_kependidikan'] as $staff)
                 <div class="text-center">
                     <img src="{{ asset($staff['photo']) }}" alt="{{ $staff['name'] }}"
-                        class="object-cover w-40 h-40 mx-auto border-4 rounded-full shadow-lg border-white/50">
+                        class="object-cover w-40 h-40 mx-auto border-4 rounded-full shadow-lg border-white/50"
+                        onerror="this.onerror=null;this.src='{{ asset('assets/img/defaults/default-avatar.png') }}';">
                     <h3 class="mt-4 text-xl font-bold text-gray-800">{{ $staff['name'] }}</h3>
                     <p class="font-semibold text-orange-800">{{ $staff['position'] }}</p>
                 </div>

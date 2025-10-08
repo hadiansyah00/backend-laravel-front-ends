@@ -49,20 +49,40 @@
 <div class="container px-4 py-16 mx-auto sm:px-6 lg:px-8">
 
     {{-- FILTER BAR --}}
-    <div class="flex flex-wrap gap-4 mb-8">
-        <select id="filter-category" class="p-2 border rounded">
-            <option value="">Semua Kategori</option>
-            @foreach ($categories as $category)
-            <option value="{{ $category->slug }}">{{ $category->name }}</option>
-            @endforeach
-        </select>
+    <div class="flex flex-col gap-4 mb-8 md:flex-row md:items-center">
 
-        <select id="filter-year" class="p-2 border rounded">
-            <option value="">Tahun</option>
-            @foreach (range(date('Y'), 2015) as $year)
-            <option value="{{ $year }}">{{ $year }}</option>
-            @endforeach
-        </select>
+        <div class="relative w-full md:w-56">
+            <select id="filter-category"
+                class="block w-full px-4 py-2 pr-8 leading-tight text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Semua Kategori</option>
+                @foreach ($categories as $category)
+                <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="relative w-full md:w-40">
+            <select id="filter-year"
+                class="block w-full px-4 py-2 pr-8 leading-tight text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Tahun</option>
+                @foreach (range(date('Y'), 2015) as $year)
+                <option value="{{ $year }}">{{ $year }}</option>
+                @endforeach
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+            </div>
+        </div>
+
     </div>
 
     {{-- GRID UTAMA --}}
