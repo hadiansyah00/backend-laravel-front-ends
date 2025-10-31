@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-2">
             <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                 Kelola Artikel dan Berita
             </h2>
@@ -17,12 +17,60 @@
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            {{-- Notifikasi Sukses --}}
             @if (session('success'))
             <div class="p-4 mb-4 text-sm text-green-800 bg-green-100 rounded-lg dark:bg-gray-800 dark:text-green-400"
                 role="alert">
                 {{ session('success') }}
             </div>
             @endif
+
+            {{-- Filter & Search --}}
+            <div class="p-4 mb-4 bg-white rounded-lg shadow dark:bg-gray-800">
+                <form method="GET" action="{{ route('admin.articles.index') }}" class="flex flex-wrap items-end gap-3">
+                    {{-- Cari Judul --}}
+                    <div class="flex-1 min-w-[200px]">
+                        <label for="search" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Cari Judul
+                        </label>
+                        <input type="text" name="search" id="search" value="{{ request('search') }}"
+                            placeholder="Masukkan judul artikel..."
+                            class="w-full px-3 py-2 text-sm border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring focus:ring-blue-200 focus:border-blue-400" />
+                    </div>
+
+                    {{-- Filter Tanggal Dari --}}
+                    <div>
+                        <label for="start_date" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Dari Tanggal
+                        </label>
+                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}"
+                            class="px-3 py-2 text-sm border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring focus:ring-blue-200 focus:border-blue-400" />
+                    </div>
+
+                    {{-- Filter Tanggal Sampai --}}
+                    <div>
+                        <label for="end_date" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Sampai Tanggal
+                        </label>
+                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}"
+                            class="px-3 py-2 text-sm border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring focus:ring-blue-200 focus:border-blue-400" />
+                    </div>
+
+                    {{-- Tombol --}}
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded hover:bg-blue-600">
+                            Filter
+                        </button>
+                        <a href="{{ route('admin.articles.index') }}"
+                            class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded hover:bg-gray-300 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                            Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            {{-- Tabel Artikel --}}
             <div class="relative overflow-x-auto bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -39,14 +87,12 @@
                     <tbody>
                         @forelse ($articles as $index => $article)
                         <tr class="border-b hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600">
-                            <td class="px-4 py-3">{{ $loop->iteration +
-                                ($articles->currentPage()-1)*$articles->perPage() }}</td>
+                            <td class="px-4 py-3">{{ $loop->iteration + ($articles->currentPage() - 1) *
+                                $articles->perPage() }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $article->title }}
                             </td>
-                            <td class="px-4 py-3">
-                                {{ $article->category->name ?? '-' }}
-                            </td>
+                            <td class="px-4 py-3">{{ $article->category->name ?? '-' }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap gap-2">
                                     @foreach($article->tags as $tag)
@@ -69,7 +115,6 @@
                                 {{ $article->published_at ? $article->published_at->format('d M Y') : '-' }}
                             </td>
                             <td class="flex items-center justify-center gap-2 px-4 py-3">
-                                {{-- [BARU] Tombol Lihat dengan Ikon Mata --}}
                                 <a href="{{ route('admin.seo.edit', ['type' => 'articles', 'id' => $article->id]) }}"
                                     title="SEO Artikel"
                                     class="flex items-center px-3 py-1 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500">
@@ -107,6 +152,8 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Pagination --}}
             <div class="mt-4">
                 {{ $articles->links() }}
             </div>

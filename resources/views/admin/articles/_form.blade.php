@@ -1,11 +1,3 @@
-{{--
-Catatan:
-1. Pastikan Anda sudah menginstall Alpine.js di proyek Laravel Anda.
-- npm install alpinejs
-- import 'alpinejs' di resources/js/app.js Anda.
-2. Kode JavaScript untuk generate slug ada di bagian bawah.
---}}
-
 <div x-data="{
         title: '{{ old('title', $article->title ?? '') }}',
         slug: '{{ old('slug', $article->slug ?? '') }}',
@@ -13,9 +5,10 @@ Catatan:
         imagePreview: '{{ !empty($article->thumbnail) ? asset('storage/' . $article->thumbnail) : '' }}'
     }" x-init="$watch('title', value => { slug = generateSlug(value) })" class="grid grid-cols-1 gap-8 lg:grid-cols-3">
 
-    {{-- Kolom Utama --}}
+    {{-- ========================== --}}
+    {{-- KOLOM UTAMA --}}
+    {{-- ========================== --}}
     <div class="space-y-8 lg:col-span-2">
-        {{-- Kartu Konten Utama --}}
         <div class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <div class="space-y-6">
                 {{-- Error Messages --}}
@@ -33,53 +26,208 @@ Catatan:
 
                 {{-- Judul --}}
                 <div>
-                    <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
-                        Judul Artikel
-                    </label>
+                    <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Judul
+                        Artikel</label>
                     <input type="text" name="title" id="title" x-model="title"
-                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         required>
                 </div>
 
                 {{-- Slug --}}
                 <div>
-                    <label for="slug" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
-                        Slug
-                    </label>
+                    <label for="slug"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Slug</label>
                     <input type="text" name="slug" id="slug" x-model="slug"
-                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Slug akan dibuat otomatis dari judul. Bisa
-                        diubah manual jika perlu.</p>
+                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Slug akan dibuat otomatis dari judul, tapi
+                        bisa diubah manual.</p>
                 </div>
 
                 {{-- Excerpt --}}
                 <div>
-                    <label for="excerpt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
-                        Ringkasan (Excerpt)
-                    </label>
+                    <label for="excerpt"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Ringkasan
+                        (Excerpt)</label>
                     <textarea name="excerpt" id="excerpt" rows="3"
-                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{{ old('excerpt', $article->excerpt ?? '') }}</textarea>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ringkasan singkat tentang artikel ini.</p>
+                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">{{ old('excerpt', $article->excerpt ?? '') }}</textarea>
                 </div>
 
                 {{-- Konten --}}
-                <div x-cloak>
-                    <label for="content" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-gray-200">
-                        Konten
-                    </label>
+                <div>
+                    <label for="content"
+                        class="block mb-2 text-sm font-semibold text-gray-900 dark:text-gray-200">Konten</label>
                     <textarea name="content" id="editor" rows="12"
-                        class="block w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white @error('content') border-red-500 focus:ring-red-500 @enderror">{{ old('content', $article->content ?? '') }}</textarea>
-                    @error('content')
-                    <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
-                    @enderror
+                        class="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">{{ old('content', $article->content ?? '') }}</textarea>
                 </div>
             </div>
         </div>
+
+        {{-- ========================== --}}
+        {{-- PENGATURAN SEO --}}
+        {{-- ========================== --}}
+        <div class="space-y-8">
+
+            {{-- 🧠 SEO SETTINGS --}}
+            <div class="bg-white border border-gray-100 shadow-md dark:bg-gray-800 rounded-xl dark:border-gray-700">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <i class="text-blue-500 bx bx-globe me-1"></i> Pengaturan SEO
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Atur metadata dasar agar artikel mudah ditemukan di mesin pencari (Google, Bing, dsb).
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
+                    {{-- Meta Description --}}
+                    <div class="md:col-span-2">
+                        <x-input-label for="meta_description" value="Meta Description" />
+                        <textarea name="meta_description" id="meta_description" rows="2" class="w-full form-textarea"
+                            placeholder="Deskripsi singkat artikel untuk SEO">{{ old('meta_description', $article->meta?->meta_description) }}</textarea>
+                    </div>
+
+                    {{-- Meta Keywords --}}
+                    <div>
+                        <x-input-label for="meta_keywords" value="Meta Keywords" />
+                        <input type="text" name="meta_keywords" id="meta_keywords"
+                            value="{{ old('meta_keywords', $article->meta?->meta_keywords) }}"
+                            placeholder="contoh: kesehatan, kampus, bogor" class="w-full form-input">
+                    </div>
+
+                    {{-- Robots --}}
+                    <div>
+                        <x-input-label for="robots" value="Robots" />
+                        @php
+                        $robotsOptions = ['index, follow', 'noindex, follow', 'index, nofollow', 'noindex, nofollow'];
+                        $selectedRobots = old('robots', $article->meta?->robots ?? 'index, follow');
+                        @endphp
+                        <select name="robots" id="robots" class="w-full form-select">
+                            @foreach ($robotsOptions as $opt)
+                            <option value="{{ $opt }}" {{ $selectedRobots===$opt ? 'selected' : '' }}>
+                                {{ ucfirst($opt) }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Canonical URL --}}
+                    <div class="md:col-span-2">
+                        <x-input-label for="canonical_url" value="Canonical URL" />
+                        <input type="url" name="canonical_url" id="canonical_url"
+                            placeholder="https://domainmu.com/artikel-slug"
+                            value="{{ old('canonical_url', $article->meta?->canonical_url) }}"
+                            class="w-full form-input">
+                    </div>
+                </div>
+            </div>
+
+            {{-- 🧾 OPEN GRAPH (Facebook, LinkedIn) --}}
+            <div class="bg-white border border-gray-100 shadow-md dark:bg-gray-800 rounded-xl dark:border-gray-700">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <i class="text-blue-600 bx bxl-facebook-circle me-1"></i> Open Graph (Facebook, LinkedIn)
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Informasi yang muncul ketika tautan dibagikan ke media sosial.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
+                    {{-- OG Title --}}
+                    <div>
+                        <x-input-label for="og_title" value="OG Title" />
+                        <input type="text" name="og_title" id="og_title"
+                            value="{{ old('og_title', $article->meta?->og_title) }}"
+                            placeholder="Judul saat dibagikan di sosial media" class="w-full form-input">
+                    </div>
+
+                    {{-- OG Description --}}
+                    <div>
+                        <x-input-label for="og_description" value="OG Description" />
+                        <textarea name="og_description" id="og_description" rows="2" class="w-full form-textarea"
+                            placeholder="Deskripsi singkat untuk tampilan share">{{ old('og_description', $article->meta?->og_description) }}</textarea>
+                    </div>
+
+                    {{-- OG Image --}}
+                    <div class="md:col-span-2">
+                        <x-input-label for="og_image" value="OG Image" />
+                        <input type="file" name="og_image" id="og_image" class="w-full form-file">
+
+                        @if(isset($article->meta?->og_image))
+                        <div class="mt-2">
+                            <img src="{{ asset('storage/'.$article->meta->og_image) }}"
+                                class="object-cover h-32 rounded-lg shadow-md">
+                            <p class="mt-1 text-xs text-gray-500">
+                                <a href="{{ asset('storage/'.$article->meta->og_image) }}" target="_blank"
+                                    class="text-blue-600 underline">Lihat gambar lama</a>
+                            </p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- 🐦 TWITTER CARD --}}
+            <div class="bg-white border border-gray-100 shadow-md dark:bg-gray-800 rounded-xl dark:border-gray-700">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <i class="bx bxl-twitter text-sky-500 me-1"></i> Twitter Card
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Pengaturan tampilan saat artikel dibagikan ke Twitter (X).
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
+                    <div>
+                        <x-input-label for="twitter_card" value="Twitter Card Type" />
+                        <input type="text" name="twitter_card" id="twitter_card" placeholder="summary_large_image"
+                            value="{{ old('twitter_card', $article->meta?->twitter_card) }}" class="w-full form-input">
+                    </div>
+
+                    <div>
+                        <x-input-label for="twitter_site" value="Twitter Site" />
+                        <input type="text" name="twitter_site" id="twitter_site" placeholder="@kampusbogor"
+                            value="{{ old('twitter_site', $article->meta?->twitter_site) }}" class="w-full form-input">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-input-label for="twitter_title" value="Twitter Title" />
+                        <input type="text" name="twitter_title" id="twitter_title"
+                            value="{{ old('twitter_title', $article->meta?->twitter_title) }}"
+                            class="w-full form-input">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-input-label for="twitter_description" value="Twitter Description" />
+                        <textarea name="twitter_description" id="twitter_description" rows="2"
+                            class="w-full form-textarea">{{ old('twitter_description', $article->meta?->twitter_description) }}</textarea>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-input-label for="twitter_image" value="Twitter Image" />
+                        <input type="file" name="twitter_image" id="twitter_image" class="w-full form-file">
+                        @if(isset($article->meta?->twitter_image))
+                        <div class="mt-2">
+                            <img src="{{ asset('storage/'.$article->meta->twitter_image) }}"
+                                class="object-cover h-32 rounded-lg shadow-md">
+                            <p class="mt-1 text-xs text-gray-500">
+                                <a href="{{ asset('storage/'.$article->meta->twitter_image) }}" target="_blank"
+                                    class="text-blue-600 underline">Lihat gambar lama</a>
+                            </p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    {{-- Sidebar --}}
+    {{-- ========================== --}}
+    {{-- SIDEBAR --}}
+    {{-- ========================== --}}
     <div class="space-y-8 lg:col-span-1">
-        {{-- Kartu Publikasi --}}
         <div class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Publikasi</h3>
             <div class="space-y-6">
@@ -106,8 +254,6 @@ Catatan:
                 </div>
             </div>
         </div>
-
-        {{-- Kartu Kategori & Tags --}}
         {{-- Kartu Kategori & Tags --}}
         <div class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <div class="space-y-6">
@@ -131,20 +277,20 @@ Catatan:
 
                 {{-- Tags (INI BAGIAN YANG BARU) --}}
                 <div x-data="{
-                    initTagify() {
-                        let input = this.$refs.tagsInput;
-                        let tagify = new Tagify(input, {
-                            whitelist: JSON.parse(input.dataset.whitelist),
-                            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
-                            dropdown: {
-                                maxItems: 20,
-                                classname: 'tags-look', // class untuk styling dropdown
-                                enabled: 0,
-                                closeOnSelect: false
-                            }
-                        });
-                    }
-                }" x-init="initTagify()">
+                        initTagify() {
+                            let input = this.$refs.tagsInput;
+                            let tagify = new Tagify(input, {
+                                whitelist: JSON.parse(input.dataset.whitelist),
+                                originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+                                dropdown: {
+                                    maxItems: 20,
+                                    classname: 'tags-look', // class untuk styling dropdown
+                                    enabled: 0,
+                                    closeOnSelect: false
+                                }
+                            });
+                        }
+                    }" x-init="initTagify()">
                     <label for="tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
                         Tags
                     </label>
@@ -194,11 +340,11 @@ Catatan:
 
 <script>
     function generateSlug(text) {
-        return text.toString().toLowerCase()
-            .replace(/\s+/g, '-')           // Ganti spasi dengan -
-            .replace(/[^\w\-]+/g, '')       // Hapus karakter yang tidak valid
-            .replace(/\-\-+/g, '-')         // Ganti beberapa - dengan satu -
-            .replace(/^-+/, '')             // Trim - dari awal
-            .replace(/-+$/, '');            // Trim - dari akhir
-    }
+    return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+}
 </script>

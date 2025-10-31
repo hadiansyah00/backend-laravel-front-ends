@@ -13,24 +13,34 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::with(['category', 'tags'])
-            ->latest()
-            ->paginate(10);
+        $query = Article::with(['category', 'tags'])
+            ->orderBy('published_at', 'desc'); // ← urutkan dari yang paling lama
 
-        $sorted = $articles->getCollection()->sortByDesc('published_at');
+        // Filter berdasarkan judul
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
 
-        $articles = new LengthAwarePaginator(
-            $sorted,
-            $articles->total(),
-            $articles->perPage(),
-            $articles->currentPage(),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        // Filter berdasarkan rentang tanggal
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('published_at', [
+                $request->start_date . ' 00:00:00',
+                $request->end_date . ' 23:59:59',
+            ]);
+        } elseif ($request->filled('start_date')) {
+            $query->whereDate('published_at', '>=', $request->start_date);
+        } elseif ($request->filled('end_date')) {
+            $query->whereDate('published_at', '<=', $request->end_date);
+        }
+
+        $articles = $query->paginate(10)->withQueryString();
 
         return view('admin.articles.index', compact('articles'));
     }
+
+
 
     public function create()
     {
@@ -65,7 +75,23 @@ class ArticleController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
-            'tags' => 'nullable|string', // ← Tagify kirim string, bukan array
+            'tags' => 'nullable|string',
+            // SEO fields
+            'meta_description'    => 'nullable|string|max:255',
+            'meta_keywords'       => 'nullable|string|max:255',
+            'robots'              => 'nullable|string|max:50',
+            'canonical_url'       => 'nullable|url',
+            'og_title'            => 'nullable|string|max:255',
+            'og_description'      => 'nullable|string|max:255',
+            'og_url'              => 'nullable|url',
+            'og_type'             => 'nullable|string|max:50',
+            'og_site_name'        => 'nullable|string|max:255',
+            'twitter_card'        => 'nullable|string|max:50',
+            'twitter_title'       => 'nullable|string|max:255',
+            'twitter_description' => 'nullable|string|max:255',
+            'twitter_site'        => 'nullable|string|max:50',
+            'og_image'            => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'twitter_image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if (empty($validated['slug'])) {
@@ -78,7 +104,33 @@ class ArticleController extends Controller
 
         $article = Article::create($validated);
 
-        // Proses tags
+        // === SEO Section ===
+        $metaData = collect($validated)->only([
+            'meta_description',
+            'meta_keywords',
+            'robots',
+            'canonical_url',
+            'og_title',
+            'og_description',
+            'og_url',
+            'og_type',
+            'og_site_name',
+            'twitter_card',
+            'twitter_title',
+            'twitter_description',
+            'twitter_site'
+        ])->toArray();
+
+        if ($request->hasFile('og_image')) {
+            $metaData['og_image'] = $request->file('og_image')->store('seo/meta', 'public');
+        }
+        if ($request->hasFile('twitter_image')) {
+            $metaData['twitter_image'] = $request->file('twitter_image')->store('seo/meta', 'public');
+        }
+
+        $article->meta()->create($metaData);
+
+        // === Tags ===
         $tags = collect(explode(',', $request->tags))
             ->map(fn($t) => trim($t))
             ->filter()
@@ -91,7 +143,7 @@ class ArticleController extends Controller
 
         $article->tags()->sync($tags);
 
-        return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil dibuat');
+        return redirect()->route('admin.articles.index')->with('success', 'Artikel & SEO berhasil dibuat');
     }
 
 
@@ -128,45 +180,73 @@ class ArticleController extends Controller
             'thumbnail'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status'        => 'required|in:draft,published',
             'published_at'  => 'nullable|date',
-            'tags'          => 'nullable|string', // hasil dari Tagify (comma separated)
+            'tags'          => 'nullable|string',
+
+            // Meta fields
+            'meta_description'    => 'nullable|string|max:255',
+            'meta_keywords'       => 'nullable|string|max:255',
+            'robots'              => 'nullable|string|max:50',
+            'canonical_url'       => 'nullable|url',
+            'og_title'            => 'nullable|string|max:255',
+            'og_description'      => 'nullable|string|max:255',
+            'og_url'              => 'nullable|url',
+            'og_type'             => 'nullable|string|max:50',
+            'og_site_name'        => 'nullable|string|max:255',
+            'twitter_card'        => 'nullable|string|max:50',
+            'twitter_title'       => 'nullable|string|max:255',
+            'twitter_description' => 'nullable|string|max:255',
+            'twitter_site'        => 'nullable|string|max:50',
+            'og_image'            => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
+            'twitter_image'       => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Slug otomatis kalau kosong
+        // === Update artikel ===
         $validated['slug'] = $validated['slug'] ?: Str::slug($validated['title']);
-
-        // Upload thumbnail jika ada
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
         }
-
-        // Update artikel
         $article->update($validated);
 
-        // === Proses Tags ===
+        // === Tags ===
         $tagIds = [];
         if ($request->filled('tags')) {
             $tagsInput = array_filter(array_map('trim', explode(',', $request->tags)));
-
             foreach ($tagsInput as $tagName) {
-                $slug = Str::slug($tagName);
-
-                // pastikan slug unik
-                $tag = Tags::firstOrCreate(
-                    ['slug' => $slug],
-                    ['name' => $tagName]
-                );
-
+                $tag = \App\Models\Tags::firstOrCreate(['slug' => Str::slug($tagName)], ['name' => $tagName]);
                 $tagIds[] = $tag->id;
             }
         }
-
-        // Sync tags (kosong kalau tidak ada tags)
         $article->tags()->sync($tagIds);
 
-        return redirect()
-            ->route('admin.articles.index')
-            ->with('success', 'Artikel berhasil diperbarui');
+        // === Meta ===
+        $metaData = collect($validated)->only([
+            'meta_description',
+            'meta_keywords',
+            'robots',
+            'canonical_url',
+            'og_title',
+            'og_description',
+            'og_url',
+            'og_type',
+            'og_site_name',
+            'twitter_card',
+            'twitter_title',
+            'twitter_description',
+            'twitter_site'
+        ])->toArray();
+
+        if ($request->hasFile('og_image')) {
+            $metaData['og_image'] = $request->file('og_image')->store('seo/meta', 'public');
+        }
+        if ($request->hasFile('twitter_image')) {
+            $metaData['twitter_image'] = $request->file('twitter_image')->store('seo/meta', 'public');
+        }
+
+        $article->meta()->updateOrCreate([], $metaData);
+
+        return redirect()->route('admin.articles.index')->with('success', 'Artikel dan meta berhasil diperbarui.');
     }
+
 
 
     public function destroy(Article $article)
