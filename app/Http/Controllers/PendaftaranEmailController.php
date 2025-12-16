@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PendaftaranEmail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
+use App\Services\GoogleWorkspaceService;
+
 
 class PendaftaranEmailController extends Controller
 {
@@ -15,54 +19,54 @@ class PendaftaranEmailController extends Controller
         return view('pendaftaran_email.create');
     }
 
+
     public function store(Request $request)
     {
         $request->validate([
-            'first_name'    => 'required|string|max:50',
-            'last_name'     => 'required|string|max:50',
+            'first_name' => 'required|string|max:50',
+            'last_name'  => 'required|string|max:50',
             'program_studi' => 'nullable|string|max:100',
             'phone'         => 'nullable|string|max:20',
-            'password'      => [
-                'required',
-                'string',
-                'min:8',              // minimal 8 karakter
-                'regex:/[A-Z]/',      // harus ada huruf besar
-                'regex:/[a-z]/',      // harus ada huruf kecil
-                'regex:/[0-9]/',      // harus ada angka
-                'regex:/[@$!%*?&]/',  // harus ada simbol spesial
-            ],
         ]);
 
-        // generate email
-        $email = strtolower($request->first_name . '.' . $request->last_name) . '@sbh.ac.id';
+        $email = strtolower(
+            trim($request->first_name) . '.' . trim($request->last_name)
+        ) . '@sbh.ac.id';
 
-        // pastikan email unik
         if (PendaftaranEmail::where('email', $email)->exists()) {
-            return back()->withErrors(['email' => 'Email sudah terdaftar: ' . $email]);
+            return back()->withErrors([
+                'email' => "Email sudah terdaftar: {$email}"
+            ]);
         }
 
-        // simpan ke DB
+        // 🔑 generate password PLAIN
+        $plainPassword = ucfirst($request->first_name) . date('Y') . '@Sbh';
+        // ✅ SIMPAN PLAIN TEXT
         $pendaftaran = PendaftaranEmail::create([
-            'first_name'    => $request->first_name,
-            'last_name'     => $request->last_name,
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
             'program_studi' => $request->program_studi,
             'phone'         => $request->phone,
-            'email'         => $email,
-            'password'      => Crypt::encryptString($request->password), // simpan terenkripsi
-            'status'        => 'pending',
-
+            'email'      => $email,
+            'password'   => $plainPassword, // ⬅️ PLAIN
+            'status'     => 'pending',
         ]);
 
         try {
-            // buat akun Google Workspace
-            app(\App\Services\GoogleWorkspaceService::class)->createUser($pendaftaran);
+            app(GoogleWorkspaceService::class)
+                ->createUser($pendaftaran);
 
             $pendaftaran->update(['status' => 'created']);
 
-            return back()->with('success', "Akun berhasil dibuat: {$email}");
+            return back()->with(
+                'success',
+                "Akun berhasil dibuat: {$email}"
+            );
         } catch (\Exception $e) {
             $pendaftaran->update(['status' => 'failed']);
-            return back()->withErrors(['google' => 'Gagal membuat akun Google: ' . $e->getMessage()]);
+            return back()->withErrors([
+                'google' => $e->getMessage()
+            ]);
         }
     }
 

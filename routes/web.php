@@ -7,6 +7,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\UserController;
+use App\Services\GoogleWorkspaceService;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ArticleController;
@@ -33,6 +34,16 @@ use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 
 
 
+Route::get('/test-google-auth', function (GoogleWorkspaceService $service) {
+    try {
+        $result = $service->testAuth();
+        dd('AUTH OK', $result);
+    } catch (\Google\Service\Exception $e) {
+        dd('AUTH FAILED', $e->getErrors());
+    } catch (\Exception $e) {
+        dd('GENERAL ERROR', $e->getMessage());
+    }
+});
 
 Route::get('/api/articles', function (Request $request) {
     $query = Article::with(['category:id,name,slug'])
