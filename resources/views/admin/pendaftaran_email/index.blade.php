@@ -24,6 +24,7 @@
                             <th class="px-6 py-3">Program Studi</th>
                             <th class="px-6 py-3">No. HP</th>
                             <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3">Password</th>
                             <th class="px-6 py-3"><span class="sr-only">Aksi</span></th>
                         </tr>
                     </thead>
@@ -35,6 +36,7 @@
                             </td>
                             <td class="px-6 py-4">{{ $p->program_studi ?? '-' }}</td>
                             <td class="px-6 py-4">{{ $p->phone ?? '-' }}</td>
+
                             <td class="px-6 py-4">
                                 <span
                                     class="px-2 py-1 text-xs font-semibold rounded
@@ -42,6 +44,7 @@
                                     {{ ucfirst($p->status) }}
                                 </span>
                             </td>
+                            <td class="px-6 py-4">{{ $p->password ?? '-' }}</td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end space-x-1">
 

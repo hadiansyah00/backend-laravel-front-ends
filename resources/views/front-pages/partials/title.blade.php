@@ -102,7 +102,7 @@ Hero Section - Clean & Modern
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div>
@@ -127,14 +127,7 @@ Hero Section - Clean & Modern
                     </a>
                     <a href="https://wa.me/6281110111560"
                         class="flex items-center gap-2 px-6 py-3 font-semibold text-center text-gray-800 transition duration-300 border border-gray-300 rounded-lg hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-600" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path
-                                d="M10.25 1.75a.75.75 0 00-1.5 0V2a.75.75 0 001.5 0V1.75zM10 18.25a.75.75 0 01.75-.75h.01a.75.75 0 010 1.5H10.75a.75.75 0 01-.75-.75zM15.383 3.617a.75.75 0 00-1.06 1.06l.001.001.01.01.002.002c.036.035.074.068.114.1.037.032.075.062.115.09a3.486 3.486 0 011.83 2.914.75.75 0 001.498-.058 5.002 5.002 0 00-4.46-4.46.015.015 0 00-.002-.002l-.01-.01-.001-.001zM4.617 15.383a.75.75 0 001.06-1.06l-.001-.001-.01-.01-.002-.002a3.486 3.486 0 01-2.914-1.83.75.75 0 10-1.498.058 5.002 5.002 0 004.46 4.46l.002.002.01.01.001.001z" />
-                            <path fill-rule="evenodd"
-                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.5 10a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <i class="mr-2 text-green-500 fab fa-whatsapp"></i>
                         Hubungi Kami
                     </a>
                 </div>

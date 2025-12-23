@@ -69,31 +69,5 @@
             </div>
         </div>
         {{-- End Layout Dua Kolom untuk Dosen --}}
-
-        {{-- 3. Bagian Tenaga Kependidikan (Tetap sama) --}}
-        @if (!empty($data['tenaga_kependidikan']))
-
-        <div
-            class="pt-20 mt-20 border shadow-2xl rounded-3xl bg-gradient-to-b from-orange-100/60 to-orange-50/60 backdrop-blur-lg border-white/20">
-            <div class="max-w-4xl mx-auto mb-16 text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900">Tenaga Kependidikan</h2>
-                <p class="mt-3 text-lg text-gray-600">
-                    Staf profesional yang mendukung operasional kampus.
-                </p>
-            </div>
-
-            <div class="grid max-w-5xl grid-cols-1 gap-8 mx-auto mb-10 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($data['tenaga_kependidikan'] as $staff)
-                <div class="text-center">
-                    <img src="{{ asset($staff['photo']) }}" alt="{{ $staff['name'] }}"
-                        class="object-cover w-40 h-40 mx-auto border-4 rounded-full shadow-lg border-white/50"
-                        onerror="this.onerror=null;this.src='{{ asset('assets/img/defaults/default-avatar.png') }}';">
-                    <h3 class="mt-4 text-xl font-bold text-gray-800">{{ $staff['name'] }}</h3>
-                    <p class="font-semibold text-orange-800">{{ $staff['position'] }}</p>
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
     </div>
 </section>

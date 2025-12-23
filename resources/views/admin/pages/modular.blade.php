@@ -42,6 +42,13 @@
     @include('admin.pages.sejarah.title-sejarah',['section' => $section])
 
     @endif
+    @if ($section->type === 'timeline-sejarah')
+    @includeIf('admin.pages.sejarah.timeline-sejarah', [
+    'section' => $section,
+    'data' => $section->decoded_content
+    ])
+    @endif
+
 
     @include('admin.pages.profile.hero-visi-misi', ['section' => $section])
     @if($section->type === 'profil-stikes')
@@ -63,10 +70,10 @@
     {{-- ================= END SAMBUTAN PIMPINAN SBH ================= --}}
     {{-- ================= HERO DOSEN ================= --}}
     @include('admin.pages.dosen.hero-dosen', ['section' => $section])
-    @if ($section->type === 'sdm-stikes')
+    @if ($section->type === 'dosen-stikes')
     @php
     $data = $section->decoded_content;
-    if (empty($data['section']) || $data['section'] !== 'sdm-stikes') continue;
+    if (empty($data['section']) || $data['section'] !== 'dosen-stikes') continue;
     @endphp
     @include('admin.pages.dosen.sdm-stikes',['data' => $data])
     @endif
@@ -195,3 +202,4 @@
 
 @endsection
 {{-- Mengakhiri section konten --}}
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
