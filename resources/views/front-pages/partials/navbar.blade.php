@@ -58,7 +58,7 @@ $contacts = [
                         @endforeach
                     </div>
 
-                    <a href="#"
+                    <a href="https://pmb.sbh.ac.id/"
                         class="px-5 py-1.5 text-xs font-bold text-orange-700 transition-all duration-300 bg-white rounded-full shadow-md hover:bg-orange-100 hover:shadow-lg">
                         Pendaftaran PMB
                     </a>

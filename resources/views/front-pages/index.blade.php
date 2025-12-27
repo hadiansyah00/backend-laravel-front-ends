@@ -6,7 +6,7 @@
 
 {{-- Memanggil komponen Hero Section dari folder partials --}}
 @include('front-pages.partials.sliders')
-@include('front-pages.partials.statistic', ['statistic' => $statistic])
+{{-- @include('front-pages.partials.statistic', ['statistic' => $statistic]) --}}
 @include('front-pages.partials.title', ['programStudis' => $programStudis])
 @include('front-pages.partials.program', ['programStudis' => $programStudis])
 {{-- @include('front-pages.partials.visi-misi') --}}

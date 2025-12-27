@@ -49,7 +49,7 @@ class UserController extends Controller
 
         $user->assignRole($request->roles);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dibuat.');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dibuat.');
     }
 
     /**

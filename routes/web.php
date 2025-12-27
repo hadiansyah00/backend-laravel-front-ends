@@ -113,16 +113,19 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware('guest');
 
 // Login
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+// Login (hidden / random)
+Route::get('/boda-sbh-portal/login', [AuthenticatedSessionController::class, 'create'])
     ->middleware('guest')
     ->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+
+Route::post('/boda-sbh-portal/login', [AuthenticatedSessionController::class, 'store'])
     ->middleware('guest');
 
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
+
 
 // Dashboard
 Route::get('/dashboard', fn() => view('dashboard'))

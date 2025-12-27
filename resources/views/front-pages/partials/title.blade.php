@@ -121,7 +121,7 @@ Hero Section - Clean & Modern
                 </blockquote>
 
                 <div class="flex flex-wrap items-center gap-4 mt-10">
-                    <a href="#"
+                    <a href="https://pmb.sbh.ac.id/"
                         class="px-6 py-3 font-semibold text-center text-white transition duration-300 bg-orange-600 rounded-lg shadow-md hover:bg-orange-700">
                         Daftar PMB →
                     </a>
