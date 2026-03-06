@@ -222,8 +222,8 @@
                                 </x-dropdown-link>
 
                                 {{-- Program Studi --}}
-                                <x-dropdown-link :href="route('admin.programstudi.index')"
-                                    :active="request()->routeIs('admin.programstudi.*')">
+                                <x-dropdown-link :href="route('admin.program-studis.index')"
+                                    :active="request()->routeIs('admin.program-studis.*')">
                                     <div class="flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -233,6 +233,65 @@
                                                 d="M12 3v3.75m0 10.5V21m8.25-9H21M3 12h3.75" />
                                         </svg>
                                         {{ __('Kelola Program Studi') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Dosen & Staf --}}
+                                <x-dropdown-link :href="route('admin.dosens.index')"
+                                    :active="request()->routeIs('admin.dosens.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                                        </svg>
+                                        {{ __('Kelola Dosen & Staf') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Pengumuman --}}
+                                <x-dropdown-link :href="route('admin.pengumumans.index')"
+                                    :active="request()->routeIs('admin.pengumumans.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M10.34l-6.74 3.86a2.25 2.25 0 00-1.11 1.95v6.59m13.75-9.28l6.74 3.86a2.25 2.25 0 011.11 1.95v6.59m-8.94-11.45a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5zM12 21.75V11.25" />
+                                        </svg>
+                                        {{ __('Kelola Pengumuman') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Event & Agenda --}}
+                                <x-dropdown-link :href="route('admin.events.index')"
+                                    :active="request()->request->routeIs('admin.events.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+</svg>
+                                        {{ __('Kelola Event / Agenda') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Dokumen --}}
+                                <x-dropdown-link :href="route('admin.documents.index')"
+                                    :active="request()->routeIs('admin.documents.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+</svg>
+                                        {{ __('Kelola Dokumen Unduhan') }}
+                                    </div>
+                                </x-dropdown-link>
+
+                                {{-- Galeri Foto --}}
+                                <x-dropdown-link :href="route('admin.galleries.index')"
+                                    :active="request()->routeIs('admin.galleries.*')">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
+                                        {{ __('Kelola Galeri Foto') }}
                                     </div>
                                 </x-dropdown-link>
 

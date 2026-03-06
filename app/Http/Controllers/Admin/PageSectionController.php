@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\PagesController;
 use App\Models\Pages;
 use App\Models\PageSections;
 use Illuminate\Http\Request;
@@ -15,26 +16,25 @@ class PageSectionController extends Controller
 
     {
         $sections = $page->sections()->orderBy('order')->get();
+        $sectionTypes = PagesController::SECTION_TYPES;
 
-        return view('admin.sections.index', compact('page', 'sections'));
+        return view('admin.sections.index', compact('page', 'sections', 'sectionTypes'));
     }
 
     public function create(Pages $page): View
 
     {
-        return view('admin.sections.create', compact('page'));
+        $sectionTypes = PagesController::SECTION_TYPES;
+        return view('admin.sections.create', compact('page', 'sectionTypes'));
     }
 
     public function store(Request $request, Pages $page): RedirectResponse
     {
         $validated = $request->validate([
             'type'    => 'required|string|max:255',
-            'content' => 'required|json',
+            'content' => 'nullable|array',
             'order'   => 'required|integer',
         ]);
-
-        // decode JSON agar tidak double encode
-        $validated['content'] = json_decode($validated['content'], true);
 
         $page->sections()->create($validated);
 

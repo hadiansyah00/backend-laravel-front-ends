@@ -27,8 +27,8 @@
         content="Baca berita terbaru dan artikel menarik seputar kesehatan serta kegiatan kampus STIKes Bogor Husada.">
     <meta name="twitter:image" content="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
     {{-- Favicon & App Icons --}}
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/icon/logo-bulet-sbh.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/img/icon/logo-bulet-sbh.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"

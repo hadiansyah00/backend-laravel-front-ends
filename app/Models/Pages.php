@@ -22,6 +22,11 @@ class Pages extends Model
         'type',
         'content',
         'is_published',
+        'template',
+        'category',
+        'icon',
+        'order',
+        'parent_slug',
     ];
 
 

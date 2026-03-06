@@ -147,6 +147,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('articles', ArticleController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('tags', TagsController::class);
+    Route::resource('dosens', \App\Http\Controllers\Admin\DosenController::class);
+    Route::resource('pengumumans', \App\Http\Controllers\Admin\PengumumanController::class);
+    Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
+    Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+    Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class);
+    Route::resource('program-studis', \App\Http\Controllers\Admin\ProgramStudiController::class);
 
     Route::get('pendaftaran-email', [PendaftaranEmailController::class, 'index'])->name('pendaftaran-email.index');
     Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('endaftaran-email.show');

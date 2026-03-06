@@ -19,23 +19,7 @@
     }
 </style>
 
-<div x-data="{
-        showButton: false,
-        menuOpen: false,
-        chatOpen: false,
-        toggleMenu() {
-            if(this.chatOpen) {
-                this.chatOpen = false;
-                this.menuOpen = false;
-            } else {
-                this.menuOpen = !this.menuOpen;
-            }
-        },
-        openChat() {
-            this.menuOpen = false;
-            this.chatOpen = true;
-        }
-    }" x-init="window.addEventListener('scroll', () => showButton = (window.scrollY > 300))"
+<div x-data="chatBotApp()"
     @keydown.escape.window="menuOpen = false; chatOpen = false"
     class="fixed z-50 flex flex-col items-end gap-4 font-sans bottom-8 right-8">
 
@@ -69,31 +53,22 @@
             </button>
         </div>
 
-        <div class="relative flex-1 p-4 space-y-4 overflow-y-auto bg-gray-50 chat-scroll">
+        <div class="relative flex-1 p-4 space-y-4 overflow-y-auto bg-gray-50 chat-scroll" x-ref="messages">
             <div class="absolute inset-0 pointer-events-none opacity-5"
                 style="background-image: radial-gradient(#fb923c 1px, transparent 1px); background-size: 20px 20px;">
             </div>
 
-            <div class="flex flex-col items-start gap-1 max-w-[85%] z-10 relative">
-                <div
-                    class="px-4 py-3 text-sm leading-relaxed text-gray-700 bg-white border border-gray-200 rounded-tl-none shadow-sm rounded-2xl">
-                    Halo! 👋 Ada yang bisa saya bantu terkait informasi akademik atau pendaftaran?
+            <template x-for="(msg, index) in messages" :key="index">
+                <div :class="msg.from === 'user' ? 'flex flex-col items-end gap-1 ml-auto max-w-[85%] z-10 relative' : 'flex flex-col items-start gap-1 max-w-[85%] z-10 relative'">
+                    <div :class="msg.from === 'user' ? 'px-4 py-3 text-sm leading-relaxed text-white bg-orange-600 rounded-tr-none shadow-md rounded-2xl' : 'px-4 py-3 text-sm leading-relaxed text-gray-700 bg-white border border-gray-200 rounded-tl-none shadow-sm rounded-2xl'" x-html="msg.text">
+                    </div>
                 </div>
-                <span class="text-[10px] text-gray-400 ml-1">Baru saja</span>
-            </div>
-
-            <div class="flex flex-col items-end gap-1 ml-auto max-w-[85%] z-10 relative">
-                <div
-                    class="px-4 py-3 text-sm leading-relaxed text-white bg-orange-600 rounded-tr-none shadow-md rounded-2xl">
-                    Info pendaftaran mahasiswa baru dong kak.
-                </div>
-                <span class="text-[10px] text-gray-400 mr-1">Read</span>
-            </div>
+            </template>
         </div>
 
         <div class="p-3 bg-white border-t border-gray-100">
             <form @submit.prevent="sendMessage" class="flex gap-2">
-                <input type="text" placeholder="Tulis pesan..."
+                <input type="text" x-model="userInput" placeholder="Tulis pesan..."
                     class="w-full bg-gray-100 text-gray-700 text-sm rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:bg-white transition placeholder-gray-400">
                 <button type="submit"
                     class="bg-orange-600 hover:bg-orange-700 text-white rounded-full p-2.5 shadow-lg shadow-orange-600/30 transition transform hover:scale-105 flex-shrink-0">
@@ -122,14 +97,28 @@
             </div>
         </button>
 
-        <a href="https://wa.me/6282321780950" target="_blank" x-transition:enter="transition ease-out duration-300"
+        <a href="https://api.whatsapp.com/send/?phone=6282321780950&text=Halo+Minda+2+Saya+mendapatkan+informasi+dari+Website+SBH...&type=phone_number&app_absent=0" target="_blank" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 translate-y-4 scale-90"
             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
             x-transition:leave="transition ease-in duration-200 delay-75"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 scale-90"
             class="flex items-center gap-3 py-2 pl-4 pr-2 transition-all bg-white border border-gray-100 rounded-full shadow-lg cursor-pointer group hover:shadow-xl hover:border-green-100">
-            <span class="text-sm font-medium text-gray-600 transition group-hover:text-green-600">WhatsApp</span>
+            <span class="text-sm font-medium text-gray-600 transition group-hover:text-green-600">Admin 2</span>
+            <div
+                class="flex items-center justify-center w-10 h-10 transition duration-300 rounded-full bg-green-50 group-hover:bg-green-500">
+                <img src="{{ asset('assets/img/icon/whatsapp.svg') }}" class="object-contain w-6 h-6" alt="WA">
+            </div>
+        </a>
+
+        <a href="https://api.whatsapp.com/send/?phone=6281110111560&text=Halo+Minda+1+Saya+mendapatkan+informasi+dari+Website+SBH...&type=phone_number&app_absent=0" target="_blank" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 scale-90"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-200 delay-75"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 scale-90"
+            class="flex items-center gap-3 py-2 pl-4 pr-2 transition-all bg-white border border-gray-100 rounded-full shadow-lg cursor-pointer group hover:shadow-xl hover:border-green-100">
+            <span class="text-sm font-medium text-gray-600 transition group-hover:text-green-600">Admin 1</span>
             <div
                 class="flex items-center justify-center w-10 h-10 transition duration-300 rounded-full bg-green-50 group-hover:bg-green-500">
                 <img src="{{ asset('assets/img/icon/whatsapp.svg') }}" class="object-contain w-6 h-6" alt="WA">
@@ -173,6 +162,7 @@
          * STATE
          * ===================== */
         showButton: false,
+        menuOpen: false,
         chatOpen: false,
         userInput: '',
         sessionId: localStorage.getItem("chat_session_id") || (() => {
@@ -202,6 +192,18 @@
         /* =====================
          * METHODS
          * ===================== */
+        toggleMenu() {
+            if(this.chatOpen) {
+                this.chatOpen = false;
+                this.menuOpen = false;
+            } else {
+                this.menuOpen = !this.menuOpen;
+            }
+        },
+        openChat() {
+            this.menuOpen = false;
+            this.chatOpen = true;
+        },
         async sendMessage() {
             const userText = this.userInput.trim();
             if (!userText) return;

@@ -7,10 +7,10 @@
     <div class="px-6 mx-auto max-w-7xl lg:px-8">
         {{-- Judul Halaman --}}
         <div class="max-w-2xl mx-auto text-center">
-            <h2 class="text-3xl font-bold tracking-tight text-orange-600 sm:text-4xl">
+            <h2 class="text-3xl font-bold tracking-tight text-black sm:text-4xl">
                 Program Studi Kami
             </h2>
-            <p class="mt-4 text-lg leading-8 text-orange-600">
+            <p class="mt-4 text-lg leading-8 text-black">
                 Jelajahi berbagai program studi yang kami tawarkan untuk membantu Anda mencapai tujuan akademis dan
                 profesional Anda.
             </p>

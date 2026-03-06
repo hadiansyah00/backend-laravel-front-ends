@@ -23,7 +23,7 @@ class FrontPagesController extends Controller
         // Ambil berita dengan cache 10 menit
         $berita = Cache::remember('berita_terbaru', 600, function () {
             try {
-                $response = Http::get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
+                $response = Http::timeout(3)->get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
                     '_embed' => true,
                     'per_page' => 6
                 ]);
@@ -39,17 +39,33 @@ class FrontPagesController extends Controller
 
             return []; // default kalau gagal
         });
-        $menus = Menu::whereNull('parent_id')
-            ->active()
-            ->with('children')
-            ->orderBy('order')
-            ->get();
+        $menus = Cache::remember('menus_active', 3600, function () {
+            return Menu::whereNull('parent_id')
+                ->active()
+                ->with('children')
+                ->orderBy('order')
+                ->get();
+        });
 
-        $sliders       = Slider::orderBy('order')->get();
-        $programStudis = ProgramStudi::all();
-        $statistic     = Statistic::all();
-        $videoContent  = CompanyProfileVideo::where('is_active', true)->first();
-        $testimonials  = Testimonial::all();
+        $sliders = Cache::remember('sliders_active', 3600, function () {
+            return Slider::orderBy('order')->get();
+        });
+
+        $programStudis = Cache::remember('program_studis_all', 3600, function () {
+            return ProgramStudi::all();
+        });
+
+        $statistic = Cache::remember('statistics_all', 3600, function () {
+            return Statistic::all();
+        });
+
+        $videoContent = Cache::remember('video_content_active', 3600, function () {
+            return CompanyProfileVideo::where('is_active', true)->first();
+        });
+
+        $testimonials = Cache::remember('testimonials_all', 3600, function () {
+            return Testimonial::all();
+        });
 
         return view('front-pages.index', compact(
             'berita',

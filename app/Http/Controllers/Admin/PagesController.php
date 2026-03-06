@@ -14,6 +14,45 @@ use Illuminate\Http\RedirectResponse;
 
 class PagesController extends Controller
 {
+    /**
+     * Daftar semua section types yang tersedia untuk dynamic pages.
+     */
+    public const SECTION_TYPES = [
+        'hero'               => 'Hero Banner (dengan background & breadcrumbs)',
+        'title'              => 'Title Section (dengan overlay)',
+        'content-with-image' => 'Konten dengan Gambar (2 kolom)',
+        'visi-misi'          => 'Visi & Misi',
+        'timeline'           => 'Timeline / Sejarah',
+        'team-grid'          => 'Grid Tim / Dosen',
+        'image-text'         => 'Sambutan / Pesan (gambar + teks)',
+        'card-grid'          => 'Grid Kartu (program / peluang)',
+        'org-chart'          => 'Struktur Organisasi',
+        'prodi-profile'      => 'Profil Program Studi',
+        'feature'            => 'Feature Cards',
+        'richtext'           => 'Rich Text (CKEditor)',
+        'gallery'            => 'Galeri Foto / Video',
+        'faq'                => 'FAQ (Accordion)',
+        'cta-banner'         => 'Call-to-Action Banner',
+        'document-list'      => 'Daftar Dokumen / Download',
+        'contact-info'       => 'Informasi Kontak',
+        'stats'              => 'Statistik Angka',
+        'testimonial'        => 'Testimonial',
+    ];
+
+    /**
+     * Kategori halaman untuk pengelompokan.
+     */
+    public const PAGE_CATEGORIES = [
+        'tentang'    => 'Tentang',
+        'akademik'   => 'Akademik',
+        'unit'       => 'Unit & Lembaga',
+        'informasi'  => 'Informasi',
+        'pmb'        => 'PMB',
+        'fasilitas'  => 'Fasilitas',
+        'alumni'     => 'Alumni & Karir',
+        'lainnya'    => 'Lainnya',
+    ];
+
     public function index(): View
     {
         $pages = Pages::latest()->get();
@@ -22,22 +61,25 @@ class PagesController extends Controller
 
     public function create(): View
     {
-        return view('admin.pages.create');
+        $sectionTypes = self::SECTION_TYPES;
+        $categories = self::PAGE_CATEGORIES;
+        return view('admin.pages.create', compact('sectionTypes', 'categories'));
     }
 
     public function store(Request $request): RedirectResponse
     {
-        // Validasi disederhanakan, hanya untuk field Page
         $validated = $request->validate([
-            'title' => 'required|string|max:255|unique:pages,title',
-            'type' => 'required|in:standard,modular',
-            'slug' => 'nullable|string|max:255|unique:pages,slug',
-            'content' => 'nullable|string',
+            'title'        => 'required|string|max:255|unique:pages,title',
+            'type'         => 'required|in:standard,modular',
+            'slug'         => 'nullable|string|max:255|unique:pages,slug',
+            'content'      => 'nullable|string',
             'is_published' => 'required|boolean',
+            'template'     => 'nullable|string|max:100',
+            'category'     => 'nullable|string|max:100',
+            'icon'         => 'nullable|string|max:255',
+            'order'        => 'nullable|integer',
+            'parent_slug'  => 'nullable|string|max:255',
         ]);
-
-        // Slug dibuat otomatis dari title
-        // $validated['slug'] = Str::slug($request->title);
 
         Pages::create($validated);
 
@@ -46,21 +88,25 @@ class PagesController extends Controller
 
     public function edit(Pages $page): View
     {
-        return view('admin.pages.edit', compact('page'));
+        $sectionTypes = self::SECTION_TYPES;
+        $categories = self::PAGE_CATEGORIES;
+        return view('admin.pages.edit', compact('page', 'sectionTypes', 'categories'));
     }
 
     public function update(Request $request, Pages $page): RedirectResponse
     {
-        // Validasi disederhanakan, hanya untuk field Page
         $validated = $request->validate([
-            'title' => 'required|string|max:255|unique:pages,title,' . $page->id,
-            'slug' => 'nullable|string|max:255|unique:pages,slug,' . $page->id,
-            'type' => 'required|in:standard,modular',
-            'content' => 'nullable|string',
+            'title'        => 'required|string|max:255|unique:pages,title,' . $page->id,
+            'slug'         => 'nullable|string|max:255|unique:pages,slug,' . $page->id,
+            'type'         => 'required|in:standard,modular',
+            'content'      => 'nullable|string',
             'is_published' => 'required|boolean',
+            'template'     => 'nullable|string|max:100',
+            'category'     => 'nullable|string|max:100',
+            'icon'         => 'nullable|string|max:255',
+            'order'        => 'nullable|integer',
+            'parent_slug'  => 'nullable|string|max:255',
         ]);
-
-        // $validated['slug'] = Str::slug($request->title);
 
         $page->update($validated);
 
