@@ -12,11 +12,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // TAMBAHKAN ALIAS DI SINI
+        // Aliases
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'seo' => \App\Http\Middleware\InjectSeoMeta::class,
+        ]);
+
+        // Append SEO and Inertia middleware to all web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\InjectSeoMeta::class,
+            \App\Http\Middleware\HandleInertiaRequests::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

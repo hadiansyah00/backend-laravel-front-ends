@@ -11,6 +11,7 @@ use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
 
 class PagesController extends Controller
 {
@@ -154,17 +155,18 @@ class PagesController extends Controller
                 });
             $programStudis = ProgramStudi::all();
 
-            return view('admin.pages.modular', [
+            return Inertia::render('DynamicPage', [
                 'page' => $page,
                 'sections' => $sections,
                 'menus' => $menus,
                 'meta' => $meta,
-                'programStudis' => $programStudis,
+                'programStudis' => clone $programStudis, // clone to avoid mutation
             ]);
         }
 
-        return view('admin.pages.standard', [
+        return Inertia::render('DynamicPage', [
             'page' => $page,
+            'sections' => [],
             'menus' => $menus,
             'meta' => $meta,
         ]);

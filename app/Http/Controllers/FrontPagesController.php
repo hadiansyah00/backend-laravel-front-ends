@@ -12,13 +12,14 @@ use Illuminate\Http\Request;
 use App\Models\CompanyProfileVideo;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http; // Pastikan ini diimport
+use Inertia\Inertia;
 
 class FrontPagesController extends Controller
 {
     /**
      * Menampilkan halaman utama
      */
-    public function index(): View
+    public function index()
     {
         // Ambil berita dengan cache 10 menit
         $berita = Cache::remember('berita_terbaru', 600, function () {
@@ -51,8 +52,8 @@ class FrontPagesController extends Controller
             return Slider::orderBy('order')->get();
         });
 
-        $programStudis = Cache::remember('program_studis_all', 3600, function () {
-            return ProgramStudi::all();
+        $programStudis = Cache::remember('program_studis_active', 3600, function () {
+            return ProgramStudi::where('is_active', true)->get();
         });
 
         $statistic = Cache::remember('statistics_all', 3600, function () {
@@ -63,13 +64,13 @@ class FrontPagesController extends Controller
             return CompanyProfileVideo::where('is_active', true)->first();
         });
 
+
         $testimonials = Cache::remember('testimonials_all', 3600, function () {
             return Testimonial::all();
         });
 
-        return view('front-pages.index', compact(
+        return Inertia::render('Home', compact(
             'berita',
-            'menus',
             'sliders',
             'programStudis',
             'statistic',

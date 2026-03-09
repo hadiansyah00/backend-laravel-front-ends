@@ -23,6 +23,11 @@
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^41.4.2",
-        "@yaireo/tagify": "^4.35.4"
+        "@inertiajs/react": "^2.3.17",
+        "@vitejs/plugin-react": "^5.1.4",
+        "@yaireo/tagify": "^4.35.4",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
+        "swiper": "^12.1.2"
     }
 }
