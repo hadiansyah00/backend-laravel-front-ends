@@ -31,7 +31,8 @@ export default function SectionRenderer({ section, pageInfo }) {
 
     switch (type) {
         case 'hero':
-            return <Hero content={content} pageInfo={pageInfo} />;
+            // Hero is now rendered centrally in DynamicPage.jsx using page specific fields
+            return null;
 
         case 'content-with-image':
         case 'image-text':

@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use Google\Client;
-use Illuminate\Support\Facades\Crypt;
-use Google\Service\Directory\User as GoogleUser;
 use Google\Service\Directory;
+use Google\Service\Directory\User as GoogleUser;
 
 class GoogleWorkspaceService
 {
@@ -13,7 +12,7 @@ class GoogleWorkspaceService
 
     public function __construct()
     {
-        $client = new Client();
+        $client = new Client;
         $client->setApplicationName('Laravel Google Workspace Provisioning');
         $client->setAuthConfig(storage_path('app/google/service-account.json'));
         $client->setScopes([
@@ -42,7 +41,7 @@ class GoogleWorkspaceService
         $user = new GoogleUser([
             'primaryEmail' => $pendaftaran->email,
             'name' => [
-                'givenName'  => $pendaftaran->first_name,
+                'givenName' => $pendaftaran->first_name,
                 'familyName' => $pendaftaran->last_name,
             ],
             'password' => $pendaftaran->password, // ⬅️ PLAIN

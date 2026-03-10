@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\FrontPages;
 
+use App\Http\Controllers\Controller;
 use App\Models\FrontSetting;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use Inertia\Inertia;
 
 class FrontSettingController extends Controller
 {
@@ -17,7 +18,9 @@ class FrontSettingController extends Controller
         // Ambil semua setting (nanti bisa difilter berdasarkan kebutuhan)
         $settings = FrontSetting::all()->keyBy('key');
 
-        return view('admin.front_settings.index', compact('settings'));
+        return Inertia::render('Admin/FrontSettings/Index', [
+            'settings' => $settings
+        ]);
     }
 
     /**
@@ -40,7 +43,7 @@ class FrontSettingController extends Controller
             );
 
             // clear cache supaya setting() baca ulang
-            Cache::forget('settings.' . $key);
+            Cache::forget('settings.'.$key);
         }
 
         return back()->with('success', 'Pengaturan berhasil disimpan.');

@@ -3,27 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $permissions = Permission::latest()->paginate(10);
-        return view('permissions.index', compact('permissions'));
+
+        return Inertia::render('Admin/Permissions/Index', [
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        // View ini akan kita ubah total
-        return view('permissions.create');
+        return Inertia::render('Admin/Permissions/Form', [
+            'isEdit' => false,
+        ]);
     }
 
     /**
@@ -38,7 +44,7 @@ class PermissionController extends Controller
 
         Permission::create(['name' => $request->name]);
 
-        return redirect()->route('permissions.index')->with('success', 'Permission berhasil dibuat.');
+        return redirect()->route('admin.permissions.index')->with('success', 'Permission berhasil dibuat.');
     }
 
     /**
@@ -52,7 +58,7 @@ class PermissionController extends Controller
             'permissions.*.name' => [ // Validasi setiap item dalam array
                 'required',
                 'string',
-                Rule::unique('permissions', 'name')
+                Rule::unique('permissions', 'name'),
             ],
         ]);
 
@@ -63,16 +69,18 @@ class PermissionController extends Controller
         Permission::insert($permissionsData);
 
         // Mengembalikan respon JSON untuk ditangani oleh JavaScript
-        return response()->json(['message' => count($permissionsData) . ' permission berhasil dibuat.']);
+        return response()->json(['message' => count($permissionsData).' permission berhasil dibuat.']);
     }
-
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Permission $permission)
+    public function edit(Permission $permission): Response
     {
-        return view('permissions.edit', compact('permission'));
+        return Inertia::render('Admin/Permissions/Form', [
+            'permission' => $permission,
+            'isEdit' => true,
+        ]);
     }
 
     /**
@@ -81,12 +89,12 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission)
     {
         $request->validate([
-            'name' => 'required|string|unique:permissions,name,' . $permission->id,
+            'name' => 'required|string|unique:permissions,name,'.$permission->id,
         ]);
 
         $permission->update(['name' => $request->name]);
 
-        return redirect()->route('permissions.index')->with('success', 'Permission berhasil diperbarui.');
+        return redirect()->route('admin.permissions.index')->with('success', 'Permission berhasil diperbarui.');
     }
 
     /**
@@ -95,6 +103,7 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         $permission->delete();
-        return redirect()->route('permissions.index')->with('success', 'Permission berhasil dihapus.');
+
+        return redirect()->route('admin.permissions.index')->with('success', 'Permission berhasil dihapus.');
     }
 }

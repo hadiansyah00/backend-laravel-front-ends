@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\FrontPages;
 
+use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class TestimonialController extends Controller
 {
@@ -16,7 +17,9 @@ class TestimonialController extends Controller
     {
         $testimonials = Testimonial::latest()->paginate(10);
 
-        return view('admin.testimonials.index', compact('testimonials'));
+        return Inertia::render('Admin/Testimonials/Index', [
+            'testimonials' => $testimonials,
+        ]);
     }
 
     /**
@@ -24,7 +27,9 @@ class TestimonialController extends Controller
      */
     public function create()
     {
-        return view('admin.testimonials.create');
+        return Inertia::render('Admin/Testimonials/Form', [
+            'testimonial' => null,
+        ]);
     }
 
     /**
@@ -33,10 +38,10 @@ class TestimonialController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'    => 'required|string|max:255',
-            'role'    => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'role' => 'nullable|string|max:255',
             'message' => 'required|string',
-            'photo'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -52,39 +57,42 @@ class TestimonialController extends Controller
     /**
      * Form edit testimoni.
      */
-     public function edit($id)
+    public function edit($id)
     {
         $testimonial = Testimonial::findOrFail($id);
-        return view('admin.testimonials.edit', compact('testimonial'));
+
+        return Inertia::render('Admin/Testimonials/Form', [
+            'testimonial' => $testimonial,
+        ]);
     }
 
     /**
      * Update testimoni.
      */
     public function update(Request $request, $id)
-        {
-            $testimonial = Testimonial::findOrFail($id);
+    {
+        $testimonial = Testimonial::findOrFail($id);
 
-            $validated = $request->validate([
-                'name'    => 'required|string|max:255',
-                'role'    => 'nullable|string|max:255',
-                'message' => 'required|string',
-                'photo'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'nullable|string|max:255',
+            'message' => 'required|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-            if ($request->hasFile('photo')) {
-                // hapus foto lama jika ada
-                if ($testimonial->photo && Storage::disk('public')->exists($testimonial->photo)) {
-                    Storage::disk('public')->delete($testimonial->photo);
-                }
-
-                $validated['photo'] = $request->file('photo')->store('testimonials', 'public');
+        if ($request->hasFile('photo')) {
+            // hapus foto lama jika ada
+            if ($testimonial->photo && Storage::disk('public')->exists($testimonial->photo)) {
+                Storage::disk('public')->delete($testimonial->photo);
             }
 
-            $testimonial->update($validated);
-
-            return redirect()->route('admin.testimonials.index')->with('success', 'Testimoni berhasil diperbarui.');
+            $validated['photo'] = $request->file('photo')->store('testimonials', 'public');
         }
+
+        $testimonial->update($validated);
+
+        return redirect()->route('admin.testimonials.index')->with('success', 'Testimoni berhasil diperbarui.');
+    }
 
     /**
      * Hapus testimoni.

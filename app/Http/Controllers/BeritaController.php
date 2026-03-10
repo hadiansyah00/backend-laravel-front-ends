@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tags;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\MetaSettings;
+use App\Models\Tags;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http; // Pastikan ini diimport
+use Inertia\Inertia;
 
 class BeritaController extends Controller
 {
@@ -19,9 +19,9 @@ class BeritaController extends Controller
         // filter search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('excerpt', 'like', '%' . $request->search . '%')
-                    ->orWhere('content', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('excerpt', 'like', '%'.$request->search.'%')
+                    ->orWhere('content', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -44,18 +44,21 @@ class BeritaController extends Controller
             ->get();
         $meta = MetaSettings::default()->first();
 
-
         // ✅ untuk ajax return JSON (supaya cocok sama JS fetch)
         if ($request->ajax()) {
             return response()->json([
-                'html'       => view('berita.partials.list', compact('articles'))->render(),
+                'html' => view('berita.partials.list', compact('articles'))->render(),
                 'pagination' => (string) $articles->links(),
             ]);
         }
 
-        return view('berita.index', compact('articles', 'meta', 'categories', 'latestArticles'));
+        return Inertia::render('Frontend/Berita', [
+            'articles' => $articles,
+            'meta' => $meta,
+            'categories' => $categories,
+            'latestArticles' => $latestArticles,
+        ]);
     }
-
 
     public function filter(Request $request)
     {
@@ -72,9 +75,9 @@ class BeritaController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('excerpt', 'like', '%' . $request->search . '%')
-                    ->orWhere('content', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('excerpt', 'like', '%'.$request->search.'%')
+                    ->orWhere('content', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -82,7 +85,7 @@ class BeritaController extends Controller
 
         if ($request->ajax()) {
             return response()->json([
-                'html'       => view('berita.partials.list', compact('articles'))->render(),
+                'html' => view('berita.partials.list', compact('articles'))->render(),
                 'pagination' => (string) $articles->links(),
             ]);
         }
@@ -116,12 +119,12 @@ class BeritaController extends Controller
         $popularTags = Tags::withCount('articles')->orderBy('articles_count', 'desc')->take(10)->get();
 
         // Kirim semua data ke view
-        return view('berita.show', compact(
-            'article',
-            'related',
-            'recentPosts',
-            'categories',
-            'popularTags'
-        ));
+        return Inertia::render('Frontend/BeritaDetail', [
+            'article' => $article,
+            'related' => $related,
+            'recentPosts' => $recentPosts,
+            'categories' => $categories,
+            'popularTags' => $popularTags
+        ]);
     }
 }

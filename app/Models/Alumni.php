@@ -24,6 +24,6 @@ class Alumni extends Model
 
     protected $casts = [
         'is_featured' => 'boolean',
-        'is_active'   => 'boolean',
+        'is_active' => 'boolean',
     ];
 }

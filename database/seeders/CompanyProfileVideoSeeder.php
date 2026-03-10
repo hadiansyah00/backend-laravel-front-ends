@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\CompanyProfileVideo;
+use Illuminate\Database\Seeder;
 
 class CompanyProfileVideoSeeder extends Seeder
 {

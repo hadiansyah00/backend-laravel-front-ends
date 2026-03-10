@@ -3,37 +3,43 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\PagesController;
 use App\Models\Pages;
 use App\Models\PageSections;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PageSectionController extends Controller
 {
-    public function index(Pages $page): View
-
+    public function index(Pages $page)
     {
         $sections = $page->sections()->orderBy('order')->get();
         $sectionTypes = PagesController::SECTION_TYPES;
 
-        return view('admin.sections.index', compact('page', 'sections', 'sectionTypes'));
+        return Inertia::render('Admin/Sections/Index', [
+            'page' => $page,
+            'sections' => $sections,
+            'sectionTypes' => $sectionTypes,
+        ]);
     }
 
-    public function create(Pages $page): View
-
+    public function create(Pages $page)
     {
         $sectionTypes = PagesController::SECTION_TYPES;
-        return view('admin.sections.create', compact('page', 'sectionTypes'));
+
+        return Inertia::render('Admin/Sections/Form', [
+            'page' => $page,
+            'sectionTypes' => $sectionTypes,
+            'section' => null,
+        ]);
     }
 
     public function store(Request $request, Pages $page): RedirectResponse
     {
         $validated = $request->validate([
-            'type'    => 'required|string|max:255',
+            'type' => 'required|string|max:255',
             'content' => 'nullable|array',
-            'order'   => 'required|integer',
+            'order' => 'required|integer',
         ]);
 
         $page->sections()->create($validated);
@@ -43,22 +49,25 @@ class PageSectionController extends Controller
             ->with('success', 'Section berhasil ditambahkan.');
     }
 
-    public function edit(PageSections $section): View
+    public function edit(PageSections $section)
     {
         $page = $section->page; // ambil relasi page
-        return view('admin.sections.edit', compact('section', 'page'));
+        $sectionTypes = PagesController::SECTION_TYPES;
+
+        return Inertia::render('Admin/Sections/Form', [
+            'section' => $section,
+            'page' => $page,
+            'sectionTypes' => $sectionTypes,
+        ]);
     }
 
     public function update(Request $request, PageSections $section): RedirectResponse
     {
         $validated = $request->validate([
-            'type'    => 'required|string|max:255',
-            'content' => 'required|json',
-            'order'   => 'required|integer',
+            'type' => 'required|string|max:255',
+            'content' => 'nullable|array',
+            'order' => 'required|integer',
         ]);
-
-        // decode JSON agar tidak double encode
-        $validated['content'] = json_decode($validated['content'], true);
 
         $section->update($validated);
 
@@ -66,8 +75,6 @@ class PageSectionController extends Controller
             ->route('admin.pages.sections.index', ['page' => $section->page->slug])
             ->with('success', 'Section berhasil diperbarui.');
     }
-
-
 
     public function destroy(PageSections $section): RedirectResponse
     {

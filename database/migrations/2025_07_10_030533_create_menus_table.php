@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('url')->nullable();
-            $table->enum('type', ['page', 'link','route'])->default('page');
+            $table->enum('type', ['page', 'link', 'route'])->default('page');
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

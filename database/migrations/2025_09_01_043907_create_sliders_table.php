@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('sliders', function (Blueprint $table) {
-        $table->id();
-        $table->string('title')->nullable();
-        $table->string('subtitle')->nullable();
-        $table->string('image'); // path gambar
-        $table->string('link')->nullable();
-        $table->integer('order')->default(0);
-        $table->timestamps();
-    });
+        Schema::create('sliders', function (Blueprint $table) {
+            $table->id();
+            $table->string('title')->nullable();
+            $table->string('subtitle')->nullable();
+            $table->string('image'); // path gambar
+            $table->string('link')->nullable();
+            $table->integer('order')->default(0);
+            $table->timestamps();
+        });
     }
 
     /**

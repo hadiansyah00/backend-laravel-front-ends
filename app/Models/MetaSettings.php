@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Pages;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class MetaSettings extends Model
 {
@@ -45,15 +44,16 @@ class MetaSettings extends Model
     /**
      * Scope: Get meta default
      */
-
     public function seoable()
     {
         return $this->morphTo();
     }
+
     public function scopeDefault($query)
     {
         return $query->whereNull('pages_id'); // default meta kalau tidak terkait page
     }
+
     /**
      * Relasi ke Pages
      */

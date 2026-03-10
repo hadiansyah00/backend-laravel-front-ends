@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\TestimoniController;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\TestimoniController;
 
 // --- Testimoni ---
 Route::get('/testimoni', [TestimoniController::class, 'index']);
@@ -17,7 +17,7 @@ Route::get('/articles', function (Request $request) {
 
     if ($request->filled('category')) {
         $category = $request->category;
-        $query->whereHas('category', fn($q) => $q->where('slug', $category));
+        $query->whereHas('category', fn ($q) => $q->where('slug', $category));
     }
 
     if ($request->filled('year')) {
@@ -26,8 +26,8 @@ Route::get('/articles', function (Request $request) {
 
     if ($request->filled('search')) {
         $query->where(function ($q) use ($request) {
-            $q->where('title', 'like', '%' . $request->search . '%')
-              ->orWhere('excerpt', 'like', '%' . $request->search . '%');
+            $q->where('title', 'like', '%'.$request->search.'%')
+                ->orWhere('excerpt', 'like', '%'.$request->search.'%');
         });
     }
 
@@ -36,12 +36,12 @@ Route::get('/articles', function (Request $request) {
     return response()->json([
         'data' => $articles->items(),
         'pagination' => [
-            'current_page'  => $articles->currentPage(),
-            'last_page'     => $articles->lastPage(),
-            'per_page'      => $articles->perPage(),
-            'total'         => $articles->total(),
+            'current_page' => $articles->currentPage(),
+            'last_page' => $articles->lastPage(),
+            'per_page' => $articles->perPage(),
+            'total' => $articles->total(),
             'next_page_url' => $articles->nextPageUrl(),
             'prev_page_url' => $articles->previousPageUrl(),
-        ]
+        ],
     ]);
 });

@@ -4,15 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Pages;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PageSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-
-        public function run()
+    public function run()
     {
         $pages = [
             ['title' => 'Beranda', 'slug' => 'beranda', 'type' => 'modular'],
@@ -25,5 +23,4 @@ class PageSeeder extends Seeder
             Pages::create($page);
         }
     }
-
 }

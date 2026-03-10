@@ -17,7 +17,7 @@ class Pengumuman extends Model
         'content',
         'attachment',
         'is_active',
-        'user_id'
+        'user_id',
     ];
 
     public function user()

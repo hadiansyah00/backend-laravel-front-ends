@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('company_profile_videos', function (Blueprint $table) {
-        $table->id();
-        $table->string('title')->nullable();      // Judul video
-        $table->text('description')->nullable();  // Deskripsi singkat
-        $table->string('video_url');              // Link YouTube/Vimeo/MP4
-        $table->boolean('is_active')->default(true); // Bisa set aktif/nonaktif
-        $table->timestamps();
-    });
+            $table->id();
+            $table->string('title')->nullable();      // Judul video
+            $table->text('description')->nullable();  // Deskripsi singkat
+            $table->string('video_url');              // Link YouTube/Vimeo/MP4
+            $table->boolean('is_active')->default(true); // Bisa set aktif/nonaktif
+            $table->timestamps();
+        });
     }
 
     /**

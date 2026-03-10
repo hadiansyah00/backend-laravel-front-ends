@@ -24,7 +24,7 @@ class Lowongan extends Model
     ];
 
     protected $casts = [
-        'deadline'  => 'date',
+        'deadline' => 'date',
         'is_active' => 'boolean',
     ];
 }

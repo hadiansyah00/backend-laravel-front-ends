@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pendaftaran_email', function (Blueprint $table) {
-        $table->id();
-        $table->string('first_name');
-        $table->string('last_name');
-        $table->string('program_studi')->nullable();
-        $table->string('phone')->nullable();
-        $table->string('status')->default('pending'); // pending, created
-        $table->timestamps();
-});
+            $table->id();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('program_studi')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('status')->default('pending'); // pending, created
+            $table->timestamps();
+        });
 
     }
 

@@ -4,26 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Tags;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class TagsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $tags = Tags::latest()->paginate(10);
 
-        return view('admin.tags.index', compact('tags'));
+        return Inertia::render('Admin/Tags/Index', [
+            'tags' => $tags
+        ]);
     }
 
-    /**
-     * Show the form for creating a new tag.
-     */
     public function create()
     {
-        return view('admin.tags.create');
+        return Inertia::render('Admin/Tags/Form', [
+            'tag' => null
+        ]);
     }
 
     /**
@@ -33,21 +32,24 @@ class TagsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:tags,name',
-            'slug' => 'required|string|max:255|unique:tags,slug',
+            'slug' => 'nullable|string|max:255|unique:tags,slug',
         ]);
+
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
 
         Tags::create($validated);
 
         return redirect()->route('admin.tags.index')
-            ->with('success', 'Tag created successfully.');
+            ->with('success', 'Tag Artikel berhasil dibuat.');
     }
 
-    /**
-     * Show the form for editing the specified tag.
-     */
     public function edit(Tags $tag)
     {
-        return view('admin.tags.edit', compact('tag'));
+        return Inertia::render('Admin/Tags/Form', [
+            'tag' => $tag
+        ]);
     }
 
     /**
@@ -56,24 +58,25 @@ class TagsController extends Controller
     public function update(Request $request, Tags $tag)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
-            'slug' => 'required|string|max:255|unique:tags,slug,' . $tag->id,
+            'name' => 'required|string|max:255|unique:tags,name,'.$tag->id,
+            'slug' => 'nullable|string|max:255|unique:tags,slug,'.$tag->id,
         ]);
+
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
 
         $tag->update($validated);
 
         return redirect()->route('admin.tags.index')
-            ->with('success', 'Tag updated successfully.');
+            ->with('success', 'Tag Artikel berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified tag from storage.
-     */
     public function destroy(Tags $tag)
     {
         $tag->delete();
 
         return redirect()->route('admin.tags.index')
-            ->with('success', 'Tag deleted successfully.');
+            ->with('success', 'Tag Artikel berhasil dihapus.');
     }
 }

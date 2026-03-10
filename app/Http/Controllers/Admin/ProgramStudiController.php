@@ -5,20 +5,26 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class ProgramStudiController extends Controller
 {
     public function index()
     {
         $programStudis = ProgramStudi::latest()->paginate(15);
-        return view('admin.program-studis.index', compact('programStudis'));
+
+        return Inertia::render('Admin/ProgramStudis/Index', [
+            'programStudis' => $programStudis
+        ]);
     }
 
     public function create()
     {
-        return view('admin.program-studis.create');
+        return Inertia::render('Admin/ProgramStudis/Form', [
+            'programStudi' => null
+        ]);
     }
 
     public function store(Request $request)
@@ -41,7 +47,7 @@ class ProgramStudiController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('program_studi', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
         }
 
         ProgramStudi::create($validated);
@@ -51,7 +57,9 @@ class ProgramStudiController extends Controller
 
     public function edit(ProgramStudi $programStudi)
     {
-        return view('admin.program-studis.edit', compact('programStudi'));
+        return Inertia::render('Admin/ProgramStudis/Form', [
+            'programStudi' => $programStudi
+        ]);
     }
 
     public function update(Request $request, ProgramStudi $programStudi)
@@ -77,7 +85,7 @@ class ProgramStudiController extends Controller
                 Storage::disk('public')->delete(str_replace('storage/', '', $programStudi->image));
             }
             $path = $request->file('image')->store('program_studi', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
         }
 
         $programStudi->update($validated);

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Dosen;
 use App\Http\Controllers\Controller;
+use App\Models\Dosen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class DosenController extends Controller
 {
@@ -13,19 +14,26 @@ class DosenController extends Controller
         'D3 Kebidanan',
         'S1 Farmasi',
         'S1 Gizi',
-        'Umum / Struktural'
+        'Umum / Struktural',
     ];
 
     public function index()
     {
         $dosens = Dosen::orderBy('order')->orderBy('name')->paginate(15);
-        return view('admin.dosens.index', compact('dosens'));
+
+        return Inertia::render('Admin/Dosens/Index', [
+            'dosens' => $dosens,
+        ]);
     }
 
     public function create()
     {
         $prodis = $this->prodiList;
-        return view('admin.dosens.create', compact('prodis'));
+
+        return Inertia::render('Admin/Dosens/Form', [
+            'dosen' => null,
+            'prodis' => $prodis,
+        ]);
     }
 
     public function store(Request $request)
@@ -48,7 +56,7 @@ class DosenController extends Controller
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('dosens', 'public');
-            $validated['photo'] = 'storage/' . $path;
+            $validated['photo'] = 'storage/'.$path;
         }
 
         Dosen::create($validated);
@@ -59,14 +67,18 @@ class DosenController extends Controller
     public function edit(Dosen $dosen)
     {
         $prodis = $this->prodiList;
-        return view('admin.dosens.edit', compact('dosen', 'prodis'));
+
+        return Inertia::render('Admin/Dosens/Form', [
+            'dosen' => $dosen,
+            'prodis' => $prodis,
+        ]);
     }
 
     public function update(Request $request, Dosen $dosen)
     {
         $validated = $request->validate([
-            'nip' => 'nullable|string|max:255|unique:dosens,nip,' . $dosen->id,
-            'nidn' => 'nullable|string|max:255|unique:dosens,nidn,' . $dosen->id,
+            'nip' => 'nullable|string|max:255|unique:dosens,nip,'.$dosen->id,
+            'nidn' => 'nullable|string|max:255|unique:dosens,nidn,'.$dosen->id,
             'name' => 'required|string|max:255',
             'position' => 'nullable|string|max:255',
             'prodi' => 'nullable|string|max:255',
@@ -85,7 +97,7 @@ class DosenController extends Controller
                 Storage::disk('public')->delete(str_replace('storage/', '', $dosen->photo));
             }
             $path = $request->file('photo')->store('dosens', 'public');
-            $validated['photo'] = 'storage/' . $path;
+            $validated['photo'] = 'storage/'.$path;
         }
 
         $dosen->update($validated);

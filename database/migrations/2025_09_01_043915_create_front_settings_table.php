@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('front_settings', function (Blueprint $table) {
-        $table->id();
-        $table->string('key')->unique();   // contoh: site_logo, site_favicon, meta_title, meta_description
-        $table->text('value')->nullable(); // simpan string / path gambar / kode script
-        $table->string('type')->default('text'); // text, image, json
-        $table->timestamps();
-    });
+        Schema::create('front_settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('key')->unique();   // contoh: site_logo, site_favicon, meta_title, meta_description
+            $table->text('value')->nullable(); // simpan string / path gambar / kode script
+            $table->string('type')->default('text'); // text, image, json
+            $table->timestamps();
+        });
     }
 
     /**

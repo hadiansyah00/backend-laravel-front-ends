@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FrontSetting extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'key',
         'value',
         'type',

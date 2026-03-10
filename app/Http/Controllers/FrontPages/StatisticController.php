@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers\FrontPages;
 
+use App\Http\Controllers\Controller;
 use App\Models\Statistic;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 
 class StatisticController extends Controller
 {
-     /**
+    /**
      * Tampilkan daftar statistik
      */
     public function index()
     {
         $statistics = Statistic::orderBy('order', 'asc')->paginate(10);
 
-        return view('admin.statistics.index', compact('statistics'));
+        return Inertia::render('Admin/Statistics/Index', [
+            'statistics' => $statistics,
+        ]);
     }
 
     /**
@@ -23,7 +26,9 @@ class StatisticController extends Controller
      */
     public function create()
     {
-        return view('admin.statistics.create');
+        return Inertia::render('Admin/Statistics/Form', [
+            'statistic' => null,
+        ]);
     }
 
     /**
@@ -34,7 +39,7 @@ class StatisticController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'value' => 'required|numeric',
-            'icon'  => 'nullable|string|max:255', // misalnya pakai nama class icon
+            'icon' => 'nullable|string|max:255', // misalnya pakai nama class icon
             'order' => 'nullable|integer',
         ]);
 
@@ -51,7 +56,9 @@ class StatisticController extends Controller
     {
         $statistic = Statistic::findOrFail($id);
 
-        return view('admin.statistics.edit', compact('statistic'));
+        return Inertia::render('Admin/Statistics/Form', [
+            'statistic' => $statistic,
+        ]);
     }
 
     /**
@@ -62,7 +69,7 @@ class StatisticController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'value' => 'required|numeric',
-            'icon'  => 'nullable|string|max:255',
+            'icon' => 'nullable|string|max:255',
             'order' => 'nullable|integer',
         ]);
 

@@ -170,6 +170,54 @@ export default function Dashboard({ auth, stats }) {
                             </div>
                         </div>
 
+                        {/* Card: Users */}
+                        <div className="group relative overflow-hidden bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i className="fas fa-users text-6xl text-indigo-500"></i>
+                            </div>
+                            <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/20">
+                                    <i className="fas fa-users text-xl text-indigo-600 dark:text-indigo-400"></i>
+                                </div>
+                                <div>
+                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{stats?.users || 0}</p>
+                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Pengguna Akun</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card: Roles */}
+                        <div className="group relative overflow-hidden bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-xl hover:shadow-rose-500/10 transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i className="fas fa-user-shield text-6xl text-rose-500"></i>
+                            </div>
+                            <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center border border-rose-100 dark:border-rose-500/20">
+                                    <i className="fas fa-user-shield text-xl text-rose-600 dark:text-rose-400"></i>
+                                </div>
+                                <div>
+                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{stats?.roles || 0}</p>
+                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Grup Akses (Roles)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card: Menus */}
+                        <div className="group relative overflow-hidden bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i className="fas fa-sitemap text-6xl text-teal-500"></i>
+                            </div>
+                            <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center border border-teal-100 dark:border-teal-500/20">
+                                    <i className="fas fa-sitemap text-xl text-teal-600 dark:text-teal-400"></i>
+                                </div>
+                                <div>
+                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{stats?.menus || 0}</p>
+                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Menu Navigasi</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

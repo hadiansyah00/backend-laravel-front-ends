@@ -1,24 +1,29 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
     /**
      * Display a listing of the resource and a form to create new roles.
      */
-    public function index(): View
+    public function index(): Response
     {
         // Ambil semua role dan semua permission
         $roles = Role::with('permissions')->orderBy('name')->get();
         $permissions = Permission::orderBy('name')->get();
 
-        return view('roles.index', compact('roles', 'permissions'));
+        return Inertia::render('Admin/Roles/Index', [
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -28,7 +33,7 @@ class RoleController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
-            'permissions' => 'nullable|array'
+            'permissions' => 'nullable|array',
         ]);
 
         // Buat role baru
@@ -37,17 +42,22 @@ class RoleController extends Controller
         // Tetapkan permission yang dipilih
         $role->syncPermissions($request->input('permissions', []));
 
-        return redirect()->route('roles.index')->with('success', 'Role baru berhasil dibuat.');
+        return redirect()->route('admin.roles.index')->with('success', 'Role baru berhasil dibuat.');
     }
 
     /**
      * Show the form for editing the specified role.
      * (Ini sama seperti jawaban sebelumnya, tetap diperlukan)
      */
-    public function edit(Role $role): View
+    public function edit(Role $role): Response
     {
         $permissions = Permission::orderBy('name')->get();
-        return view('roles.edit', compact('role', 'permissions'));
+
+        return Inertia::render('Admin/Roles/Form', [
+            'role' => $role,
+            'permissions' => $permissions,
+            'isEdit' => true,
+        ]);
     }
 
     /**
@@ -57,14 +67,14 @@ class RoleController extends Controller
     public function update(Request $request, Role $role): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'permissions' => 'nullable|array'
+            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
+            'permissions' => 'nullable|array',
         ]);
 
         $role->update(['name' => $request->name]);
         $role->syncPermissions($request->input('permissions', []));
 
-        return redirect()->route('roles.index')->with('success', 'Role berhasil diperbarui.');
+        return redirect()->route('admin.roles.index')->with('success', 'Role berhasil diperbarui.');
     }
 
     /**
@@ -79,6 +89,6 @@ class RoleController extends Controller
 
         $role->delete();
 
-        return redirect()->route('roles.index')->with('success', 'Role berhasil dihapus.');
+        return redirect()->route('admin.roles.index')->with('success', 'Role berhasil dihapus.');
     }
 }

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompanyProfileVideo;
 use App\Models\Menu;
+use App\Models\ProgramStudi;
 use App\Models\Slider;
 use App\Models\Statistic;
-use Illuminate\View\View;
 use App\Models\Testimonial;
-use App\Models\ProgramStudi;
-use Illuminate\Http\Request;
-use App\Models\CompanyProfileVideo;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http; // Pastikan ini diimport
+use Illuminate\Support\Facades\Http;
+use Illuminate\View\View; // Pastikan ini diimport
 use Inertia\Inertia;
 
 class FrontPagesController extends Controller
@@ -26,7 +25,7 @@ class FrontPagesController extends Controller
             try {
                 $response = Http::timeout(3)->get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
                     '_embed' => true,
-                    'per_page' => 6
+                    'per_page' => 6,
                 ]);
 
                 if ($response->successful()) {
@@ -64,7 +63,6 @@ class FrontPagesController extends Controller
             return CompanyProfileVideo::where('is_active', true)->first();
         });
 
-
         $testimonials = Cache::remember('testimonials_all', 3600, function () {
             return Testimonial::all();
         });
@@ -85,10 +83,11 @@ class FrontPagesController extends Controller
         // Untuk saat ini, kita hanya akan menampilkan view-nya.
         return view('front-pages.wilayah-organisasi.index');
     }
+
     public function beritaDetail($slug)
     {
         try {
-            $response = Http::get("https://api.sbh.ac.id/wp-json/wp/v2/posts", [
+            $response = Http::get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
                 'slug' => $slug,
                 '_embed' => true,
             ]);
@@ -97,8 +96,9 @@ class FrontPagesController extends Controller
                 $posts = $response->json();
 
                 // Pastikan ada data
-                if (!empty($posts)) {
+                if (! empty($posts)) {
                     $detail = $posts[0]; // slug selalu unik → ambil index 0
+
                     return view('front-pages.berita.index', compact('detail'));
                 } else {
                     abort(404, 'Berita tidak ditemukan');

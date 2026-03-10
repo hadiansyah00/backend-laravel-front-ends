@@ -2,9 +2,36 @@ import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import DynamicSectionsRenderer from '@/Components/Sections/DynamicSectionsRenderer';
 
-export default function Dosen() {
-    // Injecting the JSON data provided by user
-    const dummySectionsConfig = [
+export default function Dosen({ groupedDosen }) {
+    // Convert backend grouped data to the format expected by DynamicSectionsRenderer / DosenListSection
+    const formattedDosen = Object.keys(groupedDosen || {}).map(prodiName => {
+        const prodiGroup = groupedDosen[prodiName];
+
+        // Group by status (Tetap / Tidak Tetap)
+        const tetap = prodiGroup.filter(d => d.status === 'Tetap' || d.status === 'Dosen Tetap').map(d => ({
+            id: d.id,
+            name: d.name,
+            photo: d.photo ? `/storage/${d.photo.replace('storage/', '')}` : "/assets/img/dosen/default.png",
+            position: d.status || 'Dosen Tetap',
+            expertise: d.expertise ? d.expertise.split(',').map(e => e.trim()) : []
+        }));
+
+        const tidak_tetap = prodiGroup.filter(d => d.status === 'Tidak Tetap' || d.status === 'Dosen Tidak Tetap' || d.status === 'LB' || d.status === 'Dosen LB').map(d => ({
+            id: d.id,
+            name: d.name,
+            photo: d.photo ? `/storage/${d.photo.replace('storage/', '')}` : "/assets/img/dosen/default.png",
+            position: d.status || 'Dosen Tidak Tetap',
+            expertise: d.expertise ? d.expertise.split(',').map(e => e.trim()) : []
+        }));
+
+        return {
+            prodi: prodiName,
+            tetap,
+            tidak_tetap
+        };
+    });
+
+    const sectionsConfig = [
         {
             type: 'hero_static',
             content: {
@@ -18,69 +45,14 @@ export default function Dosen() {
             content: {
                 title: "Dosen STIKes Bogor Husada",
                 subtitle: "Tenaga pendidik profesional yang mendukung kegiatan akademik di STIKes Bogor Husada.",
-                dosen: [
-                    {
-                        prodi: "D3 Kebidanan",
-                        tetap: [
-                            { id: 1, name: "Mukhlisiana Ahmad, Sst., M.Kes", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 2, name: "Yuanita Viva AD, SST., S.Pd., M.Kes", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 3, name: "Lia Indria Sari, SST., M.Kes", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 4, name: "Riana Ulfah, S.SiT., M.KM", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 5, name: "Lala Jamilah, M.Keb", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 6, name: "Nunik Hardiawaty., S.SiT., M.Kes", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 7, name: "Lussy Citra Resmi, M.Pd", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] }
-                        ],
-                        tidak_tetap: []
-                    },
-                    {
-                        prodi: "S1 Farmasi",
-                        tetap: [
-                            { id: 8, name: "apt. Anna Uswatun Hasanah R., M.Farm", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 9, name: "apt. Rahmadhani Iyas A., M.Farm", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 10, name: "Ilham Maulana, M.Farm", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 11, name: "Aden Dhana Rizkita, M.Si", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 12, name: "apt. Delviza Syari, M.Farm", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 13, name: "dr. Martina Sari Lubis, MARS", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 27, name: "Rhamal Amir, M.Farm", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] }
-                        ],
-                        tidak_tetap: []
-                    },
-                    {
-                        prodi: "S1 Gizi",
-                        tetap: [
-                            { id: 14, name: "Ahmad Hisbullah Amrinanto, M.Si", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 15, name: "Rahmi Dzulfijjah, M.Gz", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 16, name: "Dendy Widianto, M.Kes", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 17, name: "Ksatria Widya Dwinugraha, M.Si", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 18, name: "Ezria Ekafadhina Adyas, M.Sc", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 19, name: "Dwikari Okliata Anggiruling, M.Si", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 26, name: "Muh Guntur Sunarjono Putra, M.Gz", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 28, name: "Asri Ismiyani Nurlita, M.Gz", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 29, name: "Widi Siti Rodhiah, M.Gizi", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] },
-                            { id: 30, name: "Deannisa Fajriaty, S.Si., M.Gz", photo: "/assets/img/dosen/default.png", position: "Dosen Tetap", expertise: [] }
-                        ],
-                        tidak_tetap: []
-                    },
-                    {
-                        prodi: "Umum",
-                        tetap: [],
-                        tidak_tetap: [
-                            { id: 20, name: "R. Andriadi Achmad, M.IP", photo: "/assets/img/dosen/default.png", position: "Dosen Tidak Tetap", expertise: [] },
-                            { id: 21, name: "Dr. Jeffry Rustandi, M.KM", photo: "/assets/img/dosen/default.png", position: "Dosen Tidak Tetap", expertise: [] },
-                            { id: 22, name: "Sutisna, M.Ag", photo: "/assets/img/dosen/default.png", position: "Dosen Tidak Tetap", expertise: [] },
-                            { id: 23, name: "Dr. H. Riady Yanto, S.Pd., M.M", photo: "/assets/img/dosen/default.png", position: "Dosen Tidak Tetap", expertise: [] },
-                            { id: 24, name: "Adhy Winawan, M.H", photo: "/assets/img/dosen/default.png", position: "Dosen Tidak Tetap", expertise: [] },
-                            { id: 25, name: "Nur Alam Islamy, M.Pd", photo: "/assets/img/dosen/default.png", position: "Dosen Tidak Tetap", expertise: [] }
-                        ]
-                    }
-                ]
+                dosen: formattedDosen
             }
         }
     ];
 
     return (
         <MainLayout title="Direktori Dosen | STIKes Bogor Husada">
-            <DynamicSectionsRenderer sections={dummySectionsConfig} />
+            <DynamicSectionsRenderer sections={sectionsConfig} />
         </MainLayout>
     );
 }

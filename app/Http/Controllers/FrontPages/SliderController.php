@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers\FrontPages;
 
+use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 
 class SliderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $sliders = Slider::orderBy('order')->paginate(10);
-        return view('admin.sliders.index', compact('sliders'));
+
+        return Inertia::render('Admin/Sliders/Index', [
+            'sliders' => $sliders,
+        ]);
     }
 
     public function create()
     {
-        return view('admin.sliders.create');
+        return Inertia::render('Admin/Sliders/Form', [
+            'slider' => null,
+        ]);
     }
 
     public function store(Request $request)
@@ -43,12 +49,13 @@ class SliderController extends Controller
         return redirect()->route('admin.sliders.index')->with('success', 'Slider berhasil ditambahkan.');
     }
 
-
-
     public function edit($id)
     {
         $slider = Slider::findOrFail($id);
-        return view('admin.sliders.edit', compact('slider'));
+
+        return Inertia::render('Admin/Sliders/Form', [
+            'slider' => $slider,
+        ]);
     }
 
     public function update(Request $request, $id)

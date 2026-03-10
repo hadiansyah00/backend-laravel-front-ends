@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\ProgramStudi;
+use Illuminate\Database\Seeder;
 
 class ProgramStudiSeeder extends Seeder
 {

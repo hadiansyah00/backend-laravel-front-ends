@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Event;
 use App\Http\Controllers\Controller;
+use App\Models\Event;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
     public function index()
     {
         $events = Event::latest('start_date')->paginate(15);
-        return view('admin.events.index', compact('events'));
+
+        return Inertia::render('Admin/Events/Index', [
+            'events' => $events,
+        ]);
     }
 
     public function create()
     {
-        return view('admin.events.create');
+        return Inertia::render('Admin/Events/Form');
     }
 
     public function store(Request $request)
@@ -33,13 +37,13 @@ class EventController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $validated['slug'] = Str::slug($request->title) . '-' . uniqid();
+        $validated['slug'] = Str::slug($request->title).'-'.uniqid();
         $validated['is_active'] = $request->has('is_active');
         $validated['user_id'] = auth()->id();
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('events', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
         }
 
         Event::create($validated);
@@ -49,7 +53,9 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        return view('admin.events.edit', compact('event'));
+        return Inertia::render('Admin/Events/Form', [
+            'event' => $event,
+        ]);
     }
 
     public function update(Request $request, Event $event)
@@ -71,7 +77,7 @@ class EventController extends Controller
                 Storage::disk('public')->delete(str_replace('storage/', '', $event->image));
             }
             $path = $request->file('image')->store('events', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
         }
 
         $event->update($validated);

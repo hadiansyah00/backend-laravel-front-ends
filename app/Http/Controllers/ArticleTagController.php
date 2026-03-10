@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\article_tag;
 use App\Http\Requests\Storearticle_tagRequest;
 use App\Http\Requests\Updatearticle_tagRequest;
+use App\Models\article_tag;
 
 class ArticleTagController extends Controller
 {

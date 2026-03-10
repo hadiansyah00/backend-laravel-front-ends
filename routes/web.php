@@ -1,31 +1,29 @@
 <?php
 
-use App\Models\Article;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TagsController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\MetaController;
-use App\Http\Controllers\FrontPagesController;
-use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Admin\PagesController;
-use App\Http\Controllers\PendaftaranEmailController;
 use App\Http\Controllers\Admin\PageSectionController;
-use App\Http\Controllers\FrontPages\SliderController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
+use App\Http\Controllers\FrontPages\FrontSettingController;
+use App\Http\Controllers\FrontPages\SliderController;
 use App\Http\Controllers\FrontPages\StatisticController;
 use App\Http\Controllers\FrontPages\TestimonialController;
-use App\Http\Controllers\FrontPages\FrontSettingController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
-
+use App\Http\Controllers\FrontPagesController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PendaftaranEmailController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TagsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PublicInfoController;
+use Illuminate\Support\Facades\Route;
 
 // ================== FRONTEND (Public) ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
@@ -46,13 +44,12 @@ Route::prefix('pendaftaran-email')->group(function () {
 });
 
 // ================== PLACHOLDER ROUTES (Dari Menu Seeder) ================== //
-Route::get('/pengumuman', fn() => Inertia::render('Pengumuman'))->name('pengumuman.index');
-Route::get('/event', fn() => Inertia::render('Event'))->name('event.index');
-Route::get('/galeri', fn() => Inertia::render('Galeri'))->name('galeri.index');
-Route::get('/dokumen', fn() => Inertia::render('Dokumen'))->name('dokumen.index');
-Route::get('/dosen', fn() => Inertia::render('Dosen'))->name('dosen.index');
-Route::get('/alumni', fn() => Inertia::render('Alumni'))->name('alumni.index');
-
+Route::get('/pengumuman', fn () => Inertia::render('Pengumuman'))->name('pengumuman.index');
+Route::get('/event', fn () => Inertia::render('Event'))->name('event.index');
+Route::get('/galeri', fn () => Inertia::render('Galeri'))->name('galeri.index');
+Route::get('/dokumen', fn () => Inertia::render('Dokumen'))->name('dokumen.index');
+Route::get('/dosen', fn () => Inertia::render('Dosen'))->name('dosen.index');
+Route::get('/alumni', fn () => Inertia::render('Alumni'))->name('alumni.index');
 
 // ================== AUTH ================== //
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -71,7 +68,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-
 // ================== DASHBOARD ================== //
 Route::get('/dashboard', function () {
     return \Inertia\Inertia::render('Admin/Dashboard', [
@@ -82,10 +78,12 @@ Route::get('/dashboard', function () {
             'dosen' => \App\Models\Dosen::count(),
             'alumni' => \App\Models\Alumni::count(),
             'pages' => \App\Models\Pages::whereNotIn('category', ['berita'])->count(),
-        ]
+            'users' => \App\Models\User::count(),
+            'roles' => \Spatie\Permission\Models\Role::count(),
+            'menus' => \App\Models\Menu::count(),
+        ],
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 
 // ================== ADMIN ================== //
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(function () {
@@ -122,6 +120,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('pages', PagesController::class);
     Route::resource('pages.sections', PageSectionController::class)->shallow();
 
+    // --- Media Library ---
+    Route::resource('media', \App\Http\Controllers\MediaController::class)->only(['index', 'store', 'destroy']);
+
     // --- SEO Meta ---
     Route::prefix('seo')->name('seo.')->group(function () {
         Route::get('{type}/{id}/edit', [MetaController::class, 'edit'])->name('edit');
@@ -139,94 +140,102 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
         Route::resource('statistics', StatisticController::class)->except('show');
         Route::resource('company-profile-videos', CompanyProfileVideoController::class)->except('show')
             ->names([
-                'index'   => 'companyprofile.index',
-                'create'  => 'companyprofile.create',
-                'store'   => 'companyprofile.store',
-                'edit'    => 'companyprofile.edit',
-                'update'  => 'companyprofile.update',
+                'index' => 'companyprofile.index',
+                'create' => 'companyprofile.create',
+                'store' => 'companyprofile.store',
+                'edit' => 'companyprofile.edit',
+                'update' => 'companyprofile.update',
                 'destroy' => 'companyprofile.destroy',
             ]);
 
-        // Front Settings (only index + update)
-        Route::get('settings', [FrontSettingController::class, 'index'])->name('frontsettings.index');
-        Route::post('settings', [FrontSettingController::class, 'update'])->name('frontsettings.update');
+        // Front Settings
+        Route::get('settings', [FrontSettingController::class, 'index'])->name('settings.index');
+        Route::post('settings', [FrontSettingController::class, 'update'])->name('settings.update');
+
+        // Meta (SEO) Settings
+        Route::get('seo/{type}/{id}', [MetaController::class, 'edit'])->name('seo.edit');
+        Route::put('seo/{type}/{id}', [MetaController::class, 'update'])->name('seo.update');
     });
 });
 
-
 // ================== DYNAMIC PAGES (Catch-all — MUST BE LAST) ================== // --- (DUMMY FRONTEND PREVIEW ROUTES) ---
-Route::get('/profil-stikes', function() {
+Route::get('/profil-stikes', function () {
     return inertia('Frontend/ProfilStikes');
 });
 
-Route::get('/sejarah', function() {
+Route::get('/sejarah', function () {
     return inertia('Frontend/Sejarah');
 });
 
-Route::get('/sambutan-ketua', function() {
+Route::get('/sambutan-ketua', function () {
     return inertia('Frontend/SambutanKetua');
 });
 
-Route::get('/visi-misi', function() {
+Route::get('/visi-misi', function () {
     return inertia('Frontend/VisiMisi');
 });
 
-Route::get('/struktur-organisasi', function() {
+Route::get('/struktur-organisasi', function () {
     return inertia('Frontend/StrukturOrganisasi');
 });
 
-Route::get('/farmasi', function() {
+Route::get('/farmasi', function () {
     return inertia('Frontend/Farmasi');
 });
 
-Route::get('/gizi', function() {
+Route::get('/gizi', function () {
     return inertia('Frontend/Gizi');
 });
 
-Route::get('/kebidanan', function() {
+Route::get('/kebidanan', function () {
     return inertia('Frontend/Kebidanan');
 });
 
-Route::get('/dosen', function() {
+Route::get('/dosen', function () {
     return inertia('Frontend/Dosen');
 });
 
-Route::get('/kalender-akademik', function() {
+Route::get('/kalender-akademik', function () {
     return inertia('Frontend/KalenderAkademik');
 });
 
-Route::get('/uppm', function() {
+Route::get('/uppm', function () {
     return inertia('Frontend/UPPM');
 });
-Route::get('/uppmi', function() {
+Route::get('/uppmi', function () {
     return inertia('Frontend/UPMI');
 });
-Route::get('/laboratorium', function() {
+Route::get('/laboratorium', function () {
     return inertia('Frontend/Laboratorium');
 });
-Route::get('/perpustakaan', function() {
+Route::get('/perpustakaan', function () {
     return inertia('Frontend/Perpustakaan');
 });
 
 // INFORMASI ROUTES
-Route::get('/berita', function() {
-    return inertia('Frontend/Berita');
+// (Route /berita dan /berita/{slug} sudah dihandle oleh BeritaController di atas)
+Route::get('/pengumuman', [PublicInfoController::class, 'pengumuman'])->name('front.pengumuman');
+Route::get('/pengumuman/{slug}', [PublicInfoController::class, 'pengumumanShow'])->name('front.pengumuman.show');
+
+Route::get('/event', [PublicInfoController::class, 'event'])->name('front.event');
+Route::get('/event/{slug}', [PublicInfoController::class, 'eventShow'])->name('front.event.show');
+
+Route::get('/dokumen', [PublicInfoController::class, 'dokumen'])->name('front.dokumen');
+Route::get('/galeri', [PublicInfoController::class, 'galeri'])->name('front.galeri');
+
+// MAHASISWA & ALUMNI ROUTES
+Route::get('/alumni', function () {
+    return inertia('Frontend/Alumni');
 });
-Route::get('/pengumuman', function() {
-    return inertia('Frontend/Pengumuman');
+Route::get('/lowongan', function () {
+    return inertia('Frontend/Lowongan');
 });
-Route::get('/event', function() {
-    return inertia('Frontend/Event');
+Route::get('/kerjasama', function () {
+    return inertia('Frontend/Kerjasama');
 });
-Route::get('/galeri', function() {
-    return inertia('Frontend/Galeri');
-});
-Route::get('/dokumen', function() {
-    return inertia('Frontend/Dokumen');
-});
+
+require __DIR__.'/auth.php';
 
 // Original fallback to Modular Pages Builder
 // Biarkan ini di-comment atau di bypass sementara untuk review
-// Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
-
-require __DIR__ . '/auth.php';
+Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');

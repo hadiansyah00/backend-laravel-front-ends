@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\Menu;
 use App\Models\Pages;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MenuAndPageSeeder extends Seeder
 {
@@ -20,8 +19,8 @@ class MenuAndPageSeeder extends Seeder
 
         // 2. Kosongkan tabel menus & bersihkan halaman yang dibuat oleh seeder sebelumnya (jika ada)
         Menu::truncate();
-        
-        // Catatan: kita tidak me-truncate Pages agar data lama tidak hilang, 
+
+        // Catatan: kita tidak me-truncate Pages agar data lama tidak hilang,
         // tapi kita bisa melakukan updateOrCreate berdasarkan slug.
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -37,7 +36,7 @@ class MenuAndPageSeeder extends Seeder
                     ['name' => 'Visi Misi', 'slug' => 'visi-misi', 'type' => 'page'],
                     ['name' => 'Sejarah', 'slug' => 'sejarah', 'type' => 'page'],
                     ['name' => 'Struktur Organisasi', 'slug' => 'struktur-organisasi', 'type' => 'page'],
-                ]
+                ],
             ],
             [
                 'name' => 'Akademik',
@@ -49,7 +48,7 @@ class MenuAndPageSeeder extends Seeder
                     ['name' => 'D3 Kebidanan', 'slug' => 'kebidanan', 'type' => 'page'],
                     ['name' => 'Dosen', 'slug' => 'dosen', 'type' => 'link', 'url' => '/dosen'],
                     ['name' => 'Kalender Akademik', 'slug' => 'kalender-akademik', 'type' => 'page'],
-                ]
+                ],
             ],
             [
                 'name' => 'Unit Lembaga',
@@ -60,7 +59,7 @@ class MenuAndPageSeeder extends Seeder
                     ['name' => 'UPMI', 'slug' => 'uppmi', 'type' => 'page'],
                     ['name' => 'Laboratorium', 'slug' => 'laboratorium', 'type' => 'page'],
                     ['name' => 'Perpustakaan', 'slug' => 'perpustakaan', 'type' => 'page'],
-                ]
+                ],
             ],
             [
                 'name' => 'Informasi',
@@ -72,7 +71,7 @@ class MenuAndPageSeeder extends Seeder
                     ['name' => 'Event', 'slug' => 'event', 'type' => 'link', 'url' => '/event'],
                     ['name' => 'Galeri', 'slug' => 'galeri', 'type' => 'link', 'url' => '/galeri'],
                     ['name' => 'Dokumen', 'slug' => 'dokumen', 'type' => 'link', 'url' => '/dokumen'],
-                ]
+                ],
             ],
             [
                 'name' => 'Mahasiswa & Alumni',
@@ -82,20 +81,20 @@ class MenuAndPageSeeder extends Seeder
                     ['name' => 'Alumni', 'slug' => 'alumni', 'type' => 'link', 'url' => '/alumni'],
                     ['name' => 'Lowongan', 'slug' => 'lowongan', 'type' => 'link', 'url' => '/lowongan'],
                     ['name' => 'Kerjasama', 'slug' => 'kerjasama', 'type' => 'page'],
-                ]
+                ],
             ],
             [
                 'name' => 'PMB',
                 'slug' => 'pmb',
                 'type' => 'link',
                 'url' => 'https://pmb.sbh.ac.id/',
-                'children' => []
+                'children' => [],
             ],
             [
                 'name' => 'Kontak',
                 'slug' => 'kontak',
                 'type' => 'page',
-                'children' => []
+                'children' => [],
             ],
         ];
 
@@ -125,11 +124,11 @@ class MenuAndPageSeeder extends Seeder
                                 [
                                     'type' => 'paragraph',
                                     'data' => [
-                                        'text' => 'Halaman utama untuk ' . $main['name'] . '.'
-                                    ]
-                                ]
+                                        'text' => 'Halaman utama untuk '.$main['name'].'.',
+                                    ],
+                                ],
                             ],
-                            'version' => '2.28.0'
+                            'version' => '2.28.0',
                         ]),
                         'is_published' => true,
                         'template' => 'default',
@@ -164,11 +163,11 @@ class MenuAndPageSeeder extends Seeder
                                         [
                                             'type' => 'paragraph',
                                             'data' => [
-                                                'text' => 'Konten untuk halaman ' . $child['name'] . ' sedang dalam tahap pengembangan.'
-                                            ]
-                                        ]
+                                                'text' => 'Konten untuk halaman '.$child['name'].' sedang dalam tahap pengembangan.',
+                                            ],
+                                        ],
                                     ],
-                                    'version' => '2.28.0'
+                                    'version' => '2.28.0',
                                 ]),
                                 'is_published' => true,
                                 'template' => 'default',

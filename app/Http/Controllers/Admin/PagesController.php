@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Menu;
-use App\Models\Pages;
-use Illuminate\View\View;
-use Illuminate\Support\Str;
-use App\Models\MetaSettings;
-use App\Models\ProgramStudi;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
+use App\Models\MetaSettings;
+use App\Models\Pages;
+use App\Models\ProgramStudi;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PagesController extends Controller
@@ -19,95 +17,121 @@ class PagesController extends Controller
      * Daftar semua section types yang tersedia untuk dynamic pages.
      */
     public const SECTION_TYPES = [
-        'hero'               => 'Hero Banner (dengan background & breadcrumbs)',
-        'title'              => 'Title Section (dengan overlay)',
+        'hero' => 'Hero Banner (dengan background & breadcrumbs)',
+        'title' => 'Title Section (dengan overlay)',
         'content-with-image' => 'Konten dengan Gambar (2 kolom)',
-        'visi-misi'          => 'Visi & Misi',
-        'timeline'           => 'Timeline / Sejarah',
-        'team-grid'          => 'Grid Tim / Dosen',
-        'image-text'         => 'Sambutan / Pesan (gambar + teks)',
-        'card-grid'          => 'Grid Kartu (program / peluang)',
-        'org-chart'          => 'Struktur Organisasi',
-        'prodi-profile'      => 'Profil Program Studi',
-        'feature'            => 'Feature Cards',
-        'richtext'           => 'Rich Text (CKEditor)',
-        'gallery'            => 'Galeri Foto / Video',
-        'faq'                => 'FAQ (Accordion)',
-        'cta-banner'         => 'Call-to-Action Banner',
-        'document-list'      => 'Daftar Dokumen / Download',
-        'contact-info'       => 'Informasi Kontak',
-        'stats'              => 'Statistik Angka',
-        'testimonial'        => 'Testimonial',
+        'visi-misi' => 'Visi & Misi',
+        'timeline' => 'Timeline / Sejarah',
+        'team-grid' => 'Grid Tim / Dosen',
+        'image-text' => 'Sambutan / Pesan (gambar + teks)',
+        'card-grid' => 'Grid Kartu (program / peluang)',
+        'org-chart' => 'Struktur Organisasi',
+        'prodi-profile' => 'Profil Program Studi',
+        'feature' => 'Feature Cards',
+        'richtext' => 'Rich Text (CKEditor)',
+        'gallery' => 'Galeri Foto / Video',
+        'faq' => 'FAQ (Accordion)',
+        'cta-banner' => 'Call-to-Action Banner',
+        'document-list' => 'Daftar Dokumen / Download',
+        'contact-info' => 'Informasi Kontak',
+        'stats' => 'Statistik Angka',
+        'testimonial' => 'Testimonial',
+    ];
+
+    /**
+     * Kategori Template Halaman.
+     */
+    public const PAGE_TEMPLATES = [
+        'default' => 'Template Standar (Universal Builder)',
+        'profil_institusi' => 'Profil Institusi (Visi, Misi, Sejarah)',
+        'fasilitas' => 'Fasilitas Kampus',
+        'unit_lembaga' => 'Unit & Lembaga',
+        'kontak' => 'Hubungi Kami',
     ];
 
     /**
      * Kategori halaman untuk pengelompokan.
      */
     public const PAGE_CATEGORIES = [
-        'tentang'    => 'Tentang',
-        'akademik'   => 'Akademik',
-        'unit'       => 'Unit & Lembaga',
-        'informasi'  => 'Informasi',
-        'pmb'        => 'PMB',
-        'fasilitas'  => 'Fasilitas',
-        'alumni'     => 'Alumni & Karir',
-        'lainnya'    => 'Lainnya',
+        'tentang' => 'Tentang',
+        'akademik' => 'Akademik',
+        'unit' => 'Unit & Lembaga',
+        'informasi' => 'Informasi',
+        'pmb' => 'PMB',
+        'fasilitas' => 'Fasilitas',
+        'alumni' => 'Alumni & Karir',
+        'lainnya' => 'Lainnya',
     ];
 
-    public function index(): View
+    public function index()
     {
-        $pages = Pages::latest()->get();
-        return view('admin.pages.index', compact('pages'));
+        $pages = Pages::with('menu')->latest()->get();
+
+        return Inertia::render('Admin/Pages/Index', [
+            'pages' => $pages,
+        ]);
     }
 
-    public function create(): View
+    public function create()
     {
-        $sectionTypes = self::SECTION_TYPES;
-        $categories = self::PAGE_CATEGORIES;
-        return view('admin.pages.create', compact('sectionTypes', 'categories'));
+        $menus = Menu::whereNull('parent_id')->with('children')->orderBy('order')->get();
+        $templates = self::PAGE_TEMPLATES;
+
+        return Inertia::render('Admin/Pages/Form', [
+            'menus' => $menus,
+            'templates' => $templates,
+            'page' => null,
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'title'        => 'required|string|max:255|unique:pages,title',
-            'type'         => 'required|in:standard,modular',
-            'slug'         => 'nullable|string|max:255|unique:pages,slug',
-            'content'      => 'nullable|string',
+            'menu_id' => 'required|exists:menus,id',
+            'title' => 'required|string|max:255|unique:pages,title',
+            'slug' => 'nullable|string|max:255|unique:pages,slug',
+            'template' => 'required|string|max:100',
             'is_published' => 'required|boolean',
-            'template'     => 'nullable|string|max:100',
-            'category'     => 'nullable|string|max:100',
-            'icon'         => 'nullable|string|max:255',
-            'order'        => 'nullable|integer',
-            'parent_slug'  => 'nullable|string|max:255',
+            'hero_title' => 'nullable|string|max:255',
+            'hero_subtitle' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('hero_bg_image')) {
+            $validated['hero_bg_image'] = $request->file('hero_bg_image')->store('uploads/pages/hero', 'public');
+        }
 
         Pages::create($validated);
 
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dibuat.');
     }
 
-    public function edit(Pages $page): View
+    public function edit(Pages $page)
     {
-        $sectionTypes = self::SECTION_TYPES;
-        $categories = self::PAGE_CATEGORIES;
-        return view('admin.pages.edit', compact('page', 'sectionTypes', 'categories'));
+        $menus = Menu::whereNull('parent_id')->with('children')->orderBy('order')->get();
+        $templates = self::PAGE_TEMPLATES;
+
+        return Inertia::render('Admin/Pages/Form', [
+            'page' => $page,
+            'menus' => $menus,
+            'templates' => $templates,
+        ]);
     }
 
     public function update(Request $request, Pages $page): RedirectResponse
     {
         $validated = $request->validate([
-            'title'        => 'required|string|max:255|unique:pages,title,' . $page->id,
-            'slug'         => 'nullable|string|max:255|unique:pages,slug,' . $page->id,
-            'type'         => 'required|in:standard,modular',
-            'content'      => 'nullable|string',
+            'menu_id' => 'required|exists:menus,id',
+            'title' => 'required|string|max:255|unique:pages,title,'.$page->id,
+            'slug' => 'nullable|string|max:255|unique:pages,slug,'.$page->id,
+            'template' => 'required|string|max:100',
             'is_published' => 'required|boolean',
-            'template'     => 'nullable|string|max:100',
-            'category'     => 'nullable|string|max:100',
-            'icon'         => 'nullable|string|max:255',
-            'order'        => 'nullable|integer',
-            'parent_slug'  => 'nullable|string|max:255',
+            'hero_title' => 'nullable|string|max:255',
+            'hero_subtitle' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('hero_bg_image')) {
+            $validated['hero_bg_image'] = $request->file('hero_bg_image')->store('uploads/pages/hero', 'public');
+        }
 
         $page->update($validated);
 
@@ -117,6 +141,7 @@ class PagesController extends Controller
     public function destroy(Pages $page): RedirectResponse
     {
         $page->delete();
+
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dihapus.');
     }
 
@@ -129,7 +154,6 @@ class PagesController extends Controller
 
         // fallback meta default
         $meta = $page->meta ?? MetaSettings::default()->first();
-
 
         $menus = Menu::whereNull('parent_id')
             ->active()
@@ -151,6 +175,7 @@ class PagesController extends Controller
                     } else {
                         $section->decoded_content = [];
                     }
+
                     return $section;
                 });
             $programStudis = ProgramStudi::all();

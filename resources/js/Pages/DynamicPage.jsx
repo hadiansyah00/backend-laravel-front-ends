@@ -1,6 +1,7 @@
 import React from 'react';
 import MainLayout from '../Layouts/MainLayout';
 import SectionRenderer from '../Sections/SectionRenderer';
+import Hero from '../Sections/Hero';
 import { Head } from '@inertiajs/react';
 
 // Helper untuk memparsing JSON string Editor.js
@@ -40,27 +41,39 @@ export default function DynamicPage({ page, sections }) {
             </Head>
 
             <article className="w-full">
-                {/* Looping semua sections dan me-render berdasarkan type */}
-                {sections && sections.length > 0 ? (
-                    sections.map((section, index) => (
-                        <SectionRenderer key={section.id || index} section={section} pageInfo={page} />
-                    ))
-                ) : (
-                    // Fallback jika page tidak menggunakan section modular tapi content HTML/JSON basic
-                    <div className="pt-32 pb-24 bg-gray-50">
-                        <div className="container px-6 mx-auto lg:px-12">
-                            <div className="max-w-4xl mx-auto p-10 bg-white shadow-lg rounded-3xl">
-                                <h1 className="text-4xl font-extrabold text-gray-900 md:text-5xl text-center mb-6">
-                                    {page?.title}
-                                </h1>
-                                <div className="w-24 h-1.5 mx-auto mt-6 mb-12 bg-orange-600 rounded-full"></div>
-                                <div className="prose prose-lg prose-indigo max-w-none text-gray-600 leading-relaxed">
-                                    <div dangerouslySetInnerHTML={{ __html: parseBlockContent(page?.content) || '<p class="text-center text-gray-500 italic">Konten halaman sedang diperbarui.</p>' }} />
+
+                {/* 1. Universal Hero Section (Built-in for all pages) */}
+                <Hero
+                    content={{
+                        title: page?.hero_title || page?.title,
+                        subtitle: page?.hero_subtitle,
+                        image: page?.hero_bg_image,
+                        gradient: 'dark', // default visual
+                        breadcrumbs: []   // add breadcrumb logic if needed
+                    }}
+                    pageInfo={page}
+                />
+
+                {/* 2. Dynamic Content Sections Builder */}
+                <div className="bg-white">
+                    {sections && sections.length > 0 ? (
+                        sections.map((section, index) => (
+                            <SectionRenderer key={section.id || index} section={section} pageInfo={page} />
+                        ))
+                    ) : (
+                        /* Fallback jika page tidak memiliki section satupun / masih kosong */
+                        <div className="py-24 max-w-4xl mx-auto px-6 text-center">
+                            {page?.content ? (
+                                /* Legacy support jika masih ada data konten lama di database */
+                                <div className="prose prose-lg prose-indigo mx-auto text-left text-gray-600">
+                                    <div dangerouslySetInnerHTML={{ __html: parseBlockContent(page?.content) }} />
                                 </div>
-                            </div>
+                            ) : (
+                                <p className="text-gray-500 italic">Konten halaman sedang dalam penyesuaian oleh tim admin.</p>
+                            )}
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </article>
 
         </MainLayout>

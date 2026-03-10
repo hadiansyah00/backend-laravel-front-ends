@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class FrontSettingsSeeder extends Seeder
 {
@@ -29,7 +28,7 @@ class FrontSettingsSeeder extends Seeder
                 ['name' => 'Instagram', 'url' => 'https://www.instagram.com/stikesbogorhusada/'],
                 ['name' => 'YouTube', 'url' => 'https://www.youtube.com/channel/UCxxxxxx'],
             ]), 'type' => 'json'],
-            ['key' => 'copyright_text', 'value' => '© ' . date('Y') . ' STIKes Bogor Husada. All rights reserved.', 'type' => 'text'],
+            ['key' => 'copyright_text', 'value' => '© '.date('Y').' STIKes Bogor Husada. All rights reserved.', 'type' => 'text'],
         ]);
     }
 }

@@ -37,7 +37,7 @@ class HandleInertiaRequests extends Middleware
     {
         // Ambil pengaturan yang sering dipakai
         $settings = \App\Models\FrontSetting::pluck('value', 'key')->toArray();
-        
+
         // Ambil menu hierarkis
         $menus = \App\Models\Menu::with('children')->where('is_active', 1)->whereNull('parent_id')->orderBy('order')->get();
 
