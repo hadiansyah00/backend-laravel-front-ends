@@ -64,7 +64,7 @@ export default function MediaPicker({ onSelect, trigger }) {
     };
 
     const handleSelect = (item) => {
-        onSelect(item.url);
+        onSelect(item.path);
         setIsOpen(false);
     };
 
@@ -130,7 +130,7 @@ export default function MediaPicker({ onSelect, trigger }) {
                                         >
                                             <div className="aspect-square bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
                                                 {item.mime_type?.startsWith('image/') ? (
-                                                    <img src={item.url} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                                    <img src={`/storage/${item.path}`} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                                                 ) : (
                                                     <i className="fas fa-file-pdf text-4xl text-red-500 group-hover:scale-110 transition-transform"></i>
                                                 )}

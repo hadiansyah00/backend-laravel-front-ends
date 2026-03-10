@@ -17,12 +17,29 @@ class DosenController extends Controller
         'Umum / Struktural',
     ];
 
-    public function index()
+    public function index(Request $request)
     {
-        $dosens = Dosen::orderBy('order')->orderBy('name')->paginate(15);
+        $query = Dosen::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('nip', 'like', "%{$search}%")
+                  ->orWhere('nidn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('prodi')) {
+            $query->where('prodi', $request->prodi);
+        }
+
+        $dosens = $query->orderBy('order')->orderBy('name')->paginate(15)->withQueryString();
 
         return Inertia::render('Admin/Dosens/Index', [
             'dosens' => $dosens,
+            'filters' => $request->only(['search', 'prodi']),
+            'prodis' => $this->prodiList,
         ]);
     }
 

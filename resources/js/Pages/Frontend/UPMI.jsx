@@ -2,34 +2,38 @@ import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import DynamicSectionsRenderer from '@/Components/Sections/DynamicSectionsRenderer';
 
-export default function UPMI() {
+export default function UPMI({ fasilitasData }) {
+    const data = fasilitasData || {};
+    const facilities = Array.isArray(data.facilities) ? data.facilities : [];
+
     const dummySectionsConfig = [
         {
             type: 'hero_static',
             content: {
-                title: 'Unit Penjaminan Mutu Internal (UPMI)',
+                title: data.name || 'Unit Penjaminan Mutu Internal (UPMI)',
                 subtitle: 'Mengawal standar kualitas tri dharma perguruan tinggi melalui sistem penjaminan mutu yang terukur dan berkelanjutan.',
-                bgImage: '/assets/img/hero-fallback.png'
+                bgImage: data.image ? '/' + data.image : '/assets/img/hero-fallback.png'
             }
         },
         {
             type: 'content_with_image',
             content: {
                 title: 'Mengenal UPMI',
-                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2070', // Audit/Quality concept
-                align: 'right', // image on right, text on left
+                image: data.image ? '/' + data.image : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2070',
+                align: 'right',
                 imageAspectRatio: 'aspect-[4/3]',
-                content: `
-                    <p class="mb-4"><strong>UPMI STIKes Bogor Husada</strong> adalah pilar utama dalam menjaga kredibilitas dan keunggulan institusi. Kami bertanggung jawab untuk memastikan bahwa seluruh aktivitas akademik dan non-akademik di kampus selaras dengan Standar Nasional Pendidikan Tinggi (SN-Dikti).</p>
-                    <p class="mb-4">Melalui siklus Penetapan, Pelaksanaan, Evaluasi, Pengendalian, dan Peningkatan (PPEPP), UPMI mengaudit mutu manajemen kampus secara periodik. Layanan pendidikan yang bermutu tidak hanya memberikan pengalaman belajar terbaik bagi mahasiswa, namun juga menjadi pondasi utama akreditasi LAM-PTKes yang "Baik Sekali".</p>
-                `
+                content: '<p class="mb-4">' + (data.description || 'UPMI STIKes Bogor Husada adalah pilar utama dalam menjaga kredibilitas dan keunggulan institusi. Kami bertanggung jawab untuk memastikan bahwa seluruh aktivitas akademik dan non-akademik di kampus selaras dengan Standar Nasional Pendidikan Tinggi (SN-Dikti).').replace(/\n/g, '</p><p class="mb-4">') + '</p>'
             }
         },
         {
             type: 'feature',
             content: {
                 title: 'Fokus Utama Penjaminan Mutu',
-                features: [
+                features: facilities.length > 0 ? facilities.map(f => ({
+                    title: f.name,
+                    icon: 'fas fa-check-circle',
+                    description: f.description || ''
+                })) : [
                     {
                         title: "Audit Mutu Internal (AMI)",
                         icon: "fas fa-clipboard-check",

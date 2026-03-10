@@ -5,6 +5,14 @@ import toast, { Toaster } from 'react-hot-toast';
 export default function AuthenticatedLayout({ header, children }) {
     const { auth, flash } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [openMenus, setOpenMenus] = useState({
+        akademik: route().current('admin.program-studis.*') || route().current('admin.dosens.*') || route().current('admin.kalender.*'),
+        unitLembaga: route().current('admin.fasilitas.*'),
+    });
+
+    const toggleMenu = (key) => {
+        setOpenMenus(prev => ({ ...prev, [key]: !prev[key] }));
+    };
 
     useEffect(() => {
         if (flash?.success) toast.success(flash.success);
@@ -43,27 +51,16 @@ export default function AuthenticatedLayout({ header, children }) {
                     </Link>
 
                     <div className="pt-8 my-2"></div>
-                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Konten Beranda</p>
+                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Konten Halaman Utama</p>
 
-                    <Link href={route('admin.sliders.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.sliders.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-images w-6 text-center text-lg mr-4 ${route().current('admin.sliders.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Hero Banner</span>
+                    <Link href={route('admin.beranda.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.beranda.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-home w-6 text-center text-lg mr-4 ${route().current('admin.beranda.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Manajemen Beranda</span>
                     </Link>
-                    <Link href={route('admin.program-studis.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.program-studis.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-graduation-cap w-6 text-center text-lg mr-4 ${route().current('admin.program-studis.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Program Studi</span>
-                    </Link>
-                    <Link href={route('admin.statistics.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.statistics.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-chart-line w-6 text-center text-lg mr-4 ${route().current('admin.statistics.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Statistik & Counter</span>
-                    </Link>
-                    <Link href={route('admin.testimonials.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.testimonials.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-comments w-6 text-center text-lg mr-4 ${route().current('admin.testimonials.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Testimoni Mahasiswa</span>
-                    </Link>
-                    <Link href={route('admin.companyprofile.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.companyprofile.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fab fa-youtube w-6 text-center text-lg mr-4 ${route().current('admin.companyprofile.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Video Profil Kampus</span>
+
+                    <Link href={route('admin.tentang-kami.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.tentang-kami.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-building w-6 text-center text-lg mr-4 ${route().current('admin.tentang-kami.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Tentang Kami</span>
                     </Link>
 
                     <div className="pt-8 my-2"></div>
@@ -99,12 +96,24 @@ export default function AuthenticatedLayout({ header, children }) {
                     </Link>
 
                     <div className="pt-8 my-2"></div>
-                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Civitas Akademika & Karir</p>
+                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Akademik</p>
 
-                    <Link href={route('admin.dosens.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.dosens.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-chalkboard-teacher w-6 text-center text-lg mr-4 ${route().current('admin.dosens.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Direktori Dosen</span>
+                    <Link href={route('admin.akademik.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${(route().current('admin.akademik.*') || route().current('admin.program-studis.*') || route().current('admin.dosens.*') || route().current('admin.kalender.*')) ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-graduation-cap w-6 text-center text-lg mr-4 ${(route().current('admin.akademik.*') || route().current('admin.program-studis.*') || route().current('admin.dosens.*') || route().current('admin.kalender.*')) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Akademik</span>
                     </Link>
+
+                    <div className="pt-8 my-2"></div>
+                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Unit Lembaga</p>
+
+                    <Link href={route('admin.fasilitas.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.fasilitas.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-building w-6 text-center text-lg mr-4 ${route().current('admin.fasilitas.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Unit & Fasilitas</span>
+                    </Link>
+
+                    <div className="pt-8 my-2"></div>
+                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Civitas & Karir</p>
+
                     <Link href={route('admin.alumnis.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.alumnis.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
                         <i className={`fas fa-user-graduate w-6 text-center text-lg mr-4 ${route().current('admin.alumnis.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
                         <span>Direktori Alumni</span>

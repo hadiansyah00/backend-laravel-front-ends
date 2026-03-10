@@ -3,7 +3,10 @@ import React from 'react';
 export default function Hero({ content, pageInfo }) {
     // Structure: content.title, content.subtitle, content.image_desktop, content.image_mobile
     const hasImage = content.image_desktop || content.image;
-    const bgImage = hasImage ? `/storage/${content.image_desktop || content.image}` : null;
+    const rawImage = hasImage ? (content.image_desktop || content.image) : null;
+    const bgImage = rawImage 
+        ? (rawImage.startsWith('http') || rawImage.startsWith('/') ? rawImage : `/storage/${rawImage}`) 
+        : null;
 
     // Convert breadcrumbs object into array
     const breadcrumbs = content.breadcrumbs ? Object.values(content.breadcrumbs) : [];

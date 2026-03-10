@@ -110,11 +110,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('program-studis', \App\Http\Controllers\Admin\ProgramStudiController::class);
     Route::resource('alumnis', \App\Http\Controllers\Admin\AlumniController::class);
     Route::resource('lowongans', \App\Http\Controllers\Admin\LowonganController::class);
+    Route::resource('kalender', \App\Http\Controllers\Admin\KalenderAkademikController::class);
+    Route::resource('fasilitas', \App\Http\Controllers\Admin\FasilitasController::class);
 
     // --- Pendaftaran Email (Admin) ---
     Route::get('pendaftaran-email', [PendaftaranEmailController::class, 'index'])->name('pendaftaran-email.index');
     Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('pendaftaran-email.show');
     Route::delete('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'destroy'])->name('pendaftaran-email.destroy');
+
+    // --- Tentang Kami (Custom CRUD) ---
+    Route::get('tentang-kami', [\App\Http\Controllers\Admin\TentangKamiController::class, 'index'])->name('tentang-kami.index');
+    Route::post('tentang-kami', [\App\Http\Controllers\Admin\TentangKamiController::class, 'storeOrUpdate'])->name('tentang-kami.store');
+
+    // --- Akademik (Unified Tab Page) ---
+    Route::get('akademik', [\App\Http\Controllers\Admin\AkademikController::class, 'index'])->name('akademik.index');
+    Route::post('akademik/prodi', [\App\Http\Controllers\Admin\AkademikController::class, 'storeOrUpdateProdi'])->name('akademik.prodi.store');
 
     // --- Pages & Sections ---
     Route::resource('pages', PagesController::class);
@@ -135,18 +145,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
 
     // --- Front Pages Management ---
     Route::prefix('front-pages')->group(function () {
-        Route::resource('sliders', SliderController::class)->except('show');
-        Route::resource('testimonials', TestimonialController::class)->except('show');
-        Route::resource('statistics', StatisticController::class)->except('show');
-        Route::resource('company-profile-videos', CompanyProfileVideoController::class)->except('show')
-            ->names([
-                'index' => 'companyprofile.index',
-                'create' => 'companyprofile.create',
-                'store' => 'companyprofile.store',
-                'edit' => 'companyprofile.edit',
-                'update' => 'companyprofile.update',
-                'destroy' => 'companyprofile.destroy',
-            ]);
+        // --- Beranda (Unified Homepage Management) ---
+        Route::get('beranda', [\App\Http\Controllers\Admin\BerandaController::class, 'index'])->name('beranda.index');
+        Route::post('beranda', [\App\Http\Controllers\Admin\BerandaController::class, 'storeOrUpdate'])->name('beranda.store');
 
         // Front Settings
         Route::get('settings', [FrontSettingController::class, 'index'])->name('settings.index');
@@ -175,6 +176,15 @@ Route::get('/dokumen', [PublicInfoController::class, 'dokumen'])->name('front.do
 Route::get('/galeri', [PublicInfoController::class, 'galeri'])->name('front.galeri');
 
 
+// TENTANG KAMI ROUTES
+Route::name('front.tentang.')->prefix('tentang')->group(function () {
+    Route::get('/profil-stikes', [PublicInfoController::class, 'profilStikes'])->name('profil');
+    Route::get('/sambutan-ketua', [PublicInfoController::class, 'sambutanKetua'])->name('sambutan');
+    Route::get('/visi-misi', [PublicInfoController::class, 'visiMisi'])->name('visi_misi');
+    Route::get('/sejarah', [PublicInfoController::class, 'sejarah'])->name('sejarah');
+    Route::get('/struktur-organisasi', [PublicInfoController::class, 'strukturOrganisasi'])->name('struktur');
+});
+
 // MAHASISWA & ALUMNI ROUTES
 Route::get('/alumni', [PublicInfoController::class, 'alumni'])->name('front.alumni');
 Route::get('/lowongan', [PublicInfoController::class, 'lowongan'])->name('front.lowongan');
@@ -182,6 +192,18 @@ Route::get('/kerjasama', [PublicInfoController::class, 'kerjasama'])->name('fron
 
 // DOSEN ROUTE
 Route::get('/dosen', [PublicInfoController::class, 'dosen'])->name('front.dosen');
+
+// AKADEMIK & UNIT LEMBAGA ROUTES
+Route::get('/farmasi', [PublicInfoController::class, 'farmasi'])->name('front.farmasi');
+Route::get('/gizi', [PublicInfoController::class, 'gizi'])->name('front.gizi');
+Route::get('/kebidanan', [PublicInfoController::class, 'kebidanan'])->name('front.kebidanan');
+Route::get('/kalender-akademik', [PublicInfoController::class, 'kalenderAkademik'])->name('front.kalender');
+
+Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');
+Route::get('/perpustakaan', [PublicInfoController::class, 'perpustakaan'])->name('front.perpustakaan');
+Route::get('/uppm', [PublicInfoController::class, 'uppm'])->name('front.uppm');
+Route::get('/upmi', [PublicInfoController::class, 'upmi'])->name('front.upmi');
+
 
 
 require __DIR__.'/auth.php';

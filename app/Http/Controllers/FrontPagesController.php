@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CompanyProfileVideo;
+use App\Models\Event;
+use App\Models\Gallery;
 use App\Models\Menu;
+use App\Models\Pengumuman;
 use App\Models\ProgramStudi;
-use App\Models\Slider;
-use App\Models\Statistic;
-use App\Models\Testimonial;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\View\View; // Pastikan ini diimport
+use Illuminate\View\View;
 use Inertia\Inertia;
 
 class FrontPagesController extends Controller
@@ -47,33 +46,54 @@ class FrontPagesController extends Controller
                 ->get();
         });
 
-        $sliders = Cache::remember('sliders_active', 3600, function () {
-            return Slider::orderBy('order')->get();
+        $beranda = Cache::remember('beranda_data', 3600, function () {
+            return \App\Models\Beranda::where('is_active', true)->get()->keyBy('type')->map(function ($item) {
+                // Decode JSON content if any
+                $data = $item->toArray();
+                if ($data['content']) {
+                    $decoded = json_decode($data['content'], true);
+                    if (is_array($decoded)) {
+                        $data = array_merge($data, $decoded);
+                    }
+                }
+                return $data;
+            });
         });
 
         $programStudis = Cache::remember('program_studis_active', 3600, function () {
             return ProgramStudi::where('is_active', true)->get();
         });
 
-        $statistic = Cache::remember('statistics_all', 3600, function () {
-            return Statistic::all();
+        // Fetch Data Informasi Publik
+        $pengumuman = Cache::remember('pengumuman_terbaru', 600, function () {
+            return Pengumuman::where('is_active', true)
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
         });
 
-        $videoContent = Cache::remember('video_content_active', 3600, function () {
-            return CompanyProfileVideo::where('is_active', true)->first();
+        $events = Cache::remember('events_terbaru', 600, function () {
+            return Event::where('is_active', true)
+                ->where('end_date', '>=', now())
+                ->orderBy('start_date', 'asc')
+                ->take(4)
+                ->get();
         });
 
-        $testimonials = Cache::remember('testimonials_all', 3600, function () {
-            return Testimonial::all();
+        $galleries = Cache::remember('galleries_terbaru', 600, function () {
+            return Gallery::orderBy('created_at', 'desc')
+                ->take(6)
+                ->get();
         });
 
         return Inertia::render('Home', compact(
             'berita',
-            'sliders',
+            'menus',
             'programStudis',
-            'statistic',
-            'videoContent',
-            'testimonials'
+            'beranda',
+            'pengumuman',
+            'events',
+            'galleries'
         ));
     }
 

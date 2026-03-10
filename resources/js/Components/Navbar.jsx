@@ -192,6 +192,20 @@ function MenuItem({ menu, variant, onClose }) {
     // helper untuk resolver string link
     const getUrl = (m) => {
         if (m.type === 'link') return m.url;
+        
+        // Pengecualian (Override) untuk sub-menu Tentang Kami yang sekarang pakai dedicated routes
+        const customRoutes = {
+            'profil-stikes': '/tentang/profil-stikes',
+            'sambutan-ketua': '/tentang/sambutan-ketua',
+            'visi-misi': '/tentang/visi-misi',
+            'sejarah': '/tentang/sejarah',
+            'struktur-organisasi': '/tentang/struktur-organisasi'
+        };
+
+        if (m.slug && customRoutes[m.slug]) {
+            return customRoutes[m.slug];
+        }
+
         return m.slug ? `/${m.slug}` : '#';
     };
 

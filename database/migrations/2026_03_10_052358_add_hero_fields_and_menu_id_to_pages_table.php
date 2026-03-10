@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pages', function (Blueprint $table) {
-            $table->foreignId('menu_id')->nullable()->after('id')->constrained('menus')->nullOnDelete();
-            $table->string('hero_bg_image')->nullable()->after('slug');
-            $table->string('hero_title')->nullable()->after('hero_bg_image');
-            $table->text('hero_subtitle')->nullable()->after('hero_title');
+            if (!Schema::hasColumn('pages', 'menu_id')) {
+                $table->foreignId('menu_id')->nullable()->after('id')->constrained('menus')->nullOnDelete();
+            }
+            if (!Schema::hasColumn('pages', 'hero_bg_image')) {
+                $table->string('hero_bg_image')->nullable()->after('slug');
+            }
+            if (!Schema::hasColumn('pages', 'hero_title')) {
+                $table->string('hero_title')->nullable()->after('hero_bg_image');
+            }
+            if (!Schema::hasColumn('pages', 'hero_subtitle')) {
+                $table->text('hero_subtitle')->nullable()->after('hero_title');
+            }
         });
     }
 

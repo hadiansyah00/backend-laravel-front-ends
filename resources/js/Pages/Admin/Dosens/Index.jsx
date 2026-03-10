@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 
-export default function Index({ dosens }) {
+export default function Index({ dosens, filters, prodis }) {
     const { data: dataList, links } = dosens;
+
+    const [search, setSearch] = useState(filters?.search || '');
+    const [prodi, setProdi] = useState(filters?.prodi || '');
+
+    const handleFilter = () => {
+        router.get(route('admin.dosens.index'), { search, prodi }, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
+    // Auto-search when prodi changes
+    useEffect(() => {
+        if (prodi !== (filters?.prodi || '')) {
+            handleFilter();
+        }
+    }, [prodi]);
+
+    const handleSearchKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleFilter();
+        }
+    };
 
     const handleDelete = (id) => {
         if (confirm('Apakah Anda yakin ingin menghapus data Dosen ini?')) {
@@ -24,9 +47,57 @@ export default function Index({ dosens }) {
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Daftar Dosen STIKes</h3>
                             <p className="text-sm text-gray-500 mt-1">Kelola data dosen dan staff akademik yang tampil di website lembaga.</p>
                         </div>
-                        <Link href={route('admin.dosens.create')} className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-sm">
+                        <Link href={route('admin.dosens.create')} className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-sm whitespace-nowrap">
                             <i className="fas fa-user-plus mr-2"></i> Tambah Dosen
                         </Link>
+                    </div>
+
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20">
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="flex-1 relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <i className="fas fa-search text-gray-400"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    className="block w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white pl-10 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow-sm"
+                                    placeholder="Cari Dosen (Nama, NIDN, NIP)..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    onKeyDown={handleSearchKeyDown}
+                                />
+                            </div>
+                            <div className="sm:w-64">
+                                <select
+                                    className="block w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow-sm"
+                                    value={prodi}
+                                    onChange={(e) => setProdi(e.target.value)}
+                                >
+                                    <option value="">Semua Program Studi</option>
+                                    {prodis && prodis.map((p, idx) => (
+                                        <option key={idx} value={p}>{p}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <button
+                                onClick={handleFilter}
+                                className="inline-flex items-center justify-center px-4 py-2 bg-gray-800 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition shadow-sm"
+                            >
+                                Filter
+                            </button>
+                            {(search || prodi) && (
+                                <button
+                                    onClick={() => {
+                                        setSearch('');
+                                        setProdi('');
+                                        router.get(route('admin.dosens.index'));
+                                    }}
+                                    className="inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-transparent rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-gray-300 dark:hover:bg-gray-600 transition shadow-sm"
+                                >
+                                    Reset
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="overflow-x-auto">

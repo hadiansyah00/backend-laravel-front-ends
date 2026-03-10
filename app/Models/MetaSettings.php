@@ -51,7 +51,7 @@ class MetaSettings extends Model
 
     public function scopeDefault($query)
     {
-        return $query->whereNull('pages_id'); // default meta kalau tidak terkait page
+        return $query->whereNull('page_slug'); // default meta kalau tidak terkait page
     }
 
     /**

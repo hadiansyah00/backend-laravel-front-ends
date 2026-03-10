@@ -12,11 +12,13 @@ class MetaSettingSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('meta_settings')
-            ->whereNotNull('pages_id')
-            ->update([
-                'seoable_id' => DB::raw('pages_id'),
-                'seoable_type' => 'App\\Models\\Pages',
-            ]);
+        if (\Illuminate\Support\Facades\Schema::hasColumn('meta_settings', 'pages_id')) {
+            DB::table('meta_settings')
+                ->whereNotNull('pages_id')
+                ->update([
+                    'seoable_id' => DB::raw('pages_id'),
+                    'seoable_type' => 'App\\Models\\Pages',
+                ]);
+        }
     }
 }

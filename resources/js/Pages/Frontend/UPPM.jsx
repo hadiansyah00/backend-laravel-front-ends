@@ -2,34 +2,38 @@ import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import DynamicSectionsRenderer from '@/Components/Sections/DynamicSectionsRenderer';
 
-export default function UPPM() {
+export default function UPPM({ fasilitasData }) {
+    const data = fasilitasData || {};
+    const facilities = Array.isArray(data.facilities) ? data.facilities : [];
+
     const dummySectionsConfig = [
         {
             type: 'hero_static',
             content: {
-                title: 'Unit Penelitian dan Pengabdian kepada Masyarakat (UPPM)',
+                title: data.name || 'Unit Penelitian dan Pengabdian kepada Masyarakat (UPPM)',
                 subtitle: 'Motor penggerak riset inovatif dan pengabdian nyata berbasis bukti ilmiah demi kesehatan masyarakat.',
-                bgImage: '/assets/img/hero-fallback.png'
+                bgImage: data.image ? '/' + data.image : '/assets/img/hero-fallback.png'
             }
         },
         {
             type: 'content_with_image',
             content: {
                 title: 'Tentang UPPM',
-                image: 'https://images.unsplash.com/photo-1576091160550-2173ff9e9e9c?auto=format&fit=crop&q=80&w=2070', // Research team
+                image: data.image ? '/' + data.image : 'https://images.unsplash.com/photo-1576091160550-2173ff9e9e9c?auto=format&fit=crop&q=80&w=2070',
                 align: 'left',
                 imageAspectRatio: 'aspect-[4/3]',
-                content: `
-                    <p class="mb-4"><strong>UPPM STIKes Bogor Husada</strong> didirikan dengan tujuan menjadi wadah dinamis bagi seluruh sivitas akademika dalam mengembangkan Ilmu Pengetahuan, Teknologi, dan Seni (IPTEKS) di bidang kesehatan.</p>
-                    <p class="mb-4">Kami memfasilitasi setiap ide riset cemerlang dari dosen dan mahasiswa agar dapat diwujudkan dalam bentuk penelitian aplikatif. Tidak berhenti pada publikasi jurnal, hasil dari penelitian tersebut kemudian direalisasikan dalam bentuk program-program pengabdian kepada masyarakat (PKM) yang berfokus pada pencegahan penyakit menular dan tidak menular, stunting, hingga pemberdayaan gizi komplementer di desa binaan.</p>
-                `
+                content: '<p class="mb-4">' + (data.description || 'UPPM STIKes Bogor Husada didirikan dengan tujuan menjadi wadah dinamis bagi seluruh sivitas akademika dalam mengembangkan Ilmu Pengetahuan, Teknologi, dan Seni (IPTEKS) di bidang kesehatan.').replace(/\n/g, '</p><p class="mb-4">') + '</p>'
             }
         },
         {
             type: 'feature',
             content: {
                 title: 'Program Kerja & Layanan UPPM',
-                features: [
+                features: facilities.length > 0 ? facilities.map(f => ({
+                    title: f.name,
+                    icon: 'fas fa-check-circle',
+                    description: f.description || ''
+                })) : [
                     {
                         title: "Hibah Riset Internal & Eksternal",
                         icon: "fas fa-hand-holding-usd",

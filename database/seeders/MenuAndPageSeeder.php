@@ -117,7 +117,7 @@ class MenuAndPageSeeder extends Seeder
                     ['slug' => $main['slug']],
                     [
                         'title' => $main['name'],
-                        'type' => 'standard',
+                        'type' => 'editor',
                         'content' => json_encode([
                             'time' => time(),
                             'blocks' => [
@@ -156,7 +156,7 @@ class MenuAndPageSeeder extends Seeder
                             ['slug' => $child['slug']],
                             [
                                 'title' => $child['name'],
-                                'type' => 'standard',
+                                'type' => 'editor',
                                 'content' => json_encode([
                                     'time' => time(),
                                     'blocks' => [
