@@ -6,7 +6,9 @@ use App\Models\Pengumuman;
 use App\Models\Event;
 use App\Models\Document;
 use App\Models\Gallery;
-use App\Models\Category;
+use App\Models\Dosen;
+use App\Models\Alumni;
+use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -138,6 +140,79 @@ class PublicInfoController extends Controller
             'galleries' => $galleries,
             'categories' => $categories,
             'filters' => $request->only(['category']),
+        ]);
+    }
+
+    /**
+     * Display Dosen (Lecturers directory).
+     */
+    public function dosen()
+    {
+        $dosens = Dosen::orderBy('program_studi')->orderBy('name')->get();
+        $groupedDosen = $dosens->groupBy('program_studi');
+
+        return Inertia::render('Frontend/Dosen', [
+            'groupedDosen' => $groupedDosen,
+        ]);
+    }
+
+    /**
+     * Display Alumni directory.
+     */
+    public function alumni(Request $request)
+    {
+        $query = Alumni::where('is_active', 1)->orderBy('name');
+
+        if ($request->filled('tahun_lulus')) {
+            $query->where('tahun_lulus', $request->tahun_lulus);
+        }
+        if ($request->filled('prodi')) {
+            $query->where('program_studi', $request->prodi);
+        }
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        $alumnis = $query->paginate(12);
+
+        $tahunList = Alumni::select('tahun_lulus')->distinct()->orderByDesc('tahun_lulus')->pluck('tahun_lulus');
+        $prodiList = Alumni::select('program_studi')->distinct()->orderBy('program_studi')->pluck('program_studi');
+
+        return Inertia::render('Frontend/Alumni', [
+            'alumnis' => $alumnis,
+            'tahunList' => $tahunList,
+            'prodiList' => $prodiList,
+            'filters' => $request->only(['tahun_lulus', 'prodi', 'search']),
+        ]);
+    }
+
+    /**
+     * Display Lowongan Kerja (Job Vacancies).
+     */
+    public function lowongan(Request $request)
+    {
+        $query = Lowongan::where('is_active', 1)->latest();
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%'.$request->search.'%');
+        }
+
+        $lowongans = $query->paginate(9);
+
+        return Inertia::render('Frontend/Lowongan', [
+            'lowongans' => $lowongans,
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
+    /**
+     * Display Kerjasama (Partnerships).
+     */
+    public function kerjasama(Request $request)
+    {
+        // Kerjasama belum memiliki model sendiri, tampilkan halaman statis
+        return Inertia::render('Frontend/Kerjasama', [
+            'kerjasamas' => collect(),
         ]);
     }
 }

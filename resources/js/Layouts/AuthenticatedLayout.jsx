@@ -37,11 +37,6 @@ export default function AuthenticatedLayout({ header, children }) {
                         <span>Dashboard Utama</span>
                     </Link>
 
-                    <Link href={route('admin.pages.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.pages.*') || route().current('admin.sections.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-file-alt w-6 text-center text-lg mr-4 ${route().current('admin.pages.*') || route().current('admin.sections.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Halaman Dinamis</span>
-                    </Link>
-
                     <Link href={route('admin.media.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.media.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
                         <i className={`fas fa-photo-video w-6 text-center text-lg mr-4 ${route().current('admin.media.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
                         <span>Media Library</span>
@@ -69,11 +64,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     <Link href={route('admin.companyprofile.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.companyprofile.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
                         <i className={`fab fa-youtube w-6 text-center text-lg mr-4 ${route().current('admin.companyprofile.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
                         <span>Video Profil Kampus</span>
-                    </Link>
-
-                    <Link href={route('admin.pages.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.pages.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-layer-group w-6 text-center text-lg mr-4 ${route().current('admin.pages.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Halaman Dinamis</span>
                     </Link>
 
                     <div className="pt-8 my-2"></div>
@@ -125,36 +115,39 @@ export default function AuthenticatedLayout({ header, children }) {
                     </Link>
 
                     <div className="pt-8 my-2"></div>
-                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Pengaturan Site</p>
+                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Manajemen Akses</p>
+
+                    <Link href={route('admin.users.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.users.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-users w-6 text-center text-lg mr-4 ${route().current('admin.users.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Users & Akses</span>
+                    </Link>
+                    <Link href={route('admin.roles.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.roles.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-user-shield w-6 text-center text-lg mr-4 ${route().current('admin.roles.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Role Groups</span>
+                    </Link>
+                    <Link href={route('admin.permissions.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.permissions.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-key w-6 text-center text-lg mr-4 ${route().current('admin.permissions.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span>Permissions</span>
+                    </Link>
+
+                    <div className="pt-8 my-2"></div>
+                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Pengaturan Website</p>
 
                     <Link href={route('admin.menus.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.menus.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
                         <i className={`fas fa-sitemap w-6 text-center text-lg mr-4 ${route().current('admin.menus.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
                         <span>Menu Navigasi</span>
                     </Link>
 
-                    <p className="px-3 mt-8 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Manajemen Autentikasi</p>
-
-                    <Link href={route('admin.users.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.users.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-users w-6 text-center text-lg mr-4 ${route().current('admin.users.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Users & Akses</span>
-                    </Link>
-
-                    <Link href={route('admin.roles.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.roles.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-user-shield w-6 text-center text-lg mr-4 ${route().current('admin.roles.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Role Groups</span>
-                    </Link>
-
-                    <Link href={route('admin.permissions.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.permissions.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
-                        <i className={`fas fa-key w-6 text-center text-lg mr-4 ${route().current('admin.permissions.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Permissions</span>
-                    </Link>
-                    <div className="pt-8 my-2"></div>
-                    <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Pengaturan Site</p>
-
                     <Link href={route('admin.settings.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.settings.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
                         <i className={`fas fa-globe w-6 text-center text-lg mr-4 ${route().current('admin.settings.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
                         <span>Front & SEO Global</span>
                     </Link>
+
+                    <a href="/" target="_blank" className="flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white">
+                        <i className="fas fa-external-link-alt w-6 text-center text-lg mr-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"></i>
+                        <span>Lihat Website</span>
+                        <i className="fas fa-arrow-up-right-from-square text-xs ml-auto text-gray-300 dark:text-gray-600"></i>
+                    </a>
                 </div>
 
                 <div className="p-5 border-t border-gray-100 dark:border-gray-800">

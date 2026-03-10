@@ -93,9 +93,16 @@ export default function Index({ pages }) {
                                                                 </div>
                                                             </td>
                                                             <td className="px-5 py-4 whitespace-nowrap">
-                                                                <span className={`px-2.5 py-1 text-[11px] font-bold uppercase rounded-md tracking-wider ${item.is_published ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
-                                                                    {item.is_published ? 'Published' : 'Draft'}
-                                                                </span>
+                                                                <div className="flex items-center gap-2 flex-wrap">
+                                                                    <span className={`px-2.5 py-1 text-[11px] font-bold uppercase rounded-md tracking-wider ${item.is_published ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
+                                                                        {item.is_published ? 'Published' : 'Draft'}
+                                                                    </span>
+                                                                    {item.template && item.template !== 'default' && (
+                                                                        <span className="px-2.5 py-1 text-[11px] font-bold uppercase rounded-md tracking-wider bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 border border-violet-200 dark:border-violet-800">
+                                                                            <i className="fas fa-th-large mr-1"></i>{item.template.replace(/_/g, ' ')}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
                                                             </td>
                                                             <td className="px-5 py-4 whitespace-nowrap text-right">
                                                                 <div className="flex items-center justify-end gap-2">

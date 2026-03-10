@@ -158,59 +158,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     });
 });
 
-// ================== DYNAMIC PAGES (Catch-all — MUST BE LAST) ================== // --- (DUMMY FRONTEND PREVIEW ROUTES) ---
-Route::get('/profil-stikes', function () {
-    return inertia('Frontend/ProfilStikes');
-});
 
-Route::get('/sejarah', function () {
-    return inertia('Frontend/Sejarah');
-});
-
-Route::get('/sambutan-ketua', function () {
-    return inertia('Frontend/SambutanKetua');
-});
-
-Route::get('/visi-misi', function () {
-    return inertia('Frontend/VisiMisi');
-});
-
-Route::get('/struktur-organisasi', function () {
-    return inertia('Frontend/StrukturOrganisasi');
-});
-
-Route::get('/farmasi', function () {
-    return inertia('Frontend/Farmasi');
-});
-
-Route::get('/gizi', function () {
-    return inertia('Frontend/Gizi');
-});
-
-Route::get('/kebidanan', function () {
-    return inertia('Frontend/Kebidanan');
-});
-
-Route::get('/dosen', function () {
-    return inertia('Frontend/Dosen');
-});
-
-Route::get('/kalender-akademik', function () {
-    return inertia('Frontend/KalenderAkademik');
-});
-
-Route::get('/uppm', function () {
-    return inertia('Frontend/UPPM');
-});
-Route::get('/uppmi', function () {
-    return inertia('Frontend/UPMI');
-});
-Route::get('/laboratorium', function () {
-    return inertia('Frontend/Laboratorium');
-});
-Route::get('/perpustakaan', function () {
-    return inertia('Frontend/Perpustakaan');
-});
+// ================== DINAMIS PAGES (Frontend Static via PagesController) ================== //
+// Halaman-halaman di bawah ini di-handle oleh PagesController@show (catch-all) via /{slug}
+// Semua halaman di bawah ini menggunakan route /{slug} di bagian paling bawah.
 
 // INFORMASI ROUTES
 // (Route /berita dan /berita/{slug} sudah dihandle oleh BeritaController di atas)
@@ -223,16 +174,15 @@ Route::get('/event/{slug}', [PublicInfoController::class, 'eventShow'])->name('f
 Route::get('/dokumen', [PublicInfoController::class, 'dokumen'])->name('front.dokumen');
 Route::get('/galeri', [PublicInfoController::class, 'galeri'])->name('front.galeri');
 
+
 // MAHASISWA & ALUMNI ROUTES
-Route::get('/alumni', function () {
-    return inertia('Frontend/Alumni');
-});
-Route::get('/lowongan', function () {
-    return inertia('Frontend/Lowongan');
-});
-Route::get('/kerjasama', function () {
-    return inertia('Frontend/Kerjasama');
-});
+Route::get('/alumni', [PublicInfoController::class, 'alumni'])->name('front.alumni');
+Route::get('/lowongan', [PublicInfoController::class, 'lowongan'])->name('front.lowongan');
+Route::get('/kerjasama', [PublicInfoController::class, 'kerjasama'])->name('front.kerjasama');
+
+// DOSEN ROUTE
+Route::get('/dosen', [PublicInfoController::class, 'dosen'])->name('front.dosen');
+
 
 require __DIR__.'/auth.php';
 

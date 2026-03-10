@@ -4,6 +4,12 @@ import SectionRenderer from '../Sections/SectionRenderer';
 import Hero from '../Sections/Hero';
 import { Head } from '@inertiajs/react';
 
+// Import Templates
+import ProfilInstitusi from './Templates/ProfilInstitusi';
+import Fasilitas from './Templates/Fasilitas';
+import UnitLembaga from './Templates/UnitLembaga';
+import Kontak from './Templates/Kontak';
+
 // Helper untuk memparsing JSON string Editor.js
 function parseBlockContent(jsonContent) {
     if (!jsonContent) return '';
@@ -54,24 +60,37 @@ export default function DynamicPage({ page, sections }) {
                     pageInfo={page}
                 />
 
-                {/* 2. Dynamic Content Sections Builder */}
+                {/* 2. Dynamic Content / Template Renderer */}
                 <div className="bg-white">
-                    {sections && sections.length > 0 ? (
-                        sections.map((section, index) => (
-                            <SectionRenderer key={section.id || index} section={section} pageInfo={page} />
-                        ))
+                    {page?.template === 'profil_institusi' ? (
+                        <ProfilInstitusi page={page} />
+                    ) : page?.template === 'fasilitas' ? (
+                        <Fasilitas page={page} />
+                    ) : page?.template === 'unit_lembaga' ? (
+                        <UnitLembaga page={page} />
+                    ) : page?.template === 'kontak' ? (
+                        <Kontak page={page} />
                     ) : (
-                        /* Fallback jika page tidak memiliki section satupun / masih kosong */
-                        <div className="py-24 max-w-4xl mx-auto px-6 text-center">
-                            {page?.content ? (
-                                /* Legacy support jika masih ada data konten lama di database */
-                                <div className="prose prose-lg prose-indigo mx-auto text-left text-gray-600">
-                                    <div dangerouslySetInnerHTML={{ __html: parseBlockContent(page?.content) }} />
-                                </div>
+                        /* Default / Universal Builder Layout */
+                        <>
+                            {sections && sections.length > 0 ? (
+                                sections.map((section, index) => (
+                                    <SectionRenderer key={section.id || index} section={section} pageInfo={page} />
+                                ))
                             ) : (
-                                <p className="text-gray-500 italic">Konten halaman sedang dalam penyesuaian oleh tim admin.</p>
+                                /* Fallback jika page tidak memiliki section satupun / masih kosong */
+                                <div className="py-24 max-w-4xl mx-auto px-6 text-center">
+                                    {page?.content ? (
+                                        /* Legacy support jika masih ada data konten lama di database */
+                                        <div className="prose prose-lg prose-indigo mx-auto text-left text-gray-600">
+                                            <div dangerouslySetInnerHTML={{ __html: parseBlockContent(page?.content) }} />
+                                        </div>
+                                    ) : (
+                                        <p className="text-gray-500 italic">Konten halaman sedang dalam penyesuaian oleh tim admin.</p>
+                                    )}
+                                </div>
                             )}
-                        </div>
+                        </>
                     )}
                 </div>
             </article>

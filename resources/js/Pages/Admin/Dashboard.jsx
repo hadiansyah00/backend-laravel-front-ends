@@ -223,20 +223,51 @@ export default function Dashboard({ auth, stats }) {
 
                 {/* 🚀 QUICK ACTIONS & SYSTEM INFO */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
-                    {/* Activity Feed Placeholder */}
+                    {/* Quick Actions Grid */}
                     <div className="lg:col-span-2 bg-white dark:bg-gray-800/80 rounded-3xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8 shadow-sm relative overflow-hidden">
                         <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-bl-full -z-10"></div>
                         <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                             <i className="fas fa-bolt text-amber-500"></i>
-                            Aktivitas Terbaru
+                            Aksi Cepat
                         </h4>
 
-                        <div className="flex flex-col items-center justify-center py-10 text-center">
-                            <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100 dark:ring-gray-700">
-                                <i className="fas fa-history text-2xl text-gray-400"></i>
-                            </div>
-                            <p className="text-gray-600 dark:text-gray-300 font-medium">Log aktivitas sedang dipersiapkan.</p>
-                            <p className="text-sm text-gray-500 mt-2 max-w-sm">Pantau siapa saja yang menambah berita, mengubah menu, atau mengedit halaman di sini (segera hadir).</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <a href={route('admin.articles.create')} className="group flex flex-col items-center gap-2 p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all cursor-pointer">
+                                <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i className="fas fa-pen-alt text-blue-600 dark:text-blue-400"></i>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Tulis Berita</span>
+                            </a>
+                            <a href={route('admin.dosens.index')} className="group flex flex-col items-center gap-2 p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all cursor-pointer">
+                                <div className="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i className="fas fa-chalkboard-teacher text-indigo-600 dark:text-indigo-400"></i>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Kelola Dosen</span>
+                            </a>
+                            <a href={route('admin.events.create')} className="group flex flex-col items-center gap-2 p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all cursor-pointer">
+                                <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i className="fas fa-calendar-plus text-emerald-600 dark:text-emerald-400"></i>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Tambah Event</span>
+                            </a>
+                            <a href={route('admin.pengumumans.create')} className="group flex flex-col items-center gap-2 p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-amber-200 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all cursor-pointer">
+                                <div className="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i className="fas fa-bullhorn text-amber-600 dark:text-amber-400"></i>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Pengumuman</span>
+                            </a>
+                            <a href={route('admin.media.index')} className="group flex flex-col items-center gap-2 p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all cursor-pointer">
+                                <div className="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i className="fas fa-cloud-upload-alt text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Upload Media</span>
+                            </a>
+                            <a href="/" target="_blank" className="group flex flex-col items-center gap-2 p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 hover:border-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all cursor-pointer">
+                                <div className="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i className="fas fa-globe text-teal-600 dark:text-teal-400"></i>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Lihat Website</span>
+                            </a>
                         </div>
                     </div>
 
