@@ -89,16 +89,16 @@ class ArticleController extends Controller
             'twitter_title' => 'nullable|string|max:255',
             'twitter_description' => 'nullable|string|max:255',
             'twitter_site' => 'nullable|string|max:50',
-            'og_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'twitter_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'og_image' => 'nullable|string',
+            'twitter_image' => 'nullable|string',
         ]);
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        if ($request->filled('thumbnail')) {
+            $validated['thumbnail'] = str_replace(url('/storage') . '/', '', $request->thumbnail);
         }
 
         $article = Article::create($validated);
@@ -120,27 +120,29 @@ class ArticleController extends Controller
             'twitter_site',
         ])->toArray();
 
-        if ($request->hasFile('og_image')) {
-            $metaData['og_image'] = $request->file('og_image')->store('seo/meta', 'public');
+        if ($request->filled('og_image')) {
+            $metaData['og_image'] = str_replace(url('/storage') . '/', '', $request->og_image);
         }
-        if ($request->hasFile('twitter_image')) {
-            $metaData['twitter_image'] = $request->file('twitter_image')->store('seo/meta', 'public');
+        if ($request->filled('twitter_image')) {
+            $metaData['twitter_image'] = str_replace(url('/storage') . '/', '', $request->twitter_image);
         }
 
         $article->meta()->create($metaData);
 
         // === Tags ===
-        $tags = collect(explode(',', $request->tags))
-            ->map(fn ($t) => trim($t))
-            ->filter()
-            ->map(function ($tagName) {
-                return Tags::firstOrCreate(
-                    ['slug' => Str::slug($tagName)],
-                    ['name' => $tagName]
-                )->id;
-            })->toArray();
-
-        $article->tags()->sync($tags);
+        if (!empty($request->tags)) {
+            $tags = collect(explode(',', $request->tags))
+                ->map(fn ($t) => trim($t))
+                ->filter()
+                ->map(function ($tagName) {
+                    return Tags::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName]
+                    )->id;
+                })->toArray();
+    
+            $article->tags()->sync($tags);
+        }
 
         return redirect()->route('admin.articles.index')->with('success', 'Artikel & SEO berhasil dibuat');
     }
@@ -196,14 +198,14 @@ class ArticleController extends Controller
             'twitter_title' => 'nullable|string|max:255',
             'twitter_description' => 'nullable|string|max:255',
             'twitter_site' => 'nullable|string|max:50',
-            'og_image' => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
-            'twitter_image' => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
+            'og_image' => 'nullable|string',
+            'twitter_image' => 'nullable|string',
         ]);
 
         // === Update artikel ===
         $validated['slug'] = $validated['slug'] ?: Str::slug($validated['title']);
-        if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        if ($request->filled('thumbnail')) {
+            $validated['thumbnail'] = str_replace(url('/storage') . '/', '', $request->thumbnail);
         }
         $article->update($validated);
 
@@ -235,11 +237,11 @@ class ArticleController extends Controller
             'twitter_site',
         ])->toArray();
 
-        if ($request->hasFile('og_image')) {
-            $metaData['og_image'] = $request->file('og_image')->store('seo/meta', 'public');
+        if ($request->filled('og_image')) {
+            $metaData['og_image'] = str_replace(url('/storage') . '/', '', $request->og_image);
         }
-        if ($request->hasFile('twitter_image')) {
-            $metaData['twitter_image'] = $request->file('twitter_image')->store('seo/meta', 'public');
+        if ($request->filled('twitter_image')) {
+            $metaData['twitter_image'] = str_replace(url('/storage') . '/', '', $request->twitter_image);
         }
 
         $article->meta()->updateOrCreate([], $metaData);

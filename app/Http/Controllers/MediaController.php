@@ -18,21 +18,29 @@ class MediaController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('type') && in_array($request->type, ['image', 'document'])) {
+            $query->where('type', $request->type);
+        }
+
         if ($request->wantsJson()) {
             return response()->json($query->paginate(24));
         }
 
         return Inertia::render('Admin/Media/Index', [
             'media' => $query->paginate(24)->withQueryString(),
-            'filters' => $request->only('search')
+            'filters' => $request->only('search', 'type')
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:10240', // 10MB max
+            'file' => 'required|file|max:5120', // 5MB max
             'collection_name' => 'nullable|string'
+        ], [
+            'file.required' => 'Pilih file yang ingin diupload.',
+            'file.file' => 'File yang diupload tidak valid.',
+            'file.max' => 'Gagal upload: Ukuran file maksimal adalah 5MB.',
         ]);
 
         $file = $request->file('file');
@@ -41,6 +49,9 @@ class MediaController extends Controller
         $mimeType = $file->getClientMimeType();
         $size = $file->getSize();
         
+        // Auto-detect type from mime_type
+        $type = str_starts_with($mimeType, 'image/') ? 'image' : 'document';
+
         // Generate a safe unique name
         $extension = $file->getClientOriginalExtension();
         $safeName = Str::slug(pathinfo($originalName, PATHINFO_FILENAME));
@@ -55,7 +66,8 @@ class MediaController extends Controller
             'path' => $path,
             'disk' => 'public',
             'size' => $size,
-            'collection_name' => $request->collection_name ?? 'default'
+            'collection_name' => $request->collection_name ?? 'default',
+            'type' => $type,
         ]);
 
         if ($request->wantsJson()) {

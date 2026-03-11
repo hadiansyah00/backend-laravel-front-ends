@@ -37,7 +37,11 @@ export default function Dosen({ dosens, prodiList, filters }) {
                     title: 'Direktori Dosen',
                     subtitle: 'Tenaga pendidik profesional dan berpengalaman di STIKes Bogor Husada.',
                     image: '/assets/img/hero-fallback.png',
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Akademik', url: null },
+                        { label: 'Direktori Dosen', url: null }
+                    ]
                 }}
             />
 

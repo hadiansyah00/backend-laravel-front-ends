@@ -93,7 +93,7 @@ class ArticleSeeder extends Seeder
                 'published_at' => Carbon::now(),
             ],
             [
-                'category_id' => 5,
+                'category_id' => 1,
                 'title' => 'Manfaat Jalan Kaki 30 Menit Setiap Hari',
                 'slug' => Str::slug('Manfaat Jalan Kaki 30 Menit Setiap Hari'),
                 'excerpt' => 'Jalan kaki sederhana namun banyak manfaatnya.',
@@ -103,7 +103,7 @@ class ArticleSeeder extends Seeder
                 'published_at' => Carbon::now(),
             ],
             [
-                'category_id' => 5,
+                'category_id' => 1,
                 'title' => 'Mengatur Pola Tidur Agar Lebih Produktif',
                 'slug' => Str::slug('Mengatur Pola Tidur Agar Lebih Produktif'),
                 'excerpt' => 'Tidur yang teratur membuat tubuh lebih bugar.',
@@ -115,7 +115,7 @@ class ArticleSeeder extends Seeder
         ];
 
         foreach ($articles as $article) {
-            Article::create($article);
+            Article::updateOrCreate(['slug' => $article['slug']], $article);
         }
     }
 }

@@ -21,7 +21,11 @@ export default function Kalender({ kalenders = {} }) {
                     title: 'Kalender Akademik',
                     subtitle: 'Jadwal kegiatan akademik STIKes Bogor Husada.',
                     image: '/assets/img/hero-fallback.png',
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Akademik', url: null },
+                        { label: 'Kalender Akademik', url: null }
+                    ]
                 }}
             />
 

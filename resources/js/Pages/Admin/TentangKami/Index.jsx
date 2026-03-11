@@ -68,6 +68,8 @@ export default function Index({ data, types }) {
             try {
                 const parsed = JSON.parse(item.content);
                 if (parsed.tentang_title) profilData = { ...profilData, ...parsed };
+                visi = parsed.visi || '';
+                misi = parsed.misi || '';
                 if (!profilData.features) profilData.features = [];
                 while (profilData.features.length < 4) {
                     profilData.features.push({ title: '', description: '', icon: 'fas fa-check' });
@@ -128,7 +130,7 @@ export default function Index({ data, types }) {
         };
     };
 
-    const { data: formData, setData, post, processing, errors, recentlySuccessful } = useForm(getInitialData(activeTab));
+    const { data: formData, setData, post, processing, errors, recentlySuccessful, transform } = useForm(getInitialData(activeTab));
     const [previewImage, setPreviewImage] = useState(getInitialData(activeTab).image);
 
     // Handle Tab Switch
@@ -151,34 +153,41 @@ export default function Index({ data, types }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        let payload = { ...formData };
-        if (payload.type === 'visi_misi') {
-            payload.content = JSON.stringify({ visi: payload.visi, misi: payload.misi });
-        } else if (payload.type === 'profil') {
-            payload.content = JSON.stringify(payload.profilData);
-        } else if (payload.type === 'sambutan') {
-            payload.content = JSON.stringify(payload.sambutanData);
-        } else if (payload.type === 'sejarah') {
-            payload.content = JSON.stringify({
-                subtitle: payload.sejarahData.subtitle,
-                content: payload.sejarahData.content,
-                timeline: {
-                    title: payload.sejarahData.timeline_title,
-                    icon: payload.sejarahData.timeline_icon,
-                    items: payload.sejarahData.timeline_items.filter(i => i.title || i.year) // filter empty
-                }
-            });
-        } else if (payload.type === 'struktur') {
-            payload.content = JSON.stringify({
-                subtitle: payload.strukturData.subtitle,
-                content: payload.strukturData.content,
-                features_title: payload.strukturData.features_title,
-                features: payload.strukturData.features.filter(f => f.title)
-            });
-        }
+        transform((data) => {
+            let payload = { ...data };
+            if (payload.type === 'visi_misi') {
+                payload.content = JSON.stringify({ visi: payload.visi, misi: payload.misi });
+            } else if (payload.type === 'profil') {
+                payload.content = JSON.stringify({
+                    ...payload.profilData,
+                    visi: payload.visi,
+                    misi: payload.misi
+                });
+            } else if (payload.type === 'sambutan') {
+                payload.content = JSON.stringify(payload.sambutanData);
+            } else if (payload.type === 'sejarah') {
+                payload.content = JSON.stringify({
+                    subtitle: payload.sejarahData.subtitle,
+                    content: payload.sejarahData.content,
+                    timeline: {
+                        title: payload.sejarahData.timeline_title,
+                        icon: payload.sejarahData.timeline_icon,
+                        items: payload.sejarahData.timeline_items.filter(i => i.title || i.year) // filter empty
+                    }
+                });
+            } else if (payload.type === 'struktur') {
+                payload.content = JSON.stringify({
+                    subtitle: payload.strukturData.subtitle,
+                    content: payload.strukturData.content,
+                    content_image: payload.strukturData.content_image,
+                    features_title: payload.strukturData.features_title,
+                    features: payload.strukturData.features.filter(f => f.title)
+                });
+            }
+            return payload;
+        });
 
         post(route('admin.tentang-kami.store'), {
-            data: payload,
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Berhasil menyimpan data ' + types[activeTab]);
@@ -286,6 +295,33 @@ export default function Index({ data, types }) {
                                                 value={formData.profilData.subtitle}
                                                 onChange={e => setData('profilData', { ...formData.profilData, subtitle: e.target.value })}
                                             />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Visi Misi Fields for Profil */}
+                                    <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
+                                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">Visi & Misi Terintegrasi</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Visi</label>
+                                                <textarea
+                                                    rows={4}
+                                                    className="w-full text-sm border-gray-300 rounded-xl"
+                                                    value={formData.visi}
+                                                    onChange={e => setData('visi', e.target.value)}
+                                                    placeholder="Tuliskan Visi..."
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Misi</label>
+                                                <textarea
+                                                    rows={4}
+                                                    className="w-full text-sm border-gray-300 rounded-xl"
+                                                    value={formData.misi}
+                                                    onChange={e => setData('misi', e.target.value)}
+                                                    placeholder="Tuliskan Misi..."
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -658,17 +694,68 @@ export default function Index({ data, types }) {
                                     </div>
 
                                     <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
-                                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">Grafik / Konten</h4>
+                                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">Grafik / Bagan Struktur</h4>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bagan Struktur (HTML / Image Tags)</label>
-                                            <textarea
-                                                rows={5}
-                                                className="w-full text-sm border-gray-300 rounded-xl font-mono text-gray-800"
-                                                value={formData.strukturData.content}
-                                                onChange={e => setData('strukturData', { ...formData.strukturData, content: e.target.value })}
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">Gunakan tag img seperti: `&lt;img src="url_gambar" /&gt;`.</p>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gambar Bagan Struktur</label>
+                                            <div className="flex gap-4 items-center mb-4">
+                                                {formData.strukturData.content_image ? (
+                                                    <div className="w-24 h-24 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm shrink-0 bg-white">
+                                                        <img src={formData.strukturData.content_image.startsWith('http') || formData.strukturData.content_image.startsWith('/') ? formData.strukturData.content_image : `/storage/${formData.strukturData.content_image}`} alt="Preview" className="w-full h-full object-contain" onError={(e) => { e.target.src='https://via.placeholder.com/150?text=Error'; }} />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center shrink-0 bg-gray-50 dark:bg-gray-800 text-gray-400">
+                                                        <i className="fas fa-sitemap text-xl mb-1"></i>
+                                                        <span className="text-[10px]">No Image</span>
+                                                    </div>
+                                                )}
+                                                <div className="flex-1">
+                                                    <input
+                                                        type="text"
+                                                        className="w-full text-sm border-gray-300 rounded-xl mb-2 bg-gray-50 focus:ring-0 cursor-not-allowed text-gray-500"
+                                                        placeholder="Pilih gambar dari media library..."
+                                                        value={formData.strukturData.content_image || ''}
+                                                        readOnly
+                                                    />
+                                                    <div className="flex gap-2">
+                                                        <MediaPicker 
+                                                            onSelect={(url) => {
+                                                                setData('strukturData', { ...formData.strukturData, content_image: url });
+                                                            }}
+                                                            trigger={
+                                                                <button type="button" className="px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+                                                                    <i className="fas fa-folder-open"></i> Pilih dari Media
+                                                                </button>
+                                                            }
+                                                        />
+                                                        {formData.strukturData.content_image && (
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => setData('strukturData', { ...formData.strukturData, content_image: '' })}
+                                                                className="px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-sm transition"
+                                                                title="Hapus Gambar Bagan"
+                                                            >
+                                                                <i className="fas fa-times"></i> Hapus
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-2">Gambar ini akan dirender secara otomatis di halaman Struktur Organisasi STIKes.</p>
                                         </div>
+                                        
+                                        {/* Tampilkan textarea HTML untuk backward compatibility saja, disembunyikan dalam details/summary */}
+                                        <details className="mt-4">
+                                            <summary className="text-xs text-gray-500 cursor-pointer hover:text-indigo-600">Opsi Lanjutan (HTML Kustom Lama)</summary>
+                                            <div className="mt-3">
+                                                <label className="block text-xs font-medium text-gray-500 mb-1">HTML Raw (Biarkan kosong jika sudah memakai gambar di atas)</label>
+                                                <textarea
+                                                    rows={3}
+                                                    className="w-full text-xs border-gray-300 rounded-lg font-mono text-gray-400"
+                                                    value={formData.strukturData.content}
+                                                    onChange={e => setData('strukturData', { ...formData.strukturData, content: e.target.value })}
+                                                />
+                                            </div>
+                                        </details>
                                     </div>
 
                                     <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">

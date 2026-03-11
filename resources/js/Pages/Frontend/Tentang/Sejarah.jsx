@@ -33,7 +33,11 @@ export default function Sejarah({ data }) {
                     title: title,
                     subtitle: subtitle,
                     image: data?.image || 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Tentang Kami', url: null },
+                        { label: 'Sejarah Institusi', url: null }
+                    ]
                 }}
             />
 
@@ -41,12 +45,12 @@ export default function Sejarah({ data }) {
             <div className="py-16 md:py-24 bg-white relative">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
-                        <span className="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold tracking-widest uppercase mb-4">
+                        <span className="inline-block px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-bold tracking-widest uppercase mb-4">
                             Latar Belakang
                         </span>
                         <div className="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full mx-auto"></div>
                     </div>
-                    <div className="prose prose-lg prose-indigo text-gray-700 max-w-none whitespace-pre-wrap leading-relaxed" 
+                    <div className="prose prose-lg prose-orange text-gray-700 max-w-none whitespace-pre-wrap leading-relaxed" 
                          dangerouslySetInnerHTML={{ __html: textContent }} />
                 </div>
             </div>
@@ -56,7 +60,7 @@ export default function Sejarah({ data }) {
                 <div className="py-16 md:py-24 bg-gray-50/50 border-t border-gray-100">
                     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-16">
-                            <div className="w-16 h-16 bg-white rounded-2xl shadow-sm text-indigo-600 flex items-center justify-center text-3xl mx-auto mb-6">
+                            <div className="w-16 h-16 bg-white rounded-2xl shadow-sm text-orange-600 flex items-center justify-center text-3xl mx-auto mb-6">
                                 <i className={timeline.icon || 'fas fa-route'}></i>
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight">
@@ -64,9 +68,9 @@ export default function Sejarah({ data }) {
                             </h2>
                         </div>
 
-                        <div className="relative border-l-4 border-indigo-200 ml-4 md:ml-0 md:border-none">
+                        <div className="relative border-l-4 border-orange-200 ml-4 md:ml-0 md:border-none">
                             {/* Desktop center line */}
-                            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-indigo-200 -translate-x-1/2 rounded-full"></div>
+                            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-orange-200 -translate-x-1/2 rounded-full"></div>
                             
                             <div className="space-y-12">
                                 {timeline.items.map((item, idx) => {
@@ -86,7 +90,7 @@ export default function Sejarah({ data }) {
                                                     {/* Decorative arrow pointing to timeline */}
                                                     <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-t border-r border-gray-100 transform rotate-45 ${isEven ? '-right-2 border-l border-b-transparent' : '-left-2 border-b border-r-transparent border-t-transparent'}`}></div>
 
-                                                    <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 font-bold rounded-lg mb-3 shadow-sm border border-indigo-100">
+                                                    <span className="inline-block px-3 py-1 bg-orange-50 text-orange-700 font-bold rounded-lg mb-3 shadow-sm border border-orange-100">
                                                         {item.year || 'Tahun'}
                                                     </span>
                                                     <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>

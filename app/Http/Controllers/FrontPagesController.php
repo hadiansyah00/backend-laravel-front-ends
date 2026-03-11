@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\Menu;
 use App\Models\Pengumuman;
 use App\Models\ProgramStudi;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 use Inertia\Inertia;
 
@@ -20,23 +20,12 @@ class FrontPagesController extends Controller
     public function index()
     {
         // Ambil berita dengan cache 10 menit
-        $berita = Cache::remember('berita_terbaru', 600, function () {
-            try {
-                $response = Http::timeout(3)->get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
-                    '_embed' => true,
-                    'per_page' => 6,
-                ]);
-
-                if ($response->successful()) {
-                    return $response->json();
-                }
-
-                \Log::error('Gagal fetch berita', ['status' => $response->status()]);
-            } catch (\Exception $e) {
-                \Log::error('Catch error fetch berita', ['message' => $e->getMessage()]);
-            }
-
-            return []; // default kalau gagal
+        $berita = Cache::remember('berita_terbaru_home', 600, function () {
+            return Article::with('category')
+                ->where('status', 'published')
+                ->latest('published_at')
+                ->take(6)
+                ->get();
         });
         $menus = Cache::remember('menus_active', 3600, function () {
             return Menu::whereNull('parent_id')

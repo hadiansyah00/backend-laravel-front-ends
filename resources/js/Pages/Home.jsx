@@ -142,17 +142,17 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
             {beranda.quick_action && (
                 <section className="relative z-20 px-6 mx-auto -mt-10 max-w-7xl lg:px-12">
                     <div className="grid overflow-hidden bg-white shadow-2xl md:grid-cols-2 rounded-2xl">
-                        <div className="p-8 md:p-12 bg-gradient-to-br from-indigo-900 to-indigo-800 text-white">
+                        <div className="p-8 md:p-12 bg-gradient-to-br from-orange-900 to-orange-800 text-white">
                             <h2 className="mb-4 text-3xl font-bold">{beranda.quick_action.title || 'Penerimaan Mahasiswa Baru'}</h2>
-                            <p className="mb-8 text-indigo-100">{quickActionData.subtitle || 'Mari bergabung dan kembangkan potensi Anda di bidang kesehatan bersama fasilitas modern dan pengajar profesional.'}</p>
-                            <a href={quickActionData.button_link || "https://pmb.sbh.ac.id"} target="_blank" rel="noopener noreferrer" className="inline-block px-8 py-3 font-semibold text-indigo-900 transition-colors bg-white rounded-lg hover:bg-indigo-50">
+                            <p className="mb-8 text-orange-100">{quickActionData.subtitle || 'Mari bergabung dan kembangkan potensi Anda di bidang kesehatan bersama fasilitas modern dan pengajar profesional.'}</p>
+                            <a href={quickActionData.button_link || "https://pmb.sbh.ac.id"} target="_blank" rel="noopener noreferrer" className="inline-block px-8 py-3 font-semibold text-orange-900 transition-colors bg-white rounded-lg hover:bg-orange-50">
                                 {quickActionData.button_text || 'Daftar Sekarang'}
                             </a>
                         </div>
                         <div className="p-8 md:p-12">
                             <h2 className="mb-4 text-2xl font-bold text-gray-800">{quickActionData.info_title || 'Butuh Informasi Lengkap?'}</h2>
                             <p className="mb-6 text-gray-600">{quickActionData.info_subtitle || 'Dapatkan brosur pendaftaran digital dan rincian biaya studi kami dengan mendaftarkan email Anda.'}</p>
-                            <a href={quickActionData.info_link || "/pendaftaran-email/create"} className="inline-flex items-center text-indigo-600 font-semibold hover:text-indigo-800">
+                            <a href={quickActionData.info_link || "/pendaftaran-email/create"} className="inline-flex items-center text-orange-600 font-semibold hover:text-orange-800">
                                 {quickActionData.info_link_text || 'Unduh Brosur PMB'}
                                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </a>
@@ -183,7 +183,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                                     className="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                                                 />
                                             ) : (
-                                                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-100 to-orange-50">
+                                                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-50">
                                                     <svg className="w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                                                 </div>
                                             )}
@@ -191,7 +191,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                         <div className="flex flex-col flex-1 p-8">
                                             <div className="flex items-center gap-2 mb-3">
                                                 {prodi.gelar && (
-                                                    <span className="inline-block px-3 py-1 text-xs font-semibold text-indigo-800 bg-indigo-100 rounded-full">
+                                                    <span className="inline-block px-3 py-1 text-xs font-semibold text-orange-800 bg-orange-100 rounded-full">
                                                         {prodi.gelar}
                                                     </span>
                                                 )}
@@ -265,36 +265,45 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                 <div className="lg:col-span-2">
                                     <div className="flex items-center justify-between mb-6">
                                         <h3 className="text-xl font-bold flex items-center text-gray-800">
-                                            <svg className="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                                             Berita & Artikel
                                         </h3>
-                                        <Link href="/berita" className="inline-flex items-center px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-semibold rounded-lg hover:bg-indigo-100 transition-colors">
+                                        <Link href="/berita" className="inline-flex items-center px-4 py-2 bg-orange-50 text-orange-700 text-sm font-semibold rounded-lg hover:bg-orange-100 transition-colors">
                                             Semua Berita <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                                         </Link>
                                     </div>
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {berita && berita.map((item) => {
-                                            const bgImageUrl = item._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/assets/img/placeholder.jpg';
+                                            const bgImageUrl = item.thumbnail
+                                                ? (item.thumbnail.startsWith('http') || item.thumbnail.startsWith('/') ? item.thumbnail : `/storage/${item.thumbnail}`)
+                                                : '/assets/img/placeholder.jpg';
                                             return (
                                                 <Link href={`/berita/${item.slug}`} key={item.id} className="flex flex-col overflow-hidden bg-white border border-gray-100 shadow-sm sm:rounded-2xl hover:shadow-md transition-shadow group">
                                                     <div className="relative pt-[55%] overflow-hidden bg-gray-100">
                                                         <img
                                                             src={bgImageUrl}
-                                                            alt={item.title.rendered}
+                                                            alt={item.title}
                                                             className="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                                                             loading="lazy"
                                                         />
                                                     </div>
                                                     <div className="flex flex-col flex-1 p-5 lg:p-6">
-                                                        <div className="flex items-center mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                                            <svg className="w-3.5 h-3.5 mr-1.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                                            {formatDate(item.date)}
+                                                        <div className="flex items-center justify-between mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                                            <div className="flex items-center">
+                                                                <svg className="w-3.5 h-3.5 mr-1.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                                {formatDate(item.published_at)}
+                                                            </div>
+                                                            {item.category && (
+                                                                <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px] tracking-wide">
+                                                                    {item.category.name}
+                                                                </span>
+                                                            )}
                                                         </div>
-                                                        {item.title && item.title.rendered && (
-                                                            <h3 className="mb-3 text-lg font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-indigo-600 transition-colors" dangerouslySetInnerHTML={{ __html: item.title.rendered }}></h3>
+                                                        {item.title && (
+                                                            <h3 className="mb-3 text-lg font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-orange-600 transition-colors">{item.title}</h3>
                                                         )}
-                                                        <div className="mt-auto pt-4 border-t border-gray-50 text-sm font-semibold text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center">
+                                                        <div className="mt-auto pt-4 border-t border-gray-50 text-sm font-semibold text-orange-600 group-hover:text-orange-800 transition-colors flex items-center">
                                                             Baca Selengkapnya
                                                             <svg className="w-4 h-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                                         </div>
@@ -345,15 +354,15 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                     </div>
                                     
                                     {/* Quick Link Card below Pengumuman */}
-                                    <div className="mt-8 bg-indigo-600 rounded-2xl p-6 text-white text-center shadow-sm relative overflow-hidden group border border-indigo-700">
+                                    <div className="mt-8 bg-orange-600 rounded-2xl p-6 text-white text-center shadow-sm relative overflow-hidden group border border-orange-700">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl transform translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-700"></div>
                                         <div className="relative z-10">
-                                            <div className="w-12 h-12 bg-indigo-500/50 rounded-xl flex items-center justify-center mx-auto mb-4 border border-indigo-500">
-                                                <svg className="w-6 h-6 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <div className="w-12 h-12 bg-orange-500/50 rounded-xl flex items-center justify-center mx-auto mb-4 border border-orange-500">
+                                                <svg className="w-6 h-6 text-orange-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                             </div>
                                             <h4 className="font-bold text-lg mb-1">Pusat Bantuan</h4>
-                                            <p className="text-indigo-200 text-sm mb-5 leading-relaxed">Butuh informasi lengkap seputar PMB atau kegiatan akademik?</p>
-                                            <a href="/kontak" className="inline-block w-full px-4 py-3 bg-white text-indigo-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+                                            <p className="text-orange-200 text-sm mb-5 leading-relaxed">Butuh informasi lengkap seputar PMB atau kegiatan akademik?</p>
+                                            <a href="/kontak" className="inline-block w-full px-4 py-3 bg-white text-orange-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
                                                 Hubungi Kami Sekarang
                                             </a>
                                         </div>
@@ -371,7 +380,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                     <section className="py-24 bg-white relative overflow-hidden">
                         {/* Decorative background elements */}
                         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-orange-50 rounded-full blur-3xl opacity-60"></div>
-                        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-indigo-50 rounded-full blur-3xl opacity-60"></div>
+                        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-orange-100 rounded-full blur-3xl opacity-60"></div>
 
                         <div className="container px-6 mx-auto lg:px-12 relative z-10">
                             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
@@ -380,7 +389,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                     <h2 className="mt-2 text-3xl font-bold text-gray-900 md:text-4xl">Kegiatan & Acara Mendatang</h2>
                                     <p className="mt-4 text-gray-600 text-lg">Jangan lewatkan berbagai kegiatan menarik, seminar, dan acara akademik yang diselenggarakan oleh STIKes Bogor Husada.</p>
                                 </div>
-                                <Link href="/event" className="flex-shrink-0 inline-flex items-center px-6 py-3 font-semibold text-white transition-all bg-indigo-900 rounded-lg hover:bg-indigo-800 shadow-md hover:-translate-y-1">
+                                <Link href="/event" className="flex-shrink-0 inline-flex items-center px-6 py-3 font-semibold text-white transition-all bg-orange-900 rounded-lg hover:bg-orange-800 shadow-md hover:-translate-y-1">
                                     Lihat Semua Agenda
                                     <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                                 </Link>
@@ -396,9 +405,9 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                     return (
                                         <Link href={`/event/${event.slug}`} key={event.id} className="group relative flex flex-col sm:flex-row items-center bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
                                             {/* Calendar Box (Left) */}
-                                            <div className="flex-shrink-0 w-full sm:w-32 h-32 sm:h-full bg-indigo-50 flex flex-col items-center justify-center p-6 border-b sm:border-b-0 sm:border-r border-indigo-100 group-hover:bg-indigo-600 transition-colors">
-                                                <span className="text-sm font-bold text-indigo-800 uppercase tracking-widest group-hover:text-indigo-200">{month}</span>
-                                                <span className="text-4xl lg:text-5xl font-extrabold text-indigo-900 group-hover:text-white leading-none my-1">{day}</span>
+                                            <div className="flex-shrink-0 w-full sm:w-32 h-32 sm:h-full bg-orange-50 flex flex-col items-center justify-center p-6 border-b sm:border-b-0 sm:border-r border-orange-100 group-hover:bg-orange-600 transition-colors">
+                                                <span className="text-sm font-bold text-orange-800 uppercase tracking-widest group-hover:text-orange-200">{month}</span>
+                                                <span className="text-4xl lg:text-5xl font-extrabold text-orange-900 group-hover:text-white leading-none my-1">{day}</span>
                                             </div>
 
                                             {/* Event Details (Right) */}
@@ -414,7 +423,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                                         {time} WIB - Selesai
                                                     </div>
                                                     <div className="flex items-center text-sm text-gray-600">
-                                                        <svg className="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                        <svg className="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                                         <span className="truncate">{event.location || 'Kampus STIKes Bogor Husada'}</span>
                                                     </div>
                                                 </div>
@@ -433,7 +442,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                 testimonials && testimonials.length > 0 && (
                     <section className="py-24 bg-white relative overflow-hidden">
                         {/* Background Decorators */}
-                        <div className="absolute top-0 right-0 w-64 h-64 transform translate-x-1/2 -translate-y-1/2 bg-indigo-50 rounded-full opacity-50 blur-3xl pointer-events-none"></div>
+                        <div className="absolute top-0 right-0 w-64 h-64 transform translate-x-1/2 -translate-y-1/2 bg-orange-100 rounded-full opacity-50 blur-3xl pointer-events-none"></div>
                         <div className="absolute bottom-0 left-0 w-64 h-64 transform -translate-x-1/2 translate-y-1/2 bg-orange-50 rounded-full opacity-50 blur-3xl pointer-events-none"></div>
 
                         <div className="container px-6 mx-auto lg:px-12 relative z-10">
@@ -487,7 +496,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                                             </div>
                                                         )}
                                                         <div>
-                                                            <h4 className="font-bold text-gray-900 group-hover:text-indigo-900 transition-colors">{testi.name}</h4>
+                                                            <h4 className="font-bold text-gray-900 group-hover:text-orange-900 transition-colors">{testi.name}</h4>
                                                             <p className="text-sm font-medium text-orange-600">{testi.role}</p>
                                                         </div>
                                                     </div>

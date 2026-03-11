@@ -13,53 +13,57 @@ export default function ProgramStudiDetail({ programData }) {
 
     // Static theme configs — full class names so Tailwind doesn't purge them
     const themes = {
-        indigo: {
-            accentBg:      'bg-indigo-50',
-            accentBorder:  'border-indigo-100',
-            accentText:    'text-indigo-600',
-            accentTextDk:  'text-indigo-700',
-            bg100:         'bg-indigo-100',
-            bg600:         'bg-indigo-600',
-            bar:           'bg-indigo-500',
-            bar600:        'bg-indigo-600',
-            textLight:     'text-indigo-50',
+        purple: {
+            accentBg:      'bg-purple-50',
+            accentBorder:  'border-purple-100',
+            accentText:    'text-purple-600',
+            accentTextDk:  'text-purple-700',
+            bg100:         'bg-purple-100',
+            bg600:         'bg-purple-600',
+            bar:           'bg-purple-500',
+            bar600:        'bg-purple-600',
+            textLight:     'text-purple-50',
         },
-        emerald: {
-            accentBg:      'bg-emerald-50',
-            accentBorder:  'border-emerald-100',
-            accentText:    'text-emerald-600',
-            accentTextDk:  'text-emerald-700',
-            bg100:         'bg-emerald-100',
-            bg600:         'bg-emerald-600',
-            bar:           'bg-emerald-500',
-            bar600:        'bg-emerald-600',
-            textLight:     'text-emerald-50',
+        amber: {
+            accentBg:      'bg-amber-50',
+            accentBorder:  'border-amber-100',
+            accentText:    'text-amber-600',
+            accentTextDk:  'text-amber-700',
+            bg100:         'bg-amber-100',
+            bg600:         'bg-amber-600',
+            bar:           'bg-amber-500',
+            bar600:        'bg-amber-600',
+            textLight:     'text-amber-50',
         },
-        pink: {
-            accentBg:      'bg-pink-50',
-            accentBorder:  'border-pink-100',
-            accentText:    'text-pink-600',
-            accentTextDk:  'text-pink-700',
-            bg100:         'bg-pink-100',
-            bg600:         'bg-pink-600',
-            bar:           'bg-pink-500',
-            bar600:        'bg-pink-600',
-            textLight:     'text-pink-50',
+        blue: {
+            accentBg:      'bg-blue-50',
+            accentBorder:  'border-blue-100',
+            accentText:    'text-blue-600',
+            accentTextDk:  'text-blue-700',
+            bg100:         'bg-blue-100',
+            bg600:         'bg-blue-600',
+            bar:           'bg-blue-500',
+            bar600:        'bg-blue-600',
+            textLight:     'text-blue-50',
         },
     };
 
-    let key = 'indigo';
-    if (programData.name && programData.name.toLowerCase().includes('gizi')) key = 'emerald';
-    else if (programData.name && programData.name.toLowerCase().includes('kebidanan')) key = 'pink';
+    let key = 'purple';
+    if (programData.name && programData.name.toLowerCase().includes('gizi')) key = 'amber';
+    else if (programData.name && programData.name.toLowerCase().includes('kebidanan')) key = 'blue';
     const t = themes[key];
+
+    const imgSrc = (val) => {
+        if (!val) return null;
+        if (val.startsWith('http') || val.startsWith('/')) return val;
+        return '/storage/' + val.replace('storage/', '');
+    };
 
     const heroSubtitle = programData.description
         ? programData.description.substring(0, 150) + '...'
         : 'Profil lengkap program studi ' + (programData.name || '');
 
-    const heroImage = programData.image
-        ? '/' + programData.image
-        : '/assets/img/hero-fallback.png';
+    const heroImage = imgSrc(programData.image) || '/assets/img/hero-fallback.png';
 
     const peluangKerja = Array.isArray(programData.peluang_kerja) ? programData.peluang_kerja : [];
 
@@ -71,7 +75,11 @@ export default function ProgramStudiDetail({ programData }) {
                     title: 'Program Studi ' + (programData.name || ''),
                     subtitle: heroSubtitle,
                     image: heroImage,
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Program Studi', url: null },
+                        { label: programData.name || 'Detail', url: null }
+                    ]
                 }}
             />
 
@@ -103,7 +111,7 @@ export default function ProgramStudiDetail({ programData }) {
                             <div className="lg:w-1/3 w-full relative group mx-auto">
                                 <div className={"absolute -inset-4 rounded-[3rem] transform rotate-3 transition duration-500 group-hover:rotate-0 " + t.bg100}></div>
                                 <img
-                                    src={programData.kaprodi_photo ? '/' + programData.kaprodi_photo : "/assets/img/dosen/default.png"}
+                                    src={imgSrc(programData.kaprodi_photo) || "/assets/img/dosen/default.png"}
                                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; }}
                                     alt={programData.kaprodi_name || 'Kaprodi'}
                                     className="relative rounded-3xl shadow-2xl z-10 w-full h-auto object-cover aspect-[3/4] object-top border-4 border-white"
@@ -169,15 +177,27 @@ export default function ProgramStudiDetail({ programData }) {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {peluangKerja.map((feature, idx) => (
-                                <div key={idx} className="bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 group">
-                                    <div className={"w-14 h-14 rounded-xl shadow-sm flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-all " + t.accentBg + " " + t.accentText}>
-                                        <i className="fas fa-briefcase"></i>
+                            {peluangKerja.map((item, idx) => {
+                                const isString = typeof item === 'string';
+                                const title = isString ? item : (item.title || '');
+                                const description = isString ? '' : (item.description || '');
+                                const icon_svg = isString ? '' : (item.icon_svg || '');
+                                const iconClass = isString ? "fas fa-briefcase" : (item.icon || "fas fa-briefcase");
+
+                                return (
+                                    <div key={idx} className="bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 group">
+                                        <div className={"w-14 h-14 rounded-xl shadow-sm flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-all " + t.accentBg + " " + t.accentText}>
+                                            {icon_svg ? (
+                                                <div dangerouslySetInnerHTML={{ __html: icon_svg }} className="w-8 h-8 flex items-center justify-center svg-container" />
+                                            ) : (
+                                                <i className={iconClass}></i>
+                                            )}
+                                        </div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-3 leading-snug">{title}</h3>
+                                        {description && <p className="text-gray-600 leading-relaxed text-sm">{description}</p>}
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 mb-3 leading-snug">{feature.title}</h3>
-                                    <p className="text-gray-600 leading-relaxed text-sm">{feature.description}</p>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

@@ -2,8 +2,23 @@ import React, { useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 
+const DOC_ICONS = {
+    'application/pdf': { icon: 'fas fa-file-pdf', color: 'text-red-400', bg: 'bg-red-50 dark:bg-red-900/20' },
+    'application/msword': { icon: 'fas fa-file-word', color: 'text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { icon: 'fas fa-file-word', color: 'text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+    'application/vnd.ms-excel': { icon: 'fas fa-file-excel', color: 'text-green-400', bg: 'bg-green-50 dark:bg-green-900/20' },
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'fas fa-file-excel', color: 'text-green-400', bg: 'bg-green-50 dark:bg-green-900/20' },
+    'application/vnd.ms-powerpoint': { icon: 'fas fa-file-powerpoint', color: 'text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': { icon: 'fas fa-file-powerpoint', color: 'text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+};
+
+const getDocIcon = (mimeType) => {
+    return DOC_ICONS[mimeType] || { icon: 'fas fa-file-alt', color: 'text-gray-400', bg: 'bg-gray-50 dark:bg-gray-800' };
+};
+
 export default function Index({ media, filters }) {
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
+    const [activeType, setActiveType] = useState(filters.type || '');
     const [isDragging, setIsDragging] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -11,7 +26,12 @@ export default function Index({ media, filters }) {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        router.get(route('admin.media.index'), { search: searchQuery }, { preserveState: true, preserveScroll: true });
+        router.get(route('admin.media.index'), { search: searchQuery, type: activeType || undefined }, { preserveState: true, preserveScroll: true });
+    };
+
+    const handleTypeFilter = (type) => {
+        setActiveType(type);
+        router.get(route('admin.media.index'), { search: searchQuery || undefined, type: type || undefined }, { preserveState: true, preserveScroll: true });
     };
 
     const handleFileChange = (e) => {
@@ -29,8 +49,8 @@ export default function Index({ media, filters }) {
     };
 
     const handleUpload = (file) => {
-        if (file.size > 10 * 1024 * 1024) {
-            alert("Ukuran file maksimal 10MB");
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Gagal upload: Ukuran file maksimal adalah 5MB");
             return;
         }
 
@@ -49,10 +69,16 @@ export default function Index({ media, filters }) {
             onSuccess: () => {
                 setUploading(false);
                 setUploadProgress(0);
+                alert("Upload berhasil!");
             },
-            onError: () => {
+            onError: (errors) => {
                 setUploading(false);
                 setUploadProgress(0);
+                if (errors.file) {
+                    alert(errors.file);
+                } else {
+                    alert('Upload gagal. Pastikan format didukung dan tidak melebihi 5MB.');
+                }
             }
         });
     };
@@ -80,6 +106,12 @@ export default function Index({ media, filters }) {
 
     const mediaList = media?.data || [];
 
+    const typeFilters = [
+        { key: '', label: 'Semua', icon: 'fas fa-th' },
+        { key: 'image', label: 'Gambar', icon: 'fas fa-image' },
+        { key: 'document', label: 'Dokumen', icon: 'fas fa-file-alt' },
+    ];
+
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Media Library</h2>}>
             <Head title="Media Library" />
@@ -98,7 +130,7 @@ export default function Index({ media, filters }) {
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         className="hidden"
-                        accept="image/*,application/pdf"
+                        accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                     />
 
                     {!uploading ? (
@@ -108,7 +140,7 @@ export default function Index({ media, filters }) {
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Upload Media Baru</h3>
                             <p className="mt-2 text-sm text-gray-500">Drag and drop file di sini, atau <button type="button" onClick={() => fileInputRef.current?.click()} className="text-indigo-600 font-semibold hover:underline">Pilih File</button></p>
-                            <p className="text-xs text-gray-400 mt-2">Maksimal 10MB. Format: JPG, PNG, GIF, PDF.</p>
+                            <p className="text-xs text-gray-400 mt-2">Maksimal 5MB. Format: JPG, PNG, GIF, PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX.</p>
                         </div>
                     ) : (
                         <div className="py-4">
@@ -122,9 +154,30 @@ export default function Index({ media, filters }) {
 
                 {/* Toolbar */}
                 <div className="bg-white dark:bg-gray-900 shadow-sm rounded-2xl border border-gray-100 dark:border-gray-800 p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-2">
-                        <i className="fas fa-photo-video text-gray-400 text-xl"></i>
-                        <span className="font-semibold text-gray-700 dark:text-gray-300">File Tersimpan ({media?.total || 0})</span>
+                    <div className="flex items-center gap-4 flex-wrap">
+                        <div className="flex items-center gap-2">
+                            <i className="fas fa-photo-video text-gray-400 text-xl"></i>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">File Tersimpan ({media?.total || 0})</span>
+                        </div>
+
+                        {/* Type Filter Tabs */}
+                        <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+                            {typeFilters.map(filter => (
+                                <button
+                                    key={filter.key}
+                                    type="button"
+                                    onClick={() => handleTypeFilter(filter.key)}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                        activeType === filter.key
+                                            ? 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                                    }`}
+                                >
+                                    <i className={filter.icon}></i>
+                                    {filter.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <form onSubmit={handleSearch} className="flex relative w-full sm:w-auto">
@@ -150,8 +203,20 @@ export default function Index({ media, filters }) {
                                     {item.mime_type?.startsWith('image/') ? (
                                         <img src={item.url} alt={item.name} className="w-full h-full object-cover" />
                                     ) : (
-                                        <i className="fas fa-file-pdf text-4xl text-red-400"></i>
+                                        <div className={`w-full h-full flex flex-col items-center justify-center ${getDocIcon(item.mime_type).bg}`}>
+                                            <i className={`${getDocIcon(item.mime_type).icon} text-4xl ${getDocIcon(item.mime_type).color}`}></i>
+                                            <span className="text-[10px] mt-2 font-bold text-gray-400 uppercase">{item.mime_type?.split('/').pop()?.split('.').pop() || 'FILE'}</span>
+                                        </div>
                                     )}
+
+                                    {/* Type Badge */}
+                                    <div className={`absolute top-2 left-2 px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide ${
+                                        item.type === 'image' 
+                                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' 
+                                            : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
+                                    }`}>
+                                        {item.type === 'image' ? 'IMG' : 'DOC'}
+                                    </div>
 
                                     {/* Overlay Actions */}
                                     <div className="absolute inset-0 bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm">
@@ -171,7 +236,7 @@ export default function Index({ media, filters }) {
                                 <div className="p-3">
                                     <p className="text-xs font-semibold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</p>
                                     <div className="flex justify-between items-center mt-1">
-                                        <p className="text-[10px] text-gray-500 uppercase">{item.mime_type?.split('/')[1] || 'FILE'}</p>
+                                        <p className="text-[10px] text-gray-500 uppercase">{item.mime_type?.split('/')[1]?.split('.').pop() || 'FILE'}</p>
                                         <p className="text-[10px] text-gray-500">{formatBytes(item.size)}</p>
                                     </div>
                                 </div>

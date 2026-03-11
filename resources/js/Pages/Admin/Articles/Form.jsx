@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import MediaPicker from '@/Components/MediaPicker';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function Form({ article, categories, tags: availableTagsList, selectedTags: initialSelectedTags }) {
     const isEdit = !!article;
-    const thumbnailRef = useRef(null);
-    const ogImageRef = useRef(null);
-    const twitterImageRef = useRef(null);
 
     const [activeTab, setActiveTab] = useState('content'); // 'content' or 'seo'
 
@@ -127,13 +127,23 @@ export default function Form({ article, categories, tags: availableTagsList, sel
                                     {/* Content Area */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Isi Artikel <span className="text-red-500">*</span></label>
-                                        <textarea
-                                            rows={12}
-                                            className={`w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm ${errors.content ? 'border-red-500' : ''}`}
-                                            value={data.content}
-                                            onChange={e => setData('content', e.target.value)}
-                                            placeholder="Tulis isi berita di sini (bisa mendukung formatting HTML sederhana)..."
-                                        ></textarea>
+                                        <div className={`prose max-w-none dark:prose-invert rounded-xl overflow-hidden [&>.ck-editor>.ck-editor__main>.ck-content]:min-h-[300px] [&>.ck-editor>.ck-editor__main>.ck-content]:bg-white dark:[&>.ck-editor>.ck-editor__main>.ck-content]:bg-gray-900 border ${errors.content ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'}`}>
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={data.content || ''}
+                                                onChange={(event, editor) => {
+                                                    const data = editor.getData();
+                                                    setData('content', data);
+                                                }}
+                                                config={{
+                                                    toolbar: [
+                                                        'heading', '|',
+                                                        'bold', 'italic', 'link', 'blockQuote', 'bulletedList', 'numberedList',
+                                                        '|', 'insertTable', 'undo', 'redo'
+                                                    ]
+                                                }}
+                                            />
+                                        </div>
                                         {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
                                     </div>
 
@@ -212,18 +222,29 @@ export default function Form({ article, categories, tags: availableTagsList, sel
                                         <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
                                             <i className="fas fa-image text-indigo-500"></i> Gambar Utama
                                         </h4>
-                                        {isEdit && article?.thumbnail && (
+                                        {data.thumbnail && (
                                             <div className="mb-4 aspect-video rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden relative">
-                                                <img src={`/storage/${article.thumbnail.replace('storage/', '')}`} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                <img src={data.thumbnail.startsWith('http') || data.thumbnail.startsWith('/storage') ? data.thumbnail : `/storage/${data.thumbnail}`} alt="Thumbnail" className="w-full h-full object-cover" />
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            ref={thumbnailRef}
-                                            className="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400"
-                                            onChange={e => setData('thumbnail', e.target.files[0])}
-                                            accept="image/jpeg,image/png,image/jpg"
-                                        />
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="text"
+                                                className="w-full text-sm border-gray-300 rounded-xl bg-gray-50 focus:ring-0 cursor-not-allowed dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                                placeholder="Pilih dari media library..."
+                                                value={data.thumbnail || ''}
+                                                readOnly
+                                            />
+                                            <MediaPicker 
+                                                onSelect={(url) => setData('thumbnail', url)} 
+                                                acceptType="image"
+                                                trigger={
+                                                    <button type="button" className="shrink-0 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-sm font-semibold transition flex items-center gap-2 border border-indigo-200">
+                                                        <i className="fas fa-folder-open"></i> Media Library
+                                                    </button>
+                                                } 
+                                            />
+                                        </div>
                                         {errors.thumbnail && <p className="mt-1 text-xs text-red-600">{errors.thumbnail}</p>}
                                     </div>
                                 </div>
@@ -333,15 +354,59 @@ export default function Form({ article, categories, tags: availableTagsList, sel
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">OG Image (Preview Link WA/FB)</label>
-                                        <input
-                                            type="file"
-                                            ref={ogImageRef}
-                                            className="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700"
-                                            onChange={e => setData('og_image', e.target.files[0])}
-                                            accept="image/*"
-                                        />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">OG Image (Preview Link WA/FB)</label>
+                                            {data.og_image && (
+                                                <div className="mb-3 w-full h-32 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+                                                    <img src={data.og_image.startsWith('http') || data.og_image.startsWith('/storage') ? data.og_image : `/storage/${data.og_image}`} alt="OG Cover" className="w-full h-full object-cover" />
+                                                </div>
+                                            )}
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    className="w-full text-xs border-gray-300 rounded-lg bg-gray-50 focus:ring-0 cursor-not-allowed dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                                    placeholder="Pilih dari media..."
+                                                    value={data.og_image || ''}
+                                                    readOnly
+                                                />
+                                                <MediaPicker 
+                                                    onSelect={(url) => setData('og_image', url)} 
+                                                    acceptType="image"
+                                                    trigger={
+                                                        <button type="button" className="shrink-0 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border border-gray-300 dark:border-gray-600">
+                                                            <i className="fas fa-image"></i> Pilih Foto
+                                                        </button>
+                                                    } 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Twitter Image</label>
+                                            {data.twitter_image && (
+                                                <div className="mb-3 w-full h-32 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+                                                    <img src={data.twitter_image.startsWith('http') || data.twitter_image.startsWith('/storage') ? data.twitter_image : `/storage/${data.twitter_image}`} alt="Twitter Cover" className="w-full h-full object-cover" />
+                                                </div>
+                                            )}
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    className="w-full text-xs border-gray-300 rounded-lg bg-gray-50 focus:ring-0 cursor-not-allowed dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                                    placeholder="Pilih dari media..."
+                                                    value={data.twitter_image || ''}
+                                                    readOnly
+                                                />
+                                                <MediaPicker 
+                                                    onSelect={(url) => setData('twitter_image', url)} 
+                                                    acceptType="image"
+                                                    trigger={
+                                                        <button type="button" className="shrink-0 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border border-gray-300 dark:border-gray-600">
+                                                            <i className="fas fa-image"></i> Pilih Foto
+                                                        </button>
+                                                    } 
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

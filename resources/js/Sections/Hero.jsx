@@ -13,54 +13,59 @@ export default function Hero({ content, pageInfo }) {
 
     return (
         <section
-            className="relative flex items-center justify-center w-full min-h-[40vh] md:min-h-[60vh] overflow-hidden bg-center bg-cover"
+            className="relative flex items-center justify-center w-full min-h-[50vh] md:min-h-[70vh] overflow-hidden bg-center bg-cover bg-fixed group"
             style={bgImage ? { backgroundImage: `url(${bgImage})` } : { backgroundColor: '#ea580c' /* default orange */ }}
         >
-            {/* Gradient Overlay */}
+            {/* Dark Gradient Overlay for optimal text contrast */}
             {content.gradient !== 'none' && (
-                <div className={`absolute inset-0 z-0 bg-gradient-to-t ${content.gradient === 'dark' ? 'from-black/80 to-transparent' :
-                        content.gradient === 'orange' ? 'from-orange-900/80 to-transparent' :
-                            'from-black/50 via-black/20 to-transparent'
-                    }`}></div>
+                <div className={`absolute inset-0 z-0 bg-gradient-to-t ${
+                    content.gradient === 'dark' ? 'from-gray-900 via-gray-900/70 to-black/30' :
+                    content.gradient === 'orange' ? 'from-orange-900 via-orange-900/70 to-black/30' :
+                    'from-gray-900/80 via-gray-900/40 to-transparent'
+                }`}></div>
             )}
+            
+            {/* Subtle Zoom Effect on Background (Optional CSS class added via parent or global) */}
+            <div className={`absolute inset-0 z-0 bg-center bg-cover bg-fixed transition-transform duration-[10000ms] ease-linear group-hover:scale-105 ${bgImage ? '' : 'hidden'}`}
+                 style={{ backgroundImage: `url(${bgImage})`, opacity: 0.1 }}></div>
 
             {/* Content Container */}
-            <div className="relative z-10 w-full px-4 text-center text-white py-14 max-w-7xl">
+            <div className="relative z-10 w-full px-4 text-center text-white py-20 max-w-7xl">
 
                 {/* Dynamic Typewriter Effect for Title or Page Title */}
-                <h1 className="mb-4 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                    <span className="block drop-shadow-lg animate-fade-in-up">
+                <h1 className="mb-6 text-5xl font-black tracking-tight sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl">
+                    <span className="block animate-fade-in-up bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-100 to-gray-300">
                         {content.title || pageInfo?.title}
                     </span>
                 </h1>
 
                 {/* Subtitle */}
                 {content.subtitle && (
-                    <p className="max-w-3xl mx-auto mt-6 text-lg sm:text-xl md:text-2xl text-gray-100 drop-shadow-md animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                    <p className="max-w-3xl mx-auto mt-6 text-lg sm:text-xl md:text-2xl text-gray-200 drop-shadow-lg animate-fade-in-up font-medium leading-relaxed" style={{ animationDelay: '0.2s' }}>
                         {content.subtitle}
                     </p>
                 )}
 
                 {/* Breadcrumbs Component */}
                 {breadcrumbs.length > 0 && (
-                    <nav className="flex justify-center mt-8 animate-fade-in-up" aria-label="Breadcrumb" style={{ animationDelay: '0.4s' }}>
-                        <ol className="inline-flex items-center px-4 py-2 space-x-1 border border-white/20 rounded-full md:space-x-2 bg-black/30 backdrop-blur-md">
+                    <nav className="flex justify-center mt-12 animate-fade-in-up" aria-label="Breadcrumb" style={{ animationDelay: '0.4s' }}>
+                        <ol className="inline-flex items-center px-6 py-3 space-x-2 md:space-x-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-2xl">
                             <li className="inline-flex items-center">
-                                <a href="/" className="inline-flex items-center text-sm font-medium text-gray-100 hover:text-white group">
-                                    <i className="mr-2 fas fa-home group-hover:scale-110 transition-transform"></i>
+                                <a href="/" className="inline-flex items-center text-sm font-semibold text-gray-200 hover:text-white transition-colors group">
+                                    <i className="mr-2.5 fas fa-home group-hover:scale-110 transition-transform"></i>
                                     Home
                                 </a>
                             </li>
                             {breadcrumbs.map((crumb, idx) => (
                                 <li key={idx}>
                                     <div className="flex items-center">
-                                        <i className="mx-1 text-xs text-gray-300 fas fa-chevron-right md:mx-2"></i>
+                                        <i className="mx-2 text-[10px] text-white/50 fas fa-circle"></i>
                                         {crumb.url ? (
-                                            <a href={crumb.url} className="text-sm font-medium text-gray-100 hover:text-white">
+                                            <a href={crumb.url} className="text-sm font-semibold text-gray-200 hover:text-white transition-colors ml-2">
                                                 {crumb.label}
                                             </a>
                                         ) : (
-                                            <span className="text-sm font-medium text-gray-300">
+                                            <span className="text-sm font-bold text-white ml-2 tracking-wide">
                                                 {crumb.label}
                                             </span>
                                         )}

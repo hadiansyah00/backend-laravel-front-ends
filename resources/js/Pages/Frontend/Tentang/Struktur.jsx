@@ -34,7 +34,11 @@ export default function Struktur({ data }) {
                     title: title,
                     subtitle: subtitle,
                     image: data?.image || '/assets/img/hero-fallback.png',
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Tentang Kami', url: null },
+                        { label: 'Struktur Organisasi', url: null }
+                    ]
                 }}
             />
 
@@ -42,13 +46,17 @@ export default function Struktur({ data }) {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     
                     {/* Visual / Image Content Container */}
-                    {htmlContent ? (
-                        <div className="max-w-5xl mx-auto mt-6 text-center prose prose-lg prose-indigo text-gray-700 mb-16 overflow-x-auto"
+                    {parsedContent.content_image ? (
+                        <div className="bg-white p-4 md:p-8 rounded-3xl shadow-lg border border-gray-100 inline-block mb-16">
+                            <img src={parsedContent.content_image.startsWith('http') || parsedContent.content_image.startsWith('/') ? parsedContent.content_image : `/storage/${parsedContent.content_image}`} alt="Struktur Organisasi" className="max-w-full h-auto rounded-xl" />
+                        </div>
+                    ) : htmlContent ? (
+                        <div className="max-w-5xl mx-auto mt-6 text-center prose prose-lg prose-orange text-gray-700 mb-16 overflow-x-auto"
                              dangerouslySetInnerHTML={{ __html: htmlContent }}
                         />
                     ) : (data?.image ? (
                         <div className="bg-white p-4 md:p-8 rounded-3xl shadow-lg border border-gray-100 inline-block mb-16">
-                            <img src={`/storage/${data.image}`} alt="Struktur Organisasi" className="max-w-full h-auto rounded-xl" />
+                            <img src={data.image.startsWith('http') || data.image.startsWith('/') ? data.image : `/storage/${data.image}`} alt="Struktur Organisasi" className="max-w-full h-auto rounded-xl" />
                         </div>
                     ) : (
                         <div className="bg-gray-100 p-12 rounded-3xl border border-dashed border-gray-300 mb-16">
@@ -66,7 +74,7 @@ export default function Struktur({ data }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {features.map((feature, index) => (
                                     <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl mb-4">
+                                        <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-xl mb-4">
                                             <i className={feature.icon || 'fas fa-user-circle'}></i>
                                         </div>
                                         <h4 className="text-lg font-bold text-gray-900 mb-1">{feature.title}</h4>

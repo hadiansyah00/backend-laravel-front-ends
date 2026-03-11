@@ -15,9 +15,16 @@ const TABS = [
 function ProdiForm({ prodi, tabConfig }) {
     const isEdit = !!prodi?.id;
 
-    const [peluangItems, setPeluangItems] = useState(
-        Array.isArray(prodi?.peluang_kerja) ? prodi.peluang_kerja : []
-    );
+    const [peluangItems, setPeluangItems] = useState(() => {
+        const items = Array.isArray(prodi?.peluang_kerja) ? prodi.peluang_kerja : [];
+        // Map any old string items to the new object format
+        return items.map(item => {
+            if (typeof item === 'string') {
+                return { title: item, description: '', icon_svg: '' };
+            }
+            return item; // already an object
+        });
+    });
 
     const { data, setData, post, processing, errors } = useForm({
         id: prodi?.id || null,
@@ -37,14 +44,19 @@ function ProdiForm({ prodi, tabConfig }) {
     });
 
     const addPeluang = () => {
-        const newItems = [...peluangItems, ''];
+        const newItems = [...peluangItems, { title: '', description: '', icon_svg: '' }];
         setPeluangItems(newItems);
         setData('peluang_kerja', newItems);
     };
 
-    const updatePeluang = (index, value) => {
+    const updatePeluangObj = (index, field, value) => {
         const newItems = [...peluangItems];
-        newItems[index] = value;
+        // Allow updating either string (legacy fallback) or object field
+        if (typeof newItems[index] === 'string') {
+            newItems[index] = { title: newItems[index], description: '', icon_svg: '' };
+        }
+        newItems[index] = { ...newItems[index], [field]: value };
+        
         setPeluangItems(newItems);
         setData('peluang_kerja', newItems);
     };
@@ -201,13 +213,36 @@ function ProdiForm({ prodi, tabConfig }) {
                             <p className="text-sm">Belum ada peluang kerja. Klik "Tambah".</p>
                         </div>
                     ) : (
-                        peluangItems.map((item, index) => (
-                            <div key={index} className="flex gap-2 items-center">
-                                <span className="w-6 h-6 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold shrink-0">{index + 1}</span>
-                                <input type="text" value={item} onChange={e => updatePeluang(index, e.target.value)} className="flex-1 rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white text-sm" placeholder="Cth: Apoteker, Ahli Gizi, Bidan Praktik" />
-                                <button type="button" onClick={() => removePeluang(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"><i className="fas fa-times"></i></button>
-                            </div>
-                        ))
+                        peluangItems.map((item, index) => {
+                            const title = typeof item === 'string' ? item : (item.title || '');
+                            const description = typeof item === 'object' ? (item.description || '') : '';
+                            const icon_svg = typeof item === 'object' ? (item.icon_svg || '') : '';
+                            
+                            return (
+                                <div key={index} className="flex gap-4 items-start bg-white dark:bg-gray-900 p-4 border border-gray-200 dark:border-gray-700 rounded-xl relative">
+                                    <span className="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold shrink-0 mt-1">{index + 1}</span>
+                                    
+                                    <div className="flex-1 space-y-3">
+                                        <div>
+                                            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Judul Pekerjaan</label>
+                                            <input type="text" value={title} onChange={e => updatePeluangObj(index, 'title', e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white text-sm" placeholder="Cth: Apoteker, Ahli Gizi, Bidan Praktik" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Deskripsi Singkat</label>
+                                            <textarea rows="2" value={description} onChange={e => updatePeluangObj(index, 'description', e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white text-sm resize-none" placeholder="Jelaskan peran lulusan di bidang ini..."></textarea>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Icon (Kode SVG) <span className="text-gray-400 font-normal ml-1">- Opsional</span></label>
+                                            <textarea rows="1" value={icon_svg} onChange={e => updatePeluangObj(index, 'icon_svg', e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white text-sm resize-none font-mono text-xs" placeholder="<svg>...</svg>"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" onClick={() => removePeluang(index)} className="absolute top-4 right-4 p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Hapus">
+                                        <i className="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            );
+                        })
                     )}
                 </div>
             </div>

@@ -34,10 +34,12 @@ export default function Profil({ data, visiMisi }) {
         { title: 'Kemitraan Luas', description: 'Bekerjasama dengan RSUD dan RS Swasta terkemuka.', icon: 'fas fa-handshake' }
     ];
 
-    // Parse Visi Misi
-    let visi = 'Visi institusi belum diatur.';
-    let misi = 'Misi institusi belum diatur.';
-    if (visiMisi?.content) {
+    // Parse Visi Misi directly from Profil data
+    let visi = parsedContent.visi || 'Visi institusi belum diatur.';
+    let misi = parsedContent.misi || 'Misi institusi belum diatur.';
+    
+    // Fallback if data is still in visiMisi prop (legacy support)
+    if (visi === 'Visi institusi belum diatur.' && visiMisi?.content) {
         try {
             const vm = JSON.parse(visiMisi.content);
             if (vm.visi) visi = vm.visi;
@@ -59,7 +61,11 @@ export default function Profil({ data, visiMisi }) {
                     title: title,
                     subtitle: subtitle,
                     image: data?.image || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Tentang Kami', url: null },
+                        { label: 'Profil STIKes', url: null }
+                    ]
                 }}
             />
 
@@ -82,8 +88,8 @@ export default function Profil({ data, visiMisi }) {
 
                         {/* Text Side */}
                         <div className="lg:w-1/2 w-full">
-                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-sm font-bold tracking-wide mb-6">
-                                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-sm font-bold tracking-wide mb-6">
+                                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                                 Profil
                             </span>
                             
@@ -115,10 +121,10 @@ export default function Profil({ data, visiMisi }) {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-stretch">
                         {/* Visi */}
-                        <div className="bg-white rounded-3xl p-10 shadow-xl shadow-indigo-100/50 border border-indigo-50 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -z-0 transition-transform group-hover:scale-110"></div>
+                        <div className="bg-white rounded-3xl p-10 shadow-xl shadow-orange-100/50 border border-orange-50 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-[100px] -z-0 transition-transform group-hover:scale-110"></div>
                             <div className="relative z-10 flex flex-col h-full">
-                                <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-8 shadow-inner">
+                                <div className="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-8 shadow-inner">
                                     <i className="fas fa-eye text-3xl"></i>
                                 </div>
                                 <h3 className="text-3xl font-black text-gray-900 mb-6 font-display tracking-tight">Visi</h3>
@@ -129,7 +135,7 @@ export default function Profil({ data, visiMisi }) {
                         </div>
 
                         {/* Misi */}
-                        <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-3xl p-10 shadow-xl shadow-indigo-200/50 text-white relative flex flex-col items-start overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                        <div className="bg-gradient-to-br from-orange-500 to-orange-700 rounded-3xl p-10 shadow-xl shadow-orange-200/50 text-white relative flex flex-col items-start overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                             <div className="absolute bottom-0 right-0 opacity-10 transition-transform group-hover:scale-110">
                                 <i className="fas fa-bullseye text-[15rem] translate-x-12 translate-y-12"></i>
                             </div>
@@ -138,7 +144,7 @@ export default function Profil({ data, visiMisi }) {
                                     <i className="fas fa-bullseye text-3xl text-white"></i>
                                 </div>
                                 <h3 className="text-3xl font-black mb-6 font-display tracking-tight">Misi</h3>
-                                <div className="text-indigo-50 leading-relaxed text-lg flex-1 whitespace-pre-line w-full space-y-2">
+                                <div className="text-orange-50 leading-relaxed text-lg flex-1 whitespace-pre-line w-full space-y-2">
                                     {/* Handle array or string for misi */}
                                     {Array.isArray(misi) ? (
                                         <ul className="list-disc pl-5 space-y-3">
@@ -160,13 +166,13 @@ export default function Profil({ data, visiMisi }) {
                     <div className="mb-16 md:mb-20 text-center max-w-3xl mx-auto">
                         <span className="text-orange-600 font-bold tracking-wider uppercase text-sm mb-3 block">Keunggulan</span>
                         <h2 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900">{featuresTitle}</h2>
-                        <div className="w-24 h-1.5 bg-indigo-600 mx-auto mt-6 rounded-full"></div>
+                        <div className="w-24 h-1.5 bg-orange-600 mx-auto mt-6 rounded-full"></div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {features.map((feature, idx) => (
-                            <div key={idx} className="bg-gray-50/50 rounded-2xl p-8 border border-gray-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-50/50 transition-all duration-300 group">
-                                <div className="w-14 h-14 bg-white rounded-xl shadow-sm text-indigo-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <div key={idx} className="bg-gray-50/50 rounded-2xl p-8 border border-gray-100 hover:border-orange-100 hover:shadow-xl hover:shadow-orange-50/50 transition-all duration-300 group">
+                                <div className="w-14 h-14 bg-white rounded-xl shadow-sm text-orange-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 group-hover:bg-orange-600 group-hover:text-white transition-all">
                                     <i className={feature.icon || 'fas fa-check'}></i>
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>

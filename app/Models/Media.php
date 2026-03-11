@@ -13,6 +13,7 @@ class Media extends Model
         'path',
         'disk',
         'collection_name',
+        'type',
         'size',
     ];
 

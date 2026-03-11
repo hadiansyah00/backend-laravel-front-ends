@@ -50,14 +50,46 @@ class ProgramStudiSeeder extends Seeder
             'kaprodi_photo' => null,
             'kaprodi_profile' => "Selamat datang di Program Studi S1 Farmasi STIKes Bogor Husada! Kami dengan bangga mengundang Anda untuk menjelajahi dunia farmasi yang penuh inovasi dan tantangan.\n\nProgram Studi S1 Farmasi kami berkomitmen untuk memberikan pendidikan berkualitas dalam berbagai aspek farmasi, termasuk farmasi klinis, farmasi industri, dan penelitian obat. Kami bertekad untuk melahirkan para profesional farmasi yang tidak hanya mahir dalam ilmu farmasi, tetapi juga memiliki kepekaan etika, kreativitas, dan semangat inovasi untuk menjawab tantangan farmasi masa depan.\n\nKami menekankan pentingnya pengembangan bakat, kerja tim, penerapan teknologi terkini dalam praktik farmasi, serta kontribusi pada kesehatan masyarakat secara luas.",
             'peluang_kerja' => [
-                ["title" => "Rumah Sakit, Apotek, dan Klinik", "description" => "Pelayanan farmasi klinik, pengelolaan obat, pemberian informasi obat kepada pasien."],
-                ["title" => "Perusahaan Farmasi", "description" => "Ilmuwan farmasi, peneliti, pengembangan, produksi, dan distribusi."],
-                ["title" => "Produksi & Quality Control (QC)", "description" => "Pengawasan mutu bahan baku, proses produksi hingga produk standar."],
-                ["title" => "Distribusi Produk Farmasi", "description" => "Pengelolaan logistik, penyimpanan, dan pengiriman produk farmasi aman."],
-                ["title" => "Pegawai Negeri Sipil (PNS)", "description" => "Kemenkes, BPOM, Dinas Kesehatan. Pengaturan kebijakan dan pengawasan."],
-                ["title" => "Kosmetik & Estetika Medis", "description" => "Formulator, konsultan kecantikan, atau staff klinik estetika."],
-                ["title" => "Administrasi Pelayanan Obat", "description" => "Pengelolaan resep, obat, dan administrasi pasien rumah sakit."],
-                ["title" => "Penelitian (R&D)", "description" => "Penemuan obat baru, formulasi, studi efikasi serta keamanan produk."]
+                [
+                    "title" => "Rumah Sakit, Apotek, dan Klinik",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3.75 21h16.5M4.5 3h15M5.25 3v18M18.75 3v18M9 6.75h6M9 11.25h6M9 15.75h6\" /></svg>",
+                    "description" => "Lulusan S1 Farmasi dapat bekerja sebagai apoteker, teknisi farmasi, atau petugas administrasi kesehatan. Tugas utamanya meliputi pelayanan farmasi klinik, pengelolaan obat, pemberian informasi obat kepada pasien."
+                ],
+                [
+                    "title" => "Perusahaan Farmasi",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 9h18M3 12h18M3 15h18M3 18h18\" /></svg>",
+                    "description" => "Di sektor industri farmasi, lulusan dapat berkarier sebagai ilmuwan farmasi, peneliti, ahli teknis, hingga tenaga pemasaran. Terlibat dalam pengembangan, produksi, dan distribusi."
+                ],
+                [
+                    "title" => "Produksi & Quality Control (QC)",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 3v18M3 12h18\" /></svg>",
+                    "description" => "Peluang kerja dalam bidang produksi mencakup pengawasan mutu bahan baku, proses produksi, hingga produk akhir agar memenuhi standar regulasi industri."
+                ],
+                [
+                    "title" => "Distribusi Produk Farmasi",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 3v18M3 12h18\" /></svg>",
+                    "description" => "Lulusan dapat bekerja di bidang distribusi yang mengelola logistik, penyimpanan, dan pengiriman produk farmasi secara aman dan tepat waktu."
+                ],
+                [
+                    "title" => "Pegawai Negeri Sipil (PNS)",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 3v18M3 12h18\" /></svg>",
+                    "description" => "Dapat menjadi PNS di instansi seperti Kemenkes, BPOM, Dinas Kesehatan. Berperan dalam pengaturan kebijakan dan pengawasan mutu obat publik."
+                ],
+                [
+                    "title" => "Kosmetik & Estetika Medis",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 3h12v18H6V3z\" /></svg>",
+                    "description" => "Bekerja di industri kosmetik sebagai formulator, konsultan kecantikan, atau staff di klinik estetika yang merekomendasikan produk perawatan kulit."
+                ],
+                [
+                    "title" => "Administrasi Pelayanan Obat",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3.75 21h16.5M4.5 3h15M5.25 3v18M18.75 3v18M9 6.75h6M9 11.25h6M9 15.75h6\" /></svg>",
+                    "description" => "Mencakup pengelolaan resep, pencatatan inventaris obat, dan administrasi pasien di rumah sakit, klinik, maupun apotek."
+                ],
+                [
+                    "title" => "Penelitian dan Pengembangan (R&D)",
+                    "icon_svg" => "<svg class=\"w-7 h-7 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 3v18M3 12h18\" /></svg>",
+                    "description" => "Fokus pada penemuan obat baru, uji klinis, pengembangan formulasi, dan studi efikasi serta keamanan produk farmasi masa depan."
+                ]
             ],
             'image' => 'assets/img/hero-fallback.png',
             'link' => null,

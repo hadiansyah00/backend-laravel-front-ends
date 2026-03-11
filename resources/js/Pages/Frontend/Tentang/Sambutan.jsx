@@ -39,7 +39,11 @@ export default function Sambutan({ data }) {
                     title: pageTitle,
                     subtitle: subtitle,
                     image: data?.image || '/assets/img/hero-fallback.png',
-                    gradient: 'dark',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Tentang Kami', url: null },
+                        { label: 'Sambutan Ketua', url: null }
+                    ]
                 }}
             />
 
@@ -60,7 +64,7 @@ export default function Sambutan({ data }) {
                                 {contentTitle}
                             </h2>
                         )}
-                        <div className="prose prose-lg prose-indigo text-gray-700 max-w-none whitespace-pre-wrap leading-relaxed" 
+                        <div className="prose prose-lg prose-orange text-gray-700 max-w-none whitespace-pre-wrap leading-relaxed" 
                              dangerouslySetInnerHTML={{ __html: sambutanHtml }} 
                         />
                     </div>
