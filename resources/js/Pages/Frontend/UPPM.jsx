@@ -1,28 +1,38 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import DynamicSectionsRenderer from '@/Components/Sections/DynamicSectionsRenderer';
+import Hero from '@/Sections/Hero';
+import { Head } from '@inertiajs/react';
 
 export default function UPPM({ fasilitasData }) {
+    // 1. Ensure data is always an object safely
     const data = fasilitasData || {};
     const facilities = Array.isArray(data.facilities) ? data.facilities : [];
 
+    // 2. FIX: Check if path is actually a string before using .startsWith()
+    const getImageUrl = (path) => {
+        if (!path || typeof path !== 'string') return null;
+        if (path.startsWith('http')) return path;
+        if (path.startsWith('storage/')) return '/' + path;
+        return '/storage/' + path;
+    };
+
+    // 3. FIX: Ensure description is a string before using .replace()
+    const rawDescription = typeof data.description === 'string' && data.description.trim() !== '' 
+        ? data.description 
+        : 'UPPM STIKes Bogor Husada didirikan dengan tujuan menjadi wadah dinamis bagi seluruh sivitas akademika dalam mengembangkan Ilmu Pengetahuan, Teknologi, dan Seni (IPTEKS) di bidang kesehatan.';
+        
+    const formattedDescription = '<p class="mb-4">' + rawDescription.replace(/\n/g, '</p><p class="mb-4">') + '</p>';
+
     const dummySectionsConfig = [
-        {
-            type: 'hero_static',
-            content: {
-                title: data.name || 'Unit Penelitian dan Pengabdian kepada Masyarakat (UPPM)',
-                subtitle: 'Motor penggerak riset inovatif dan pengabdian nyata berbasis bukti ilmiah demi kesehatan masyarakat.',
-                bgImage: data.image ? '/' + data.image : '/assets/img/hero-fallback.png'
-            }
-        },
         {
             type: 'content_with_image',
             content: {
                 title: 'Tentang UPPM',
-                image: data.image ? '/' + data.image : 'https://images.unsplash.com/photo-1576091160550-2173ff9e9e9c?auto=format&fit=crop&q=80&w=2070',
+                image: getImageUrl(data.image) || 'https://images.unsplash.com/photo-1576091160550-2173ff9e9e9c?auto=format&fit=crop&q=80&w=2070',
                 align: 'left',
                 imageAspectRatio: 'aspect-[4/3]',
-                content: '<p class="mb-4">' + (data.description || 'UPPM STIKes Bogor Husada didirikan dengan tujuan menjadi wadah dinamis bagi seluruh sivitas akademika dalam mengembangkan Ilmu Pengetahuan, Teknologi, dan Seni (IPTEKS) di bidang kesehatan.').replace(/\n/g, '</p><p class="mb-4">') + '</p>'
+                content: formattedDescription
             }
         },
         {
@@ -30,7 +40,7 @@ export default function UPPM({ fasilitasData }) {
             content: {
                 title: 'Program Kerja & Layanan UPPM',
                 features: facilities.length > 0 ? facilities.map(f => ({
-                    title: f.name,
+                    title: f.name || 'Unnamed Feature',
                     icon: 'fas fa-check-circle',
                     description: f.description || ''
                 })) : [
@@ -61,6 +71,23 @@ export default function UPPM({ fasilitasData }) {
 
     return (
         <MainLayout title="UPPM | STIKes Bogor Husada">
+            <Head>
+                <title>UPPM - STIKes Bogor Husada</title>
+            </Head>
+
+            <Hero
+                content={{
+                    title: data.name || 'Unit Penelitian dan Pengabdian kepada Masyarakat (UPPM)',
+                    subtitle: 'Motor penggerak riset inovatif dan pengabdian nyata berbasis bukti ilmiah demi kesehatan masyarakat.',
+                    image: getImageUrl(data.image) || '/assets/img/hero-fallback.png',
+                    gradient: 'orange',
+                    breadcrumbs: [
+                        { label: 'Unit & Fasilitas', url: null },
+                        { label: 'UPPM', url: null }
+                    ]
+                }}
+            />
+
             <DynamicSectionsRenderer sections={dummySectionsConfig} />
         </MainLayout>
     );

@@ -34,7 +34,7 @@ export default function Berita({ articles, categories, latestArticles, meta }) {
                                 {newsList.length > 0 ? newsList.map(news => (
                                     <article key={news.id} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300 group flex flex-col">
                                         <div className="relative aspect-video overflow-hidden bg-gray-100">
-                                            <Link href={`/artikel/${news.slug}`} className="block relative h-full w-full">
+                                            <Link href={news.slug ? `/artikel/${news.slug}` : '/artikel'} className="block relative h-full w-full">
                                                 <img
                                                     src={news.thumbnail ? `/storage/${news.thumbnail.replace('storage/', '')}` : '/img/placeholder-image.png'}
                                                     alt={news.title}
@@ -53,12 +53,12 @@ export default function Berita({ articles, categories, latestArticles, meta }) {
                                                 <span className="flex items-center gap-1.5"><i className="far fa-user"></i> Admin</span>
                                             </div>
                                             <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2 leading-tight group-hover:text-orange-600 transition-colors">
-                                                <Link href={`/artikel/${news.slug}`}>{news.title}</Link>
+                                                <Link href={news.slug ? `/artikel/${news.slug}` : '/artikel'}>{news.title}</Link>
                                             </h3>
                                             <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4 flex-grow">
                                                 {news.excerpt || news.content?.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...'}
                                             </p>
-                                            <Link href={`/artikel/${news.slug}`} className="inline-flex items-center text-orange-600 dark:text-orange-400 text-sm font-semibold hover:text-orange-800 transition-colors mt-auto">
+                                            <Link href={news.slug ? `/artikel/${news.slug}` : '/artikel'} className="inline-flex items-center text-orange-600 dark:text-orange-400 text-sm font-semibold hover:text-orange-800 transition-colors mt-auto">
                                                 Baca Selengkapnya <i className="fas fa-arrow-right ml-2 text-[10px]"></i>
                                             </Link>
                                         </div>

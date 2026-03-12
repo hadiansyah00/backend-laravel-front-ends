@@ -79,7 +79,7 @@ class MediaController extends Controller
 
     public function destroy(Media $media, Request $request)
     {
-        if (Storage::disk($media->disk)->exists($media->path)) {
+        if ($media->path && Storage::disk($media->disk)->exists($media->path)) {
             Storage::disk($media->disk)->delete($media->path);
         }
 

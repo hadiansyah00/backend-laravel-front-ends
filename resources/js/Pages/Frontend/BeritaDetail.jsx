@@ -91,7 +91,7 @@ export default function BeritaDetail({ article, related, recentPosts, categories
                                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Berita Terkait</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                     {related.map((post) => (
-                                        <Link href={`/artikel/${post.slug}`} key={post.id} className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all">
+                                        <Link href={post.slug ? `/artikel/${post.slug}` : '/artikel'} key={post.id} className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all">
                                             <div className="aspect-[4/3] overflow-hidden bg-gray-100">
                                                 <img src={post.thumbnail ? `/storage/${post.thumbnail.replace('storage/', '')}` : '/img/placeholder-image.png'} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                             </div>

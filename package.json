@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+        "@ckeditor/ckeditor5-react": "^11.0.1",
         "@inertiajs/react": "^2.3.17",
         "@vitejs/plugin-react": "^5.1.4",
         "@yaireo/tagify": "^4.35.4",

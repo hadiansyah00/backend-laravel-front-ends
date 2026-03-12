@@ -218,6 +218,22 @@ export default function Dashboard({ auth, stats }) {
                             </div>
                         </div>
 
+                        {/* Card: Unit & Fasilitas */}
+                        <div className="group relative overflow-hidden bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i className="fas fa-building text-6xl text-orange-500"></i>
+                            </div>
+                            <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center border border-orange-100 dark:border-orange-500/20">
+                                    <i className="fas fa-building text-xl text-orange-600 dark:text-orange-400"></i>
+                                </div>
+                                <div>
+                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{stats?.fasilitas || 0}</p>
+                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Unit & Fasilitas</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

@@ -279,7 +279,7 @@ export default function Home({ berita, programStudis, beranda = {}, pengumuman =
                                                 ? (item.thumbnail.startsWith('http') || item.thumbnail.startsWith('/') ? item.thumbnail : `/storage/${item.thumbnail}`)
                                                 : '/assets/img/placeholder.jpg';
                                             return (
-                                                <Link href={`/berita/${item.slug}`} key={item.id} className="flex flex-col overflow-hidden bg-white border border-gray-100 shadow-sm sm:rounded-2xl hover:shadow-md transition-shadow group">
+                                                <Link href={item.slug ? `/artikel/${item.slug}` : '/artikel'} key={item.id} className="flex flex-col overflow-hidden bg-white border border-gray-100 shadow-sm sm:rounded-2xl hover:shadow-md transition-shadow group">
                                                     <div className="relative pt-[55%] overflow-hidden bg-gray-100">
                                                         <img
                                                             src={bgImageUrl}

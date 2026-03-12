@@ -81,6 +81,7 @@ Route::get('/dashboard', function () {
             'users' => \App\Models\User::count(),
             'roles' => \Spatie\Permission\Models\Role::count(),
             'menus' => \App\Models\Menu::count(),
+            'fasilitas' => \App\Models\Fasilitas::count(),
         ],
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');

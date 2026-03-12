@@ -115,14 +115,39 @@ export default function Form({ fasilitasData }) {
                                         </button>
                                     </div>
                                     
-                                    <div className="space-y-3">
+                                    <div className="space-y-4">
                                         {facilitiesItems.length === 0 ? (
                                             <p className="text-xs text-gray-500 italic text-center py-2">Belum ada item rincian.</p>
                                         ) : (
                                             facilitiesItems.map((item, index) => (
-                                                <div key={index} className="flex gap-2 items-center">
-                                                    <input type="text" value={item.name} onChange={e => updateFacility(index, e.target.value)} className="flex-1 rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Contoh: Bed Pasien / Ruang Diskusi" />
-                                                    <button type="button" onClick={() => removeFacility(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
+                                                <div key={index} className="flex gap-4 items-start border p-3 rounded-lg dark:border-gray-700">
+                                                    <div className="flex-1 space-y-2">
+                                                        <div className="flex gap-2">
+                                                            <div className="flex-1">
+                                                                <input type="text" value={item.name} onChange={e => {
+                                                                    const newItems = [...facilitiesItems];
+                                                                    newItems[index].name = e.target.value;
+                                                                    setFacilitiesItems(newItems);
+                                                                    setData('facilities', newItems);
+                                                                }} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Judul Rincian (Contoh: Bed Pasien)" />
+                                                            </div>
+                                                            <div className="w-1/3">
+                                                                <input type="text" value={item.icon || ''} onChange={e => {
+                                                                    const newItems = [...facilitiesItems];
+                                                                    newItems[index].icon = e.target.value;
+                                                                    setFacilitiesItems(newItems);
+                                                                    setData('facilities', newItems);
+                                                                }} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Icon Class (fa-check)" />
+                                                            </div>
+                                                        </div>
+                                                        <textarea value={item.description || ''} onChange={e => {
+                                                            const newItems = [...facilitiesItems];
+                                                            newItems[index].description = e.target.value;
+                                                            setFacilitiesItems(newItems);
+                                                            setData('facilities', newItems);
+                                                        }} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Deskripsi Rincian" rows={2}></textarea>
+                                                    </div>
+                                                    <button type="button" onClick={() => removeFacility(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-1" title="Hapus">
                                                         <i className="fas fa-times"></i>
                                                     </button>
                                                 </div>

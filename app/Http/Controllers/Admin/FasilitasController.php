@@ -43,8 +43,14 @@ class FasilitasController extends Controller
             'facilities' => 'nullable|array',
             'order' => 'integer',
             'is_active' => 'boolean',
-            'image' => 'nullable|string|max:500',
+            'image' => 'nullable',
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('uploads/fasilitas', 'public');
+        } elseif (is_string($request->image)) {
+            $validated['image'] = $request->image;
+        }
 
         Fasilitas::create($validated);
 
@@ -67,8 +73,28 @@ class FasilitasController extends Controller
             'facilities' => 'nullable|array',
             'order' => 'integer',
             'is_active' => 'boolean',
-            'image' => 'nullable|string|max:500',
+            'image' => 'nullable',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($fasilita->image) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $fasilita->image));
+            }
+            $validated['image'] = $request->file('image')->store('uploads/fasilitas', 'public');
+        } elseif (is_string($request->image)) {
+            $validated['image'] = $request->image;
+        } else {
+            // keep old image if not uploading a new file and not explicitly sending empty string
+            if ($request->has('image') && is_null($request->image)) {
+               if ($fasilita->image) {
+                   Storage::disk('public')->delete(str_replace('storage/', '', $fasilita->image));
+               }
+               $validated['image'] = null;
+            } else {
+               $validated['image'] = $fasilita->image;
+            }
+        }
 
         $fasilita->update($validated);
 

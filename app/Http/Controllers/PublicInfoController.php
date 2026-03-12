@@ -15,6 +15,11 @@ use Inertia\Inertia;
 
 class PublicInfoController extends Controller
 {
+    public function __construct()
+    {
+        Inertia::setRootView('app-inertia');
+    }
+
     /**
      * Display Profil STIKes
      */

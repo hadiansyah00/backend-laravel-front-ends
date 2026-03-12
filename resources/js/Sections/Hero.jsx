@@ -8,8 +8,8 @@ export default function Hero({ content, pageInfo }) {
         ? (rawImage.startsWith('http') || rawImage.startsWith('/') ? rawImage : `/storage/${rawImage}`) 
         : null;
 
-    // Convert breadcrumbs object into array
-    const breadcrumbs = content.breadcrumbs ? Object.values(content.breadcrumbs) : [];
+    // Convert breadcrumbs object into array safely
+    const breadcrumbs = (content && content.breadcrumbs && typeof content.breadcrumbs === 'object') ? Object.values(content.breadcrumbs) : [];
 
     return (
         <section
