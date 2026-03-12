@@ -5,11 +5,11 @@ import Hero from '@/Sections/Hero';
 import { Head } from '@inertiajs/react';
 
 export default function UPMI({ fasilitasData }) {
-    // 1. DATA AMAN
+    // 1. Ensure data is always an object safely
     const data = fasilitasData || {};
     const facilities = Array.isArray(data.facilities) ? data.facilities : [];
 
-    // 2. HELPER: Pengaman URL Gambar
+    // 2. FIX: Check if path is actually a string before using .startsWith()
     const getImageUrl = (path) => {
         if (!path || typeof path !== 'string') return null;
         if (path.startsWith('http')) return path;
@@ -17,102 +17,73 @@ export default function UPMI({ fasilitasData }) {
         return '/storage/' + path;
     };
 
-    // 3. HELPER: Ekstraksi Judul Aman
-    const getSectionTitle = (name) => {
-        if (!name || typeof name !== 'string') return 'Mengenal UPMI';
-        const match = name.match(/\(([^)]+)\)/); 
-        return match ? `Mengenal ${match[1]}` : `Mengenal ${name}`;
-    };
-
-    // 4. HELPER: Format Paragraf Aman
-    const formatDescription = (desc) => {
-        const defaultDesc = 'UPMI STIKes Bogor Husada adalah pilar utama dalam menjaga kredibilitas dan keunggulan institusi. Kami bertanggung jawab untuk memastikan bahwa seluruh aktivitas akademik dan non-akademik di kampus selaras dengan Standar Nasional Pendidikan Tinggi (SN-Dikti).';
-        const rawText = typeof desc === 'string' && desc.trim() !== '' ? desc : defaultDesc;
+    // 3. FIX: Ensure description is a string before using .replace()
+    const rawDescription = typeof data.description === 'string' && data.description.trim() !== '' 
+        ? data.description 
+        : 'UPMI STIKes Bogor Husada didirikan dengan tujuan menjadi wadah dinamis bagi seluruh sivitas akademika dalam mengembangkan Ilmu Pengetahuan, Teknologi, dan Seni (IPTEKS) di bidang kesehatan.';
         
-        return rawText
-            .split('\n')
-            .filter(line => line.trim() !== '')
-            .map(line => `<p class="mb-4 text-gray-700 dark:text-gray-300">${line.trim()}</p>`)
-            .join('');
-    };
+    const formattedDescription = '<p class="mb-4">' + rawDescription.replace(/\n/g, '</p><p class="mb-4">') + '</p>';
 
-    const defaultFacilities = {
-        "Audit Mutu Internal (AMI)": {
-            icon: "fas fa-clipboard-check",
-            description: "Investigasi independen yang dilakukan setiap akhir semester untuk menilai kepatuhan program studi terhadap standar mutu ISO dan Dikti."
-        },
-        "Evaluasi Dosen oleh Mahasiswa (EDOM)": {
-            icon: "fas fa-user-check",
-            description: "Platform survei analitik untuk mengukur kepuasan mahasiswa atas performa mengajar dosen di setiap mata kuliah."
-        },
-        "Survei Kepuasan Pengguna": {
-            icon: "fas fa-chart-line",
-            description: "Evaluasi kepuasan mahasiswa terhadap layanan akademik, BAAK, ketersediaan perpustakaan, hingga infrastruktur laboratorium."
-        },
-        "Tracer Study Luaran": {
-            icon: "fas fa-graduation-cap",
-            description: "Pelacakan profil dan tingkat keterserapan alumni di dunia kerja (rumah sakit/industri medis) secara nasional."
-        }
-    };
-
-    // 5. RAKIT SECTION DENGAN PENGAMAN ARRAY
     const dummySectionsConfig = [
         {
             type: 'content_with_image',
             content: {
-                title: getSectionTitle(data.name),
-                image: getImageUrl(data.image) || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2070',
-                align: 'right',
+                title: 'Tentang UPMI',
+                image: getImageUrl(data.image) || 'https://images.unsplash.com/photo-1576091160550-2173ff9e9e9c?auto=format&fit=crop&q=80&w=2070',
+                align: 'left',
                 imageAspectRatio: 'aspect-[4/3]',
-                content: formatDescription(data.description)
+                content: formattedDescription
             }
         },
         {
             type: 'feature',
             content: {
-                title: 'Layanan & Fokus Utama',
-                features: facilities.length > 0 
-                    ? facilities.map(f => {
-                        // FIX UTAMA: Jika ada item array yang cacat/null, skip prosesnya
-                        if (!f || typeof f !== 'object') return null;
-
-                        // Gunakan optional chaining (?.) agar tidak crash
-                        const name = typeof f?.name === 'string' ? f.name : 'Layanan Unit';
-                        const fallback = defaultFacilities[name] || {};
-                        
-                        return {
-                            title: name,
-                            icon: typeof f?.icon === 'string' && f.icon ? f.icon : (fallback.icon || 'fas fa-check-circle'),
-                            description: typeof f?.description === 'string' && f.description ? f.description : (fallback.description || 'Deskripsi belum tersedia.')
-                        };
-                    }).filter(Boolean) // Membuang nilai null dari hasil map
-                    : Object.entries(defaultFacilities).map(([key, val]) => ({
-                        title: key,
-                        icon: val.icon,
-                        description: val.description
-                    }))
+                title: 'Program Kerja & Layanan UPMI',
+                features: facilities.length > 0 ? facilities.map(f => ({
+                    title: f.name || 'Unnamed Feature',
+                    icon: 'fas fa-check-circle',
+                    description: f.description || ''
+                })) : [
+                    {
+                        title: "Hibah Riset Internal & Eksternal",
+                        icon: "fas fa-hand-holding-usd",
+                        description: "Fasilitasi pendanaan penelitian dosen dan mahasiswa melalui seleksi ketat untuk menghasilkan inovasi medis."
+                    },
+                    {
+                        title: "Publikasi Jurnal Terakreditasi",
+                        icon: "fas fa-book-open",
+                        description: "Pendampingan penulisan naskah ilmiah untuk diterbitkan di jurnal nasional SINTA maupun jurnal internasional bereputasi."
+                    },
+                    {
+                        title: "Hak Kekayaan Intelektual (HKI)",
+                        icon: "fas fa-certificate",
+                        description: "Pengurusan paten, hak cipta, dan desain industri atas luaran produk/modul hasil riset kesehatan sivitas akademika."
+                    },
+                    {
+                        title: "Desa Binaan & Pengabdian Tematik",
+                        icon: "fas fa-people-carry",
+                        description: "Penerjunan tim kolaboratif dosen-mahasiswa ke daerah rawan kesehatan untuk edukasi masif dan intervensi klinis dasar."
+                    }
+                ]
             }
         }
     ];
 
-    const pageTitle = (data && typeof data.name === 'string') ? data.name : 'Unit Penjaminan Mutu Internal (UPMI)';
-    const shortName = pageTitle.includes('(') ? pageTitle.split('(')[1].replace(')', '') : 'UPMI';
-
     return (
-        <MainLayout title={`${shortName} | STIKes Bogor Husada`}>
+        <MainLayout title="UPMI | STIKes Bogor Husada">
             <Head>
-                <title>{shortName} - STIKes Bogor Husada</title>
+                <title>UPMI - STIKes Bogor Husada</title>
             </Head>
 
             <Hero
                 content={{
-                    title: pageTitle,
-                    subtitle: 'Mengawal standar kualitas tri dharma perguruan tinggi melalui sistem penjaminan mutu yang terukur dan berkelanjutan.',
+                    title: data.name || 'Unit Pendidikan dan Magang (UPMI)',
+                    subtitle: 'Motor penggerak pendidikan dan magang nyata berbasis bukti ilmiah demi kesehatan masyarakat.',
                     image: getImageUrl(data.image) || '/assets/img/hero-fallback.png',
                     gradient: 'orange',
                     breadcrumbs: [
                         { label: 'Unit & Fasilitas', url: null },
-                        { label: shortName, url: null }
+                        { label: 'UPMI', url: null }
                     ]
                 }}
             />

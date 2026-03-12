@@ -44,12 +44,12 @@ Route::prefix('pendaftaran-email')->group(function () {
 });
 
 // ================== PLACHOLDER ROUTES (Dari Menu Seeder) ================== //
-Route::get('/pengumuman', fn () => Inertia::render('Pengumuman'))->name('pengumuman.index');
-Route::get('/event', fn () => Inertia::render('Event'))->name('event.index');
-Route::get('/galeri', fn () => Inertia::render('Galeri'))->name('galeri.index');
-Route::get('/dokumen', fn () => Inertia::render('Dokumen'))->name('dokumen.index');
-Route::get('/dosen', fn () => Inertia::render('Dosen'))->name('dosen.index');
-Route::get('/alumni', fn () => Inertia::render('Alumni'))->name('alumni.index');
+Route::get('/pengumuman', fn() => Inertia::render('Pengumuman'))->name('pengumuman.index');
+Route::get('/event', fn() => Inertia::render('Event'))->name('event.index');
+Route::get('/galeri', fn() => Inertia::render('Galeri'))->name('galeri.index');
+Route::get('/dokumen', fn() => Inertia::render('Dokumen'))->name('dokumen.index');
+Route::get('/dosen', fn() => Inertia::render('Dosen'))->name('dosen.index');
+Route::get('/alumni', fn() => Inertia::render('Alumni'))->name('alumni.index');
 
 // ================== AUTH ================== //
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -72,7 +72,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::get('/dashboard', function () {
     return \Inertia\Inertia::render('Admin/Dashboard', [
         'stats' => [
-            'berita' => \App\Models\Pages::where('category', 'berita')->count(),
+            'berita' => \App\Models\Article::count(),
             'pengumuman' => \App\Models\Pengumuman::count(),
             'event' => \App\Models\Event::count(),
             'dosen' => \App\Models\Dosen::count(),
@@ -199,15 +199,18 @@ Route::get('/farmasi', [PublicInfoController::class, 'farmasi'])->name('front.fa
 Route::get('/gizi', [PublicInfoController::class, 'gizi'])->name('front.gizi');
 Route::get('/kebidanan', [PublicInfoController::class, 'kebidanan'])->name('front.kebidanan');
 Route::get('/kalender-akademik', [PublicInfoController::class, 'kalenderAkademik'])->name('front.kalender');
-
-Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');
+// Gunakan parameter {slug}
+Route::get('/{slug}', [PublicInfoController::class, 'showProgramStudi'])
+    ->name('front.prodi.show');Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');
 Route::get('/perpustakaan', [PublicInfoController::class, 'perpustakaan'])->name('front.perpustakaan');
 Route::get('/uppm', [PublicInfoController::class, 'uppm'])->name('front.uppm');
 Route::get('/upmi', [PublicInfoController::class, 'upmi'])->name('front.upmi');
 
 
+Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
+Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Original fallback to Modular Pages Builder
 // Biarkan ini di-comment atau di bypass sementara untuk review

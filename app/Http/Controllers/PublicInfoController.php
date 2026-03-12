@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pengumuman;
-use App\Models\Event;
-use App\Models\Document;
-use App\Models\Gallery;
-use App\Models\Dosen;
 use App\Models\Alumni;
+use App\Models\Article;
+use App\Models\Category;
+use App\Models\Document;
+use App\Models\Dosen;
+use App\Models\Event;
+use App\Models\Gallery;
 use App\Models\Lowongan;
+use App\Models\Pengumuman;
 use App\Models\TentangKami;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -70,45 +72,62 @@ class PublicInfoController extends Controller
     }
 
     // ================== AKADEMIK ==================
-    public function farmasi() { 
-        $programData = \App\Models\ProgramStudi::where('slug', 's1-farmasi')->firstOrFail();
-        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]); 
+    public function farmasi()
+    {
+        $programData = \App\Models\ProgramStudi::where('slug', 'farmasi')->firstOrFail();
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
     }
-    public function gizi() { 
-        $programData = \App\Models\ProgramStudi::where('slug', 's1-gizi')->firstOrFail();
-        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]); 
+    public function gizi()
+    {
+        $programData = \App\Models\ProgramStudi::where('slug', 'gizi')->firstOrFail();
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
     }
-    public function kebidanan() { 
-        $programData = \App\Models\ProgramStudi::where('slug', 'd3-kebidanan')->firstOrFail();
-        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]); 
+    public function kebidanan()
+    {
+        $programData = \App\Models\ProgramStudi::where('slug', 'kebidanan')->firstOrFail();
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
     }
-    public function kalenderAkademik() { 
+    public function showProgramStudi($slug)
+    {
+        // Cari prodi berdasarkan slug yang ada di URL
+        $programData = \App\Models\ProgramStudi::where('slug', $slug)->firstOrFail();
+
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', [
+            'programData' => $programData
+        ]);
+    }
+    public function kalenderAkademik()
+    {
         $kalenders = \App\Models\KalenderAkademik::where('is_active', 1)
-                        ->orderBy('order')
-                        ->get()
-                        ->groupBy('semester');
-                        
+            ->orderBy('order')
+            ->get()
+            ->groupBy('semester');
+
         return Inertia::render('Frontend/Akademik/Kalender', [
             'kalenders' => $kalenders
-        ]); 
+        ]);
     }
 
     // ================== UNIT LEMBAGA ==================
-    public function laboratorium() { 
+    public function laboratorium()
+    {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'Laboratorium')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/Akademik/Laboratorium', ['fasilitasData' => $fasilitasData]); 
+        return Inertia::render('Frontend/Akademik/Laboratorium', ['fasilitasData' => $fasilitasData]);
     }
-    public function perpustakaan() { 
+    public function perpustakaan()
+    {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'Perpustakaan')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/Akademik/Perpustakaan', ['fasilitasData' => $fasilitasData]); 
+        return Inertia::render('Frontend/Akademik/Perpustakaan', ['fasilitasData' => $fasilitasData]);
     }
-    public function uppm() { 
+    public function uppm()
+    {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'UPPM')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/UPPM', ['fasilitasData' => $fasilitasData]); 
+        return Inertia::render('Frontend/UPPM', ['fasilitasData' => $fasilitasData]);
     }
-    public function upmi() { 
+    public function upmi()
+    {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'UPMI')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/UPMI', ['fasilitasData' => $fasilitasData]); 
+        return Inertia::render('Frontend/UPMI', ['fasilitasData' => $fasilitasData]);
     }
 
     /**
@@ -149,9 +168,13 @@ class PublicInfoController extends Controller
     /**
      * Display a listing of Events.
      */
+    /**
+     * Display a listing of Events.
+     */
     public function event(Request $request)
     {
-        $events = Event::where('is_published', 1)
+        // UBAH: is_published menjadi is_active sesuai Model
+        $events = Event::where('is_active', 1)
             ->orderBy('start_date', 'asc')
             ->paginate(9);
 
@@ -165,11 +188,12 @@ class PublicInfoController extends Controller
      */
     public function eventShow($slug)
     {
+        // UBAH: is_published menjadi is_active sesuai Model
         $event = Event::where('slug', $slug)
-            ->where('is_published', 1)
+            ->where('is_active', 1)
             ->firstOrFail();
 
-        $upcomingEvents = Event::where('is_published', 1)
+        $upcomingEvents = Event::where('is_active', 1)
             ->where('id', '!=', $event->id)
             ->where('start_date', '>=', now())
             ->orderBy('start_date', 'asc')
@@ -198,7 +222,7 @@ class PublicInfoController extends Controller
         }
 
         $documents = $query->latest()->paginate(12);
-        
+
         // Get unique categories for filter
         $categories = Document::where('is_active', 1)
             ->whereNotNull('category')
@@ -251,7 +275,7 @@ class PublicInfoController extends Controller
             $query->where('prodi', $request->prodi);
         }
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%'.$request->search.'%');
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         $dosens = $query->get();
@@ -278,7 +302,7 @@ class PublicInfoController extends Controller
             $query->where('program_studi', $request->prodi);
         }
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%'.$request->search.'%');
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         $alumnis = $query->paginate(12);
@@ -302,7 +326,7 @@ class PublicInfoController extends Controller
         $query = Lowongan::where('is_active', 1)->latest();
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%'.$request->search.'%');
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
 
         $lowongans = $query->paginate(9);
@@ -321,6 +345,77 @@ class PublicInfoController extends Controller
         // Kerjasama belum memiliki model sendiri, tampilkan halaman statis
         return Inertia::render('Frontend/Kerjasama', [
             'kerjasamas' => collect(),
+        ]);
+    }
+    // ================== BERITA & ARTIKEL ==================
+
+    /**
+     * Display a listing of Berita / Articles.
+     */
+    // ================== BERITA & ARTIKEL ==================
+
+    /**
+     * Display a listing of Berita / Articles.
+     */
+    public function berita(Request $request)
+    {
+        // Gunakan 'status' = 'published' sesuai model (ubah jika valuenya beda, misal 'tayang' atau '1')
+        // Eager load category dan tags agar query lebih ringan
+        $query = Article::with(['category', 'tags'])->where('status', 'published');
+
+        // Filter pencarian dengan Grouping agar kondisi 'status' tidak bocor
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhere('content', 'like', '%' . $request->search . '%')
+                    ->orWhere('excerpt', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter berdasarkan kategori
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Paginate menggunakan published_at dari model
+        $articles = $query->latest('published_at')->paginate(6)->withQueryString();
+
+        // Ambil kategori untuk sidebar
+        // (Asumsi kamu punya model Category, ganti pemanggilannya jika beda)
+        $categories = \App\Models\Category::all();
+
+        return Inertia::render('Frontend/Berita', [
+            'articles' => $articles,
+            'categories' => $categories,
+            'filters' => $request->only(['search', 'category']),
+        ]);
+    }
+
+    /**
+     * Display a single Berita / Article Detail.
+     */
+    public function beritaShow($slug)
+    {
+        // Eager load category, tags, dan meta sekalian
+        $article = Article::with(['category', 'tags', 'meta'])
+            ->where('slug', $slug)
+            ->where('status', 'published') // Sesuaikan dengan value kolom status kamu
+            ->firstOrFail();
+
+        $categories = \App\Models\Category::all();
+
+        // Ambil artikel terbaru untuk ditaruh di sidebar
+        $latestArticles = Article::with('category')
+            ->where('status', 'published')
+            ->where('id', '!=', $article->id)
+            ->latest('published_at')
+            ->take(5)
+            ->get();
+
+        return Inertia::render('Frontend/BeritaDetail', [
+            'article' => $article,
+            'categories' => $categories,
+            'latestArticles' => $latestArticles,
         ]);
     }
 }
