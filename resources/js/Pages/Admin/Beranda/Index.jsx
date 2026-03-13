@@ -49,7 +49,7 @@ export default function Index({ data, types }) {
                     if (!testimoniData.items) testimoniData.items = [];
                 }
             } catch (e) {
-                // not JSON
+                // Abaikan jika bukan JSON
             }
         }
 
@@ -67,44 +67,117 @@ export default function Index({ data, types }) {
         };
     };
 
-    const { data: formData, setData, post, processing, errors } = useForm(getInitialData(activeTab));
+    // ✅ FIX UTAMA ADA DI SINI: Menambahkan "transform"
+    const { data: formData, setData, post, processing, errors, transform } = useForm(getInitialData(activeTab));
 
     const handleTabChange = (type) => {
         setActiveTab(type);
-        const newData = getInitialData(type);
-        setData(newData);
+        setData(getInitialData(type));
+    };
+
+    // --- FUNGSI HELPER UNTUK MENGUBAH ARRAY SLIDER DENGAN AMAN ---
+    const updateSlider = (index, field, value) => {
+        setData(prevData => {
+            const newSliders = [...prevData.heroData.sliders];
+            newSliders[index] = { ...newSliders[index], [field]: value };
+            return { ...prevData, heroData: { ...prevData.heroData, sliders: newSliders } };
+        });
+    };
+
+    const addSlider = () => {
+        setData(prevData => {
+            return {
+                ...prevData,
+                heroData: {
+                    ...prevData.heroData,
+                    sliders: [...prevData.heroData.sliders, { image: '', subtitle: '', title: '', description: '', link: '', link_text: '' }]
+                }
+            };
+        });
+    };
+
+    const removeSlider = (index) => {
+        setData(prevData => {
+            return {
+                ...prevData,
+                heroData: {
+                    ...prevData.heroData,
+                    sliders: prevData.heroData.sliders.filter((_, i) => i !== index)
+                }
+            };
+        });
+    };
+
+    // --- FUNGSI HELPER UNTUK MENGUBAH ARRAY TESTIMONI DENGAN AMAN ---
+    const updateTestimoni = (index, field, value) => {
+        setData(prevData => {
+            const newItems = [...prevData.testimoniData.items];
+            newItems[index] = { ...newItems[index], [field]: value };
+            return { ...prevData, testimoniData: { ...prevData.testimoniData, items: newItems } };
+        });
+    };
+
+    const addTestimoni = () => {
+        setData(prevData => {
+            return {
+                ...prevData,
+                testimoniData: {
+                    ...prevData.testimoniData,
+                    items: [...prevData.testimoniData.items, { name: '', role: '', photo: '', message: '' }]
+                }
+            };
+        });
+    };
+
+    const removeTestimoni = (index) => {
+        setData(prevData => {
+            return {
+                ...prevData,
+                testimoniData: {
+                    ...prevData.testimoniData,
+                    items: prevData.testimoniData.items.filter((_, i) => i !== index)
+                }
+            };
+        });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        let payload = { ...formData };
-        if (payload.type === 'hero') {
-            payload.content = JSON.stringify({
-                sliders: payload.heroData.sliders.filter(s => s.title)
-            });
-        } else if (payload.type === 'quick_action') {
-            payload.content = JSON.stringify(payload.quickActionData);
-        } else if (payload.type === 'program_studi') {
-            payload.content = JSON.stringify(payload.programStudiData);
-        } else if (payload.type === 'video_profil') {
-            payload.content = JSON.stringify(payload.videoProfilData);
-        } else if (payload.type === 'testimoni') {
-            payload.content = JSON.stringify({
-                badge: payload.testimoniData.badge,
-                description: payload.testimoniData.description,
-                items: payload.testimoniData.items.filter(i => i.name)
-            });
-        }
+        // Transform data sebelum dikirim
+        transform((currentData) => {
+            let payload = { ...currentData };
+            
+            if (payload.type === 'hero') {
+                payload.content = JSON.stringify({
+                    sliders: payload.heroData.sliders
+                });
+            } else if (payload.type === 'quick_action') {
+                payload.content = JSON.stringify(payload.quickActionData);
+            } else if (payload.type === 'program_studi') {
+                payload.content = JSON.stringify(payload.programStudiData);
+            } else if (payload.type === 'video_profil') {
+                payload.content = JSON.stringify(payload.videoProfilData);
+            } else if (payload.type === 'testimoni') {
+                payload.content = JSON.stringify({
+                    badge: payload.testimoniData.badge,
+                    description: payload.testimoniData.description,
+                    items: payload.testimoniData.items
+                });
+            }
+            
+            return payload; 
+        });
 
+        // Eksekusi post
         post(route('admin.beranda.store'), {
-            data: payload,
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Berhasil menyimpan data ' + types[activeTab]);
             },
-            onError: () => {
-                toast.error('Gagal menyimpan data.');
+            onError: (err) => {
+                toast.error('Gagal menyimpan data. Cek kembali form Anda.');
+                console.error("Error validasi:", err);
             }
         });
     };
@@ -123,6 +196,7 @@ export default function Index({ data, types }) {
                                 <button
                                     key={type}
                                     onClick={() => handleTabChange(type)}
+                                    type="button"
                                     className={`whitespace-nowrap py-3 px-5 mr-2 rounded-xl text-sm font-medium transition-colors ${
                                         activeTab === type
                                             ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 font-bold'
@@ -178,10 +252,7 @@ export default function Index({ data, types }) {
                                             <h4 className="font-bold text-gray-900 dark:text-white">Daftar Slider</h4>
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    const sliders = [...formData.heroData.sliders, { image: '', subtitle: '', title: '', description: '', link: '', link_text: '' }];
-                                                    setData('heroData', { ...formData.heroData, sliders });
-                                                }}
+                                                onClick={addSlider}
                                                 className="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg"
                                             >
                                                 <i className="fas fa-plus"></i> Tambah Slider
@@ -213,11 +284,7 @@ export default function Index({ data, types }) {
                                                                     readOnly
                                                                 />
                                                                 <MediaPicker 
-                                                                    onSelect={(url) => {
-                                                                        const sliders = [...formData.heroData.sliders];
-                                                                        sliders[index].image = url;
-                                                                        setData('heroData', { ...formData.heroData, sliders });
-                                                                    }}
+                                                                    onSelect={(url) => updateSlider(index, 'image', url)}
                                                                     trigger={
                                                                         <button type="button" className="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-semibold">
                                                                             Pilih Media
@@ -235,11 +302,7 @@ export default function Index({ data, types }) {
                                                                 type="text"
                                                                 className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                                 value={slider.subtitle}
-                                                                onChange={e => {
-                                                                    const sliders = [...formData.heroData.sliders];
-                                                                    sliders[index].subtitle = e.target.value;
-                                                                    setData('heroData', { ...formData.heroData, sliders });
-                                                                }}
+                                                                onChange={e => updateSlider(index, 'subtitle', e.target.value)}
                                                             />
                                                         </div>
                                                         <div>
@@ -248,11 +311,7 @@ export default function Index({ data, types }) {
                                                                 type="text"
                                                                 className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                                 value={slider.title}
-                                                                onChange={e => {
-                                                                    const sliders = [...formData.heroData.sliders];
-                                                                    sliders[index].title = e.target.value;
-                                                                    setData('heroData', { ...formData.heroData, sliders });
-                                                                }}
+                                                                onChange={e => updateSlider(index, 'title', e.target.value)}
                                                             />
                                                         </div>
                                                     </div>
@@ -263,11 +322,7 @@ export default function Index({ data, types }) {
                                                             rows={2}
                                                             className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                             value={slider.description}
-                                                            onChange={e => {
-                                                                const sliders = [...formData.heroData.sliders];
-                                                                sliders[index].description = e.target.value;
-                                                                setData('heroData', { ...formData.heroData, sliders });
-                                                            }}
+                                                            onChange={e => updateSlider(index, 'description', e.target.value)}
                                                         />
                                                     </div>
 
@@ -278,11 +333,7 @@ export default function Index({ data, types }) {
                                                                 type="text"
                                                                 className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                                 value={slider.link_text}
-                                                                onChange={e => {
-                                                                    const sliders = [...formData.heroData.sliders];
-                                                                    sliders[index].link_text = e.target.value;
-                                                                    setData('heroData', { ...formData.heroData, sliders });
-                                                                }}
+                                                                onChange={e => updateSlider(index, 'link_text', e.target.value)}
                                                             />
                                                         </div>
                                                         <div>
@@ -291,11 +342,7 @@ export default function Index({ data, types }) {
                                                                 type="text"
                                                                 className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                                 value={slider.link}
-                                                                onChange={e => {
-                                                                    const sliders = [...formData.heroData.sliders];
-                                                                    sliders[index].link = e.target.value;
-                                                                    setData('heroData', { ...formData.heroData, sliders });
-                                                                }}
+                                                                onChange={e => updateSlider(index, 'link', e.target.value)}
                                                             />
                                                         </div>
                                                     </div>
@@ -303,10 +350,7 @@ export default function Index({ data, types }) {
                                                     <div className="text-right mt-2">
                                                         <button
                                                             type="button"
-                                                            onClick={() => {
-                                                                const sliders = formData.heroData.sliders.filter((_, i) => i !== index);
-                                                                setData('heroData', { ...formData.heroData, sliders });
-                                                            }}
+                                                            onClick={() => removeSlider(index)}
                                                             className="text-xs text-red-500 hover:text-red-700 font-medium"
                                                         >
                                                             <i className="fas fa-trash mr-1"></i> Hapus Slider
@@ -481,10 +525,7 @@ export default function Index({ data, types }) {
                                             <h4 className="font-bold text-gray-900 dark:text-white">Daftar Testimoni</h4>
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    const items = [...formData.testimoniData.items, { name: '', role: '', photo: '', message: '' }];
-                                                    setData('testimoniData', { ...formData.testimoniData, items });
-                                                }}
+                                                onClick={addTestimoni}
                                                 className="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg"
                                             >
                                                 <i className="fas fa-plus"></i> Tambah Testimoni
@@ -503,11 +544,7 @@ export default function Index({ data, types }) {
                                                                 type="text"
                                                                 className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                                 value={item.name}
-                                                                onChange={e => {
-                                                                    const items = [...formData.testimoniData.items];
-                                                                    items[index].name = e.target.value;
-                                                                    setData('testimoniData', { ...formData.testimoniData, items });
-                                                                }}
+                                                                onChange={e => updateTestimoni(index, 'name', e.target.value)}
                                                             />
                                                         </div>
                                                         <div>
@@ -516,11 +553,7 @@ export default function Index({ data, types }) {
                                                                 type="text"
                                                                 className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                                 value={item.role}
-                                                                onChange={e => {
-                                                                    const items = [...formData.testimoniData.items];
-                                                                    items[index].role = e.target.value;
-                                                                    setData('testimoniData', { ...formData.testimoniData, items });
-                                                                }}
+                                                                onChange={e => updateTestimoni(index, 'role', e.target.value)}
                                                             />
                                                         </div>
                                                     </div>
@@ -531,11 +564,7 @@ export default function Index({ data, types }) {
                                                             rows={3}
                                                             className="w-full text-sm border-gray-300 rounded-lg py-1.5"
                                                             value={item.message}
-                                                            onChange={e => {
-                                                                const items = [...formData.testimoniData.items];
-                                                                items[index].message = e.target.value;
-                                                                setData('testimoniData', { ...formData.testimoniData, items });
-                                                            }}
+                                                            onChange={e => updateTestimoni(index, 'message', e.target.value)}
                                                         />
                                                     </div>
 
@@ -559,11 +588,7 @@ export default function Index({ data, types }) {
                                                                     readOnly
                                                                 />
                                                                 <MediaPicker 
-                                                                    onSelect={(url) => {
-                                                                        const items = [...formData.testimoniData.items];
-                                                                        items[index].photo = url;
-                                                                        setData('testimoniData', { ...formData.testimoniData, items });
-                                                                    }}
+                                                                    onSelect={(url) => updateTestimoni(index, 'photo', url)}
                                                                     trigger={
                                                                         <button type="button" className="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-semibold">
                                                                             Pilih Media
@@ -577,10 +602,7 @@ export default function Index({ data, types }) {
                                                     <div className="text-right mt-2">
                                                         <button
                                                             type="button"
-                                                            onClick={() => {
-                                                                const items = formData.testimoniData.items.filter((_, i) => i !== index);
-                                                                setData('testimoniData', { ...formData.testimoniData, items });
-                                                            }}
+                                                            onClick={() => removeTestimoni(index)}
                                                             className="text-xs text-red-500 hover:text-red-700 font-medium"
                                                         >
                                                             <i className="fas fa-trash mr-1"></i> Hapus Testimoni
@@ -609,4 +631,4 @@ export default function Index({ data, types }) {
             </div>
         </AuthenticatedLayout>
     );
-}
+}   

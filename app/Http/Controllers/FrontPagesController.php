@@ -3,23 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Beranda;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\Menu;
 use App\Models\Pengumuman;
 use App\Models\ProgramStudi;
+use App\Models\Alumni;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\View\View;
 use Inertia\Inertia;
+use Inertia\Response; // Gunakan Response dari Inertia
 
 class FrontPagesController extends Controller
 {
     /**
-     * Menampilkan halaman utama
+     * Menampilkan halaman utama (Beranda)
      */
-    public function index()
+    public function index(): Response
     {
-        // Ambil berita dengan cache 10 menit
+        // 1. Ambil Berita (Cache 10 Menit)
         $berita = Cache::remember('berita_terbaru_home', 600, function () {
             return Article::with('category')
                 ->where('status', 'published')
@@ -27,54 +29,84 @@ class FrontPagesController extends Controller
                 ->take(6)
                 ->get();
         });
+
+        // 2. Ambil Menu Utama (Cache 1 Jam)
         $menus = Cache::remember('menus_active', 3600, function () {
             return Menu::whereNull('parent_id')
-                ->active()
-                ->with('children')
+                ->where('is_active', true) // Diubah agar konsisten dan aman
+                ->with(['children' => function($q) {
+                    $q->where('is_active', true)->orderBy('order'); // Pastikan child juga diurutkan & aktif
+                }])
                 ->orderBy('order')
                 ->get();
         });
 
+        // 3. Ambil Setup Beranda & Decode JSON (Cache 1 Jam)
         $beranda = Cache::remember('beranda_data', 3600, function () {
-            return \App\Models\Beranda::where('is_active', true)->get()->keyBy('type')->map(function ($item) {
-                // Decode JSON content if any
-                $data = $item->toArray();
-                if ($data['content']) {
-                    $decoded = json_decode($data['content'], true);
-                    if (is_array($decoded)) {
-                        $data = array_merge($data, $decoded);
+            return Beranda::where('is_active', true)
+                ->get()
+                ->keyBy('type')
+                ->map(function ($item) {
+                    $data = $item->toArray();
+                    
+                    // Decode JSON content dengan aman
+                    if (!empty($data['content'])) {
+                        $decoded = json_decode($data['content'], true);
+                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                            // Merge data agar property JSON langsung bisa diakses di React
+                            $data = array_merge($data, $decoded);
+                        }
                     }
-                }
-                return $data;
-            });
+                    return $data;
+                });
         });
 
+        // 4. Ambil Program Studi (Cache 1 Jam)
         $programStudis = Cache::remember('program_studis_active', 3600, function () {
             return ProgramStudi::where('is_active', true)->get();
         });
 
-        // Fetch Data Informasi Publik
+        // 5. Ambil Pengumuman (Cache 10 Menit)
         $pengumuman = Cache::remember('pengumuman_terbaru', 600, function () {
             return Pengumuman::where('is_active', true)
-                ->orderBy('created_at', 'desc')
+                ->latest('created_at') // Sama dengan orderBy('created_at', 'desc') tapi lebih rapi
                 ->take(5)
                 ->get();
         });
 
+        // 6. Ambil Event/Agenda (Cache 10 Menit)
         $events = Cache::remember('events_terbaru', 600, function () {
             return Event::where('is_active', true)
-                ->where('end_date', '>=', now())
+                // Lebih aman cek start_date, karena end_date bisa saja Null
+                ->where('start_date', '>=', today()) 
                 ->orderBy('start_date', 'asc')
                 ->take(4)
                 ->get();
         });
 
+        // 7. Ambil Galeri Terbaru (Cache 10 Menit)
         $galleries = Cache::remember('galleries_terbaru', 600, function () {
-            return Gallery::orderBy('created_at', 'desc')
+            return Gallery::latest('created_at')
+                ->take(6)
+                ->get();
+        });
+// 1. Ambil Data Alumni (Gantikan Testimoni Manual)
+        $alumnis = Cache::remember('alumnis_home', 600, function () {
+            return Alumni::where('is_active', 1)
+                ->inRandomOrder() // Acak agar yang tampil bergantian
                 ->take(6)
                 ->get();
         });
 
+        // 2. Data Statis Mitra Kerjasama (Bisa kamu ganti URL gambarnya)
+        $kerjasamas = [
+            ['name' => 'Kementerian Kesehatan', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Kementerian_Kesehatan_Republik_Indonesia_Logo.png'],
+            ['name' => 'RSUD Kota Bogor', 'logo' => 'https://rsudkotabogor.org/web/wp-content/uploads/2019/12/logo-rsud.png'],
+            ['name' => 'Dinas Kesehatan', 'logo' => 'https://dinkes.kotabogor.go.id/aset/images/logo.png'],
+            ['name' => 'Puskesmas', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Logo_Puskesmas.png'],
+            ['name' => 'Ikatan Bidan Indonesia', 'logo' => 'https://ibi.or.id/wp-content/uploads/2021/04/Logo-IBI.png'],
+        ];
+        // Lempar data ke React Frontend
         return Inertia::render('Home', compact(
             'berita',
             'menus',
@@ -82,43 +114,9 @@ class FrontPagesController extends Controller
             'beranda',
             'pengumuman',
             'events',
-            'galleries'
+            'galleries',
+            'alumnis',     // Lempar ke React
+            'kerjasamas'
         ));
-    }
-
-    public function wilayahOrganisasi(): View
-    {
-        // Di sini Anda bisa mengambil data dari database jika perlu.
-        // Untuk saat ini, kita hanya akan menampilkan view-nya.
-        return view('front-pages.wilayah-organisasi.index');
-    }
-
-    public function beritaDetail($slug)
-    {
-        try {
-            $response = Http::get('https://api.sbh.ac.id/wp-json/wp/v2/posts', [
-                'slug' => $slug,
-                '_embed' => true,
-            ]);
-
-            if ($response->successful()) {
-                $posts = $response->json();
-
-                // Pastikan ada data
-                if (! empty($posts)) {
-                    $detail = $posts[0]; // slug selalu unik → ambil index 0
-
-                    return view('front-pages.berita.index', compact('detail'));
-                } else {
-                    abort(404, 'Berita tidak ditemukan');
-                }
-            } else {
-                \Log::error('Gagal fetch detail berita', ['status' => $response->status()]);
-                abort(500, 'Gagal mengambil data dari server');
-            }
-        } catch (\Exception $e) {
-            \Log::error('Catch error berita detail', ['message' => $e->getMessage()]);
-            abort(500, 'Terjadi kesalahan saat mengambil detail berita');
-        }
     }
 }
