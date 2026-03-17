@@ -12,7 +12,7 @@ class Alumni extends Model
     protected $fillable = [
         'name',
         'nim',
-        'program_studi',
+        'program_studi_id', // 🔥 ganti ke relasi
         'tahun_lulus',
         'tempat_kerja',
         'jabatan',
@@ -25,5 +25,32 @@ class Alumni extends Model
     protected $casts = [
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'tahun_lulus' => 'integer',
     ];
+
+    // 🔥 RELASI KE PROGRAM STUDI
+    public function programStudi()
+    {
+        return $this->belongsTo(ProgramStudi::class);
+    }
+
+    // 🔥 HELPER: URL FOTO
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo
+            ? asset('storage/' . $this->photo)
+            : asset('images/default-user.png');
+    }
+
+    // 🔥 SCOPE AKTIF
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    // 🔥 SCOPE FEATURED
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
 }

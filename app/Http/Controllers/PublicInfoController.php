@@ -122,12 +122,12 @@ class PublicInfoController extends Controller
     public function uppm()
     {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'UPPM')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/UPPM', ['fasilitasData' => $fasilitasData]);
+        return Inertia::render('Frontend/UnitFasilitas/Uppm', ['fasilitasData' => $fasilitasData]);
     }
     public function upmi()
     {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'UPMI')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/UPMI', ['fasilitasData' => $fasilitasData]);
+        return Inertia::render('Frontend/UnitFasilitas/Upmi', ['fasilitasData' => $fasilitasData]);
     }
 
     /**

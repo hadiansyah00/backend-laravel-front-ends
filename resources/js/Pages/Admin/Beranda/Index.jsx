@@ -26,11 +26,6 @@ export default function Index({ data, types }) {
         let videoProfilData = {
             badge: 'Company Profile', description: '', video_url: ''
         };
-        let testimoniData = {
-            badge: 'Suara Alumni', description: '', items: [
-                { name: '', role: '', photo: '', message: '' }
-            ]
-        };
 
         if (item.content) {
             try {
@@ -44,9 +39,6 @@ export default function Index({ data, types }) {
                     programStudiData = { ...programStudiData, ...parsed };
                 } else if (type === 'video_profil') {
                     videoProfilData = { ...videoProfilData, ...parsed };
-                } else if (type === 'testimoni') {
-                    testimoniData = { ...testimoniData, ...parsed };
-                    if (!testimoniData.items) testimoniData.items = [];
                 }
             } catch (e) {
                 // not JSON
@@ -61,7 +53,6 @@ export default function Index({ data, types }) {
             quickActionData: quickActionData,
             programStudiData: programStudiData,
             videoProfilData: videoProfilData,
-            testimoniData: testimoniData,
             image: item.image || '',
             is_active: item.is_active ?? true,
         };
@@ -75,40 +66,34 @@ export default function Index({ data, types }) {
         setData(newData);
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        let payload = { ...formData };
-        if (payload.type === 'hero') {
-            payload.content = JSON.stringify({
-                sliders: payload.heroData.sliders.filter(s => s.title)
-            });
-        } else if (payload.type === 'quick_action') {
-            payload.content = JSON.stringify(payload.quickActionData);
-        } else if (payload.type === 'program_studi') {
-            payload.content = JSON.stringify(payload.programStudiData);
-        } else if (payload.type === 'video_profil') {
-            payload.content = JSON.stringify(payload.videoProfilData);
-        } else if (payload.type === 'testimoni') {
-            payload.content = JSON.stringify({
-                badge: payload.testimoniData.badge,
-                description: payload.testimoniData.description,
-                items: payload.testimoniData.items.filter(i => i.name)
-            });
-        }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    let payload = { ...formData };
 
-        post(route('admin.beranda.store'), {
-            data: payload,
-            preserveScroll: true,
-            onSuccess: () => {
-                toast.success('Berhasil menyimpan data ' + types[activeTab]);
-            },
-            onError: () => {
-                toast.error('Gagal menyimpan data.');
-            }
+    if (payload.type === 'hero') {
+        payload.content = JSON.stringify({
+            sliders: payload.heroData.sliders.filter(s => s.title)
         });
-    };
+    } else if (payload.type === 'quick_action') {
+        payload.content = JSON.stringify(payload.quickActionData);
+    } else if (payload.type === 'program_studi') {
+        payload.content = JSON.stringify(payload.programStudiData);
+    } else if (payload.type === 'video_profil') {
+        payload.content = JSON.stringify(payload.videoProfilData);
+    }
 
+    post(route('admin.beranda.store'), {
+        data: payload,
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success('Berhasil menyimpan data ' + types[activeTab]);
+        },
+        onError: () => {
+            toast.error('Gagal menyimpan data.');
+        }
+    });
+};
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Manajemen Beranda</h2>}>
             <Head title="Beranda" />
@@ -451,148 +436,8 @@ export default function Index({ data, types }) {
                                         </div>
                                     </div>
                                 </div>
-                            ) : activeTab === 'testimoni' ? (
-                                <div className="space-y-6">
-                                    <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Badge Title</label>
-                                                <input
-                                                    type="text"
-                                                    className="w-full text-sm border-gray-300 rounded-xl"
-                                                    value={formData.testimoniData.badge}
-                                                    onChange={e => setData('testimoniData', { ...formData.testimoniData, badge: e.target.value })}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
-                                                <textarea
-                                                    rows={2}
-                                                    className="w-full text-sm border-gray-300 rounded-xl"
-                                                    value={formData.testimoniData.description}
-                                                    onChange={e => setData('testimoniData', { ...formData.testimoniData, description: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <h4 className="font-bold text-gray-900 dark:text-white">Daftar Testimoni</h4>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    const items = [...formData.testimoniData.items, { name: '', role: '', photo: '', message: '' }];
-                                                    setData('testimoniData', { ...formData.testimoniData, items });
-                                                }}
-                                                className="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg"
-                                            >
-                                                <i className="fas fa-plus"></i> Tambah Testimoni
-                                            </button>
-                                        </div>
-
-                                        <div className="space-y-6">
-                                            {formData.testimoniData.items.map((item, index) => (
-                                                <div key={index} className="flex flex-col gap-4 p-4 bg-white dark:bg-gray-900 border border-gray-200 rounded-xl relative">
-                                                    <div className="absolute top-4 right-4 text-xs font-bold text-gray-300">#{index + 1}</div>
-                                                    
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label className="block text-xs font-medium text-gray-500 mb-1">Nama Alumni</label>
-                                                            <input
-                                                                type="text"
-                                                                className="w-full text-sm border-gray-300 rounded-lg py-1.5"
-                                                                value={item.name}
-                                                                onChange={e => {
-                                                                    const items = [...formData.testimoniData.items];
-                                                                    items[index].name = e.target.value;
-                                                                    setData('testimoniData', { ...formData.testimoniData, items });
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-xs font-medium text-gray-500 mb-1">Profesi / Instansi</label>
-                                                            <input
-                                                                type="text"
-                                                                className="w-full text-sm border-gray-300 rounded-lg py-1.5"
-                                                                value={item.role}
-                                                                onChange={e => {
-                                                                    const items = [...formData.testimoniData.items];
-                                                                    items[index].role = e.target.value;
-                                                                    setData('testimoniData', { ...formData.testimoniData, items });
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="block text-xs font-medium text-gray-500 mb-1">Pesan Testimoni</label>
-                                                        <textarea
-                                                            rows={3}
-                                                            className="w-full text-sm border-gray-300 rounded-lg py-1.5"
-                                                            value={item.message}
-                                                            onChange={e => {
-                                                                const items = [...formData.testimoniData.items];
-                                                                items[index].message = e.target.value;
-                                                                setData('testimoniData', { ...formData.testimoniData, items });
-                                                            }}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="block text-xs font-medium text-gray-500 mb-1">Foto Alumni</label>
-                                                        <div className="flex gap-4 items-center mb-2">
-                                                            {item.photo ? (
-                                                                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm shrink-0">
-                                                                    <img src={item.photo.startsWith('http') || item.photo.startsWith('/') ? item.photo : `/storage/${item.photo}`} alt="Preview" className="w-full h-full object-cover" onError={(e) => { e.target.src='https://via.placeholder.com/150?text=Error'; }} />
-                                                                </div>
-                                                            ) : (
-                                                                <div className="w-12 h-12 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center shrink-0 bg-gray-50 text-gray-400 text-xs">
-                                                                    <i className="fas fa-user"></i>
-                                                                </div>
-                                                            )}
-                                                            <div className="flex-1 flex gap-2">
-                                                                <input
-                                                                    type="text"
-                                                                    className="w-full text-sm border-gray-300 rounded-lg py-1.5 bg-gray-50"
-                                                                    value={item.photo}
-                                                                    readOnly
-                                                                />
-                                                                <MediaPicker 
-                                                                    onSelect={(url) => {
-                                                                        const items = [...formData.testimoniData.items];
-                                                                        items[index].photo = url;
-                                                                        setData('testimoniData', { ...formData.testimoniData, items });
-                                                                    }}
-                                                                    trigger={
-                                                                        <button type="button" className="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-semibold">
-                                                                            Pilih Media
-                                                                        </button>
-                                                                    }
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="text-right mt-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const items = formData.testimoniData.items.filter((_, i) => i !== index);
-                                                                setData('testimoniData', { ...formData.testimoniData, items });
-                                                            }}
-                                                            className="text-xs text-red-500 hover:text-red-700 font-medium"
-                                                        >
-                                                            <i className="fas fa-trash mr-1"></i> Hapus Testimoni
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
                             ) : null}
-
+ 
                             <div className="pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 rounded-b-2xl bg-gray-50/50 dark:bg-gray-800/30 px-6 py-4 -mx-6 -mb-6">
                                 <button
                                     type="submit"

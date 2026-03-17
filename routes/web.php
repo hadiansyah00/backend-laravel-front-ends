@@ -193,19 +193,32 @@ Route::get('/kerjasama', [PublicInfoController::class, 'kerjasama'])->name('fron
 
 // DOSEN ROUTE
 Route::get('/dosen', [PublicInfoController::class, 'dosen'])->name('front.dosen');
-
-// AKADEMIK & UNIT LEMBAGA ROUTES
+// ================== AKADEMIK & UNIT LEMBAGA ROUTES ================== //
 Route::get('/farmasi', [PublicInfoController::class, 'farmasi'])->name('front.farmasi');
 Route::get('/gizi', [PublicInfoController::class, 'gizi'])->name('front.gizi');
 Route::get('/kebidanan', [PublicInfoController::class, 'kebidanan'])->name('front.kebidanan');
 Route::get('/kalender-akademik', [PublicInfoController::class, 'kalenderAkademik'])->name('front.kalender');
-// Gunakan parameter {slug}
-Route::get('/{slug}', [PublicInfoController::class, 'showProgramStudi'])
-    ->name('front.prodi.show');Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');
-Route::get('/perpustakaan', [PublicInfoController::class, 'perpustakaan'])->name('front.perpustakaan');
-Route::get('/uppm', [PublicInfoController::class, 'uppm'])->name('front.uppm');
-Route::get('/upmi', [PublicInfoController::class, 'upmi'])->name('front.upmi');
 
+Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');
+Route::get('/perpustakaan', [PublicInfoController::class, 'perpustakaan'])->name('front.perpustakaan');
+
+Route::get('/unit-penelitian-dan-pengabdian-masyarakat', [PublicInfoController::class, 'uppm'])->name('front.uppm');
+Route::get('/unit-penjaminan-mutu-internal', [PublicInfoController::class, 'upmi'])->name('front.upmi');
+
+// ================== ARTIKEL ================== //
+Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
+Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');
+
+
+// ================== CATCH ALL (WAJIB PALING BAWAH) ================== //
+
+// Untuk halaman program studi / dynamic
+Route::get('/prodi/{slug}', [PublicInfoController::class, 'showProgramStudi'])
+    ->name('front.prodi.show');
+
+// Untuk halaman CMS (Pages Builder)
+// Route::get('/page/{slug}', [PagesController::class, 'show'])
+//     ->name('front.pages.show');
 
 Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
 Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');

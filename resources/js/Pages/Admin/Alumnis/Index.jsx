@@ -43,73 +43,114 @@ export default function Index({ alumnis }) {
                             <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
                                 {dataList && dataList.length > 0 ? dataList.map((item) => (
                                     <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                        
+                                        {/* PROFIL */}
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                                                <div className="w-12 h-12 rounded-full overflow-hidden border bg-gray-100">
                                                     {item.photo ? (
-                                                        <img src={`/${item.photo}`} alt={item.name} className="w-full h-full object-cover" />
+                                                        <img
+                                                            src={`/storage/${item.photo}`}
+                                                            alt={item.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-lg bg-gray-200 dark:bg-gray-700">
-                                                            {item.name ? item.name.charAt(0).toUpperCase() : '?'}
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold">
+                                                            {item.name?.charAt(0)}
                                                         </div>
                                                     )}
                                                 </div>
+
                                                 <div>
-                                                    <div className="font-bold text-gray-900 dark:text-white text-sm mb-0.5">{item.name}</div>
-                                                    <div className="text-xs text-gray-500 font-medium">NIM: {item.nim || '-'}</div>
+                                                    <div className="font-bold text-gray-900 dark:text-white text-sm">
+                                                        {item.name}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">
+                                                        NIM: {item.nim || '-'}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
+
+                                        {/* AKADEMIK */}
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-xs space-y-1">
-                                                <div className="text-gray-900 dark:text-gray-300 font-semibold">{item.program_studi || '-'}</div>
-                                                <div className="text-gray-500">Angkatan / Lulus: {item.tahun_lulus || '-'}</div>
+                                                <div className="font-semibold text-gray-900 dark:text-gray-300">
+                                                    {item.program_studi?.name || '-'}
+                                                </div>
+                                                <div className="text-gray-500">
+                                                    Lulus: {item.tahun_lulus || '-'}
+                                                </div>
                                             </div>
                                         </td>
+
+                                        {/* KARIR */}
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {item.tempat_kerja || item.jabatan ? (
                                                 <div className="text-xs space-y-1">
-                                                    <div className="text-gray-900 dark:text-gray-300 font-semibold">{item.jabatan || 'Alumni'}</div>
-                                                    <div className="text-indigo-600 dark:text-indigo-400"><i className="fas fa-building mr-1"></i> {item.tempat_kerja || '-'}</div>
+                                                    <div className="font-semibold text-gray-900 dark:text-gray-300">
+                                                        {item.jabatan || 'Alumni'}
+                                                    </div>
+                                                    <div className="text-indigo-600">
+                                                        {item.tempat_kerja || '-'}
+                                                    </div>
                                                 </div>
                                             ) : (
-                                                <span className="text-xs text-gray-400 italic">Belum ada data karir</span>
+                                                <span className="text-xs text-gray-400 italic">
+                                                    Belum ada data karir
+                                                </span>
                                             )}
                                         </td>
+
+                                        {/* STATUS */}
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex flex-col gap-1.5">
+                                            <div className="flex flex-col gap-1">
+
                                                 {item.is_active ? (
-                                                    <span className="inline-flex w-max items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400">
-                                                        Aktif Direktori
+                                                    <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                                                        Aktif
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex w-max items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400">
-                                                        Sembunyikan
+                                                    <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
+                                                        Nonaktif
                                                     </span>
                                                 )}
+
                                                 {item.is_featured && (
-                                                    <span className="inline-flex w-max items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                                                        <i className="fas fa-star mr-1 text-amber-500 dark:text-amber-400"></i> Featured
+                                                    <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
+                                                        ⭐ Featured
                                                     </span>
                                                 )}
+
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Link href={route('admin.alumnis.edit', item.id)} title="Edit Data" className="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 transition-colors">
-                                                    <i className="fas fa-edit"></i>
+
+                                        {/* AKSI */}
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-end gap-2">
+
+                                                <Link
+                                                    href={route('admin.alumnis.edit', item.id)}
+                                                    className="px-2 py-1 text-xs bg-indigo-100 text-indigo-600 rounded"
+                                                >
+                                                    Edit
                                                 </Link>
-                                                <button onClick={() => handleDelete(item.id)} title="Hapus Alumni" className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 transition-colors">
-                                                    <i className="fas fa-trash-alt"></i>
+
+                                                <button
+                                                    onClick={() => handleDelete(item.id)}
+                                                    className="px-2 py-1 text-xs bg-red-100 text-red-600 rounded"
+                                                >
+                                                    Hapus
                                                 </button>
+
                                             </div>
                                         </td>
+
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
-                                            <i className="fas fa-user-graduate text-4xl mb-3 text-gray-300"></i>
-                                            <p>Belum ada data direktori Alumni.</p>
+                                        <td colSpan="5" className="text-center py-10 text-gray-400">
+                                            Belum ada data alumni
                                         </td>
                                     </tr>
                                 )}

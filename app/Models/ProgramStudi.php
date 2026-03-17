@@ -28,4 +28,9 @@ class ProgramStudi extends Model
         'peluang_kerja' => 'array',
         'is_active' => 'boolean',
     ];
+
+    public function alumni()
+    {
+        return $this->hasMany(Alumni::class, 'program_studi', 'name');
+    }
 }
