@@ -21,7 +21,17 @@ export default function AuthenticatedLayout({ header, children }) {
     }, [flash]);
 
     return (
-        <div className="flex min-h-screen bg-gray-50 dark:bg-[#0B1120] font-sans selection:bg-indigo-500 selection:text-white">
+        <div className="flex min-h-screen bg-gray-50 dark:bg-[#0B1120] font-sans selection:bg-indigo-500 selection:text-white relative">
+            
+            {/* NOTIFIKASI TOAST */}
+            <Toaster 
+                position="top-right" 
+                containerStyle={{ zIndex: 99999 }} 
+                toastOptions={{ 
+                    duration: 4000, 
+                    style: { background: '#333', color: '#fff', borderRadius: '10px' } 
+                }} 
+            />
 
             {/* S I D E B A R (Desktop) */}
             <aside className="hidden lg:flex flex-col w-72 bg-white/60 dark:bg-[#0B1120]/60 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-800/80 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20 sticky top-0 h-screen transition-all duration-300">
@@ -36,7 +46,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     </Link>
                 </div>
 
-                <div className="flex-1 overflow-y-auto py-8 px-5 space-y-1.5 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto py-8 px-5 space-y-1.5 custom-scrollbar pb-10">
                     <p className="px-3 mb-3 text-xs font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Navigasi Utama</p>
 
                     <Link href={route('dashboard')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group relative overflow-hidden ${route().current('dashboard') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
@@ -152,24 +162,6 @@ export default function AuthenticatedLayout({ header, children }) {
                         <span>Front & SEO Global</span>
                     </Link>
 
-                    <a href="/" target="_blank" className="flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white">
-                        <i className="fas fa-external-link-alt w-6 text-center text-lg mr-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"></i>
-                        <span>Lihat Website</span>
-                        <i className="fas fa-arrow-up-right-from-square text-xs ml-auto text-gray-300 dark:text-gray-600"></i>
-                    </a>
-                </div>
-
-                <div className="p-5 border-t border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center gap-4 p-3 rounded-2xl bg-white/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800/60 transition-colors cursor-pointer group">
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-lg uppercase ring-2 ring-white dark:ring-gray-800 shadow-sm">
-                            {auth?.user?.name?.charAt(0) || 'A'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{auth?.user?.name || 'Administrator'}</p>
-                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate mt-0.5">{auth?.user?.email}</p>
-                        </div>
-                        <i className="fas fa-chevron-right text-xs text-gray-400 group-hover:text-indigo-500 mr-2"></i>
-                    </div>
                 </div>
             </aside>
 
@@ -177,8 +169,9 @@ export default function AuthenticatedLayout({ header, children }) {
             <div className="flex-1 flex flex-col min-w-0 relative">
 
                 {/* TOP HEADER */}
-                <header className="sticky top-0 z-10 bg-white/60 dark:bg-[#0B1120]/60 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm transition-all duration-300">
-                    <div className="px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+                <header className="sticky top-0 z-10 bg-white/80 dark:bg-[#0B1120]/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm transition-all duration-300">
+                    <div className="px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                        
                         {/* Mobile Menu Button */}
                         <div className="lg:hidden flex items-center">
                             <button onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)} className="p-2.5 -mr-2 text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -195,8 +188,21 @@ export default function AuthenticatedLayout({ header, children }) {
                             )}
                         </div>
 
-                        {/* Right Tools */}
-                        <div className="flex items-center gap-5">
+                        {/* ✅ RIGHT TOOLS (Notifikasi, Profil, Logout) */}
+                        <div className="flex items-center gap-3 sm:gap-5 ml-auto">
+                            
+                            {/* ✅ TOMBOL "LIHAT WEBSITE" (Emerald Pill) */}
+                            <a 
+                                href="/" 
+                                target="_blank" 
+                                title="Lihat Website" 
+                                className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-100 dark:border-emerald-800/50 rounded-full transition-colors group"
+                            >
+                                <i className="fas fa-external-link-alt"></i>
+                                <span className="hidden sm:block">Lihat Web</span>
+                            </a>
+
+                            {/* Notif Bell */}
                             <button className="p-2.5 text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full relative">
                                 <i className="far fa-bell text-xl"></i>
                                 <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900 shadow-sm"></span>
@@ -204,16 +210,39 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="h-8 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block"></div>
 
-                            <Link href={route('logout')} method="post" as="button" className="hidden sm:flex items-center gap-2.5 px-5 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-full transition-colors relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-red-100 dark:bg-red-500/10 scale-0 group-hover:scale-100 rounded-full transition-transform duration-300 ease-out origin-center"></div>
-                                <i className="fas fa-sign-out-alt relative z-10"></i>
-                                <span className="relative z-10">Logout</span>
+                            {/* PROFILE CHIP */}
+                            <Link 
+                                href={route('admin.profile.edit')} 
+                                title="Edit Profil"
+                                className="flex items-center gap-3 p-1 sm:pr-4 rounded-full bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/80 border border-gray-200 dark:border-gray-700 transition-colors group cursor-pointer"
+                            >
+                                {auth?.user?.avatar ? (
+                                    <img 
+                                        src={`/storage/${auth.user.avatar}`} 
+                                        alt="Avatar" 
+                                        className="w-9 h-9 rounded-full object-cover shadow-sm transition-transform group-hover:scale-105" 
+                                    />
+                                ) : (
+                                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-sm uppercase shadow-sm transition-transform group-hover:scale-105">
+                                        {auth?.user?.name?.charAt(0) || 'A'}
+                                    </div>
+                                )}
+                                <span className="hidden sm:block text-sm font-bold text-gray-700 dark:text-gray-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                    {auth?.user?.name || 'Admin'}
+                                </span>
+                            </Link>
+
+                            {/* Logout Button */}
+                            <Link href={route('logout')} method="post" as="button" title="Logout" className="flex items-center justify-center w-10 h-10 sm:w-auto sm:px-4 sm:py-2.5 sm:gap-2.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-full transition-colors group">
+                                <i className="fas fa-sign-out-alt"></i>
+                                <span className="hidden sm:block text-sm font-semibold">Logout</span>
                             </Link>
                         </div>
+
                     </div>
                 </header>
 
-                {/* Mobile Sidebar Back-drop & Menu Component (Simplified for brevity) */}
+                {/* Mobile Sidebar Back-drop & Menu Component */}
                 {showingNavigationDropdown && (
                     <div className="lg:hidden fixed inset-0 z-50 flex">
                         <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm" onClick={() => setShowingNavigationDropdown(false)}></div>
@@ -222,8 +251,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <h2 className="text-2xl font-extrabold mb-8 text-gray-900 dark:text-white tracking-tight">Men<span className="text-indigo-600">u</span></h2>
                                 <div className="space-y-4">
                                     <Link href={route('dashboard')} className="flex items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 text-lg font-medium"><i className="fas fa-layer-group w-8 text-indigo-500"></i> Dashboard</Link>
-                                    <Link href={route('admin.pages.index')} className="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 text-lg font-medium"><i className="fas fa-file-alt w-8 text-gray-400"></i> Halaman Dinamis</Link>
-                                    <Link href={route('admin.sliders.index')} className="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 text-lg font-medium"><i className="fas fa-images w-8 text-gray-400"></i> Setup Beranda</Link>
+                                    <Link href={route('admin.articles.index')} className="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 text-lg font-medium"><i className="far fa-newspaper w-8 text-gray-400"></i> Berita & Artikel</Link>
+                                    <Link href={route('admin.beranda.index')} className="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 text-lg font-medium"><i className="fas fa-home w-8 text-gray-400"></i> Setup Beranda</Link>
                                     <Link href={route('admin.dosens.index')} className="flex items-center p-3 rounded-xl text-gray-700 dark:text-gray-300 text-lg font-medium"><i className="fas fa-chalkboard-teacher w-8 text-gray-400"></i> Civitas Akademika</Link>
                                 </div>
                             </div>
@@ -233,7 +262,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 {/* MAIN INNER CONTENT */}
                 <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-screen-2xl mx-auto w-full relative z-0">
-                    <Toaster position="top-right" toastOptions={{ duration: 4000, style: { background: '#333', color: '#fff', borderRadius: '10px' } }} />
+                    
                     {/* Decorative Ambient Background Gradients */}
                     <div className="fixed top-0 right-0 w-[800px] h-[800px] bg-purple-400/5 dark:bg-purple-600/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
                     <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-indigo-400/5 dark:bg-indigo-600/5 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/3"></div>

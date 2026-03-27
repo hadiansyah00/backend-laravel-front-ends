@@ -69,7 +69,7 @@ export default function BeritaDetail({ article, related, recentPosts, categories
 
                             {/* Share & Back */}
                             <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
-                                <Link href="/berita" className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-orange-600 font-semibold transition-colors">
+                                <Link href="/artikel" className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-orange-600 font-semibold transition-colors">
                                     <i className="fas fa-arrow-left"></i> Kembali ke Daftar Berita
                                 </Link>
                                 <div className="flex gap-3">

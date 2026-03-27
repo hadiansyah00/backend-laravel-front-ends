@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
+import MediaPicker from "@/Components/MediaPicker";
 
 export default function Form({ pengumuman }) {
     const isEdit = !!pengumuman;
@@ -46,11 +47,11 @@ export default function Form({ pengumuman }) {
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                   <form onSubmit={handleSubmit} className="p-6 space-y-6">
 
                         {/* Title */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Pengumuman <span className="text-red-500">*</span></label>
+                            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Judul Pengumuman <span className="text-red-500">*</span></label>
                             <input
                                 type="text"
                                 className={`w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
@@ -63,7 +64,7 @@ export default function Form({ pengumuman }) {
 
                         {/* Content */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Isi Konten</label>
+                            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Isi Konten</label>
                             <textarea
                                 rows={8}
                                 className={`w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.content ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
@@ -74,15 +75,15 @@ export default function Form({ pengumuman }) {
                             {errors.content && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.content}</p>}
                         </div>
 
-                        {/* File Attachment */}
+                        {/* File Attachment dengan MediaPicker */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lampiran Dokumen (Opsional)</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Lampiran Dokumen (Opsional)</label>
 
                             {isEdit && pengumuman?.attachment && (
-                                <div className="mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl flex items-center justify-between">
+                                <div className="flex items-center justify-between p-3 mb-4 border bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800 rounded-xl">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                                            <i className="fas fa-file-alt text-lg"></i>
+                                        <div className="flex items-center justify-center w-10 h-10 text-indigo-600 bg-indigo-100 rounded-lg dark:bg-indigo-800 dark:text-indigo-400">
+                                            <i className="text-lg fas fa-file-alt"></i>
                                         </div>
                                         <div>
                                             <p className="text-sm font-semibold text-gray-900 dark:text-white">Ada dokumen terlampir saat ini</p>
@@ -93,19 +94,28 @@ export default function Form({ pengumuman }) {
                                 </div>
                             )}
 
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-indigo-50 file:text-indigo-700
-                                hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 dark:hover:file:bg-indigo-900/50 transition-colors"
-                                onChange={e => setData('attachment', e.target.files[0])}
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                            />
-                            <p className="text-xs text-gray-500 mt-2">Format didukung: PDF, DOC/X, JPG, PNG (Maks 5MB)</p>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="text"
+                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                    placeholder="Pilih dari media library..."
+                                    value={data.attachment}
+                                    readOnly
+                                />
+                                <MediaPicker
+                                    onSelect={(url) => setData("attachment", url)}
+                                    trigger={
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
+                                        >
+                                            <i className="fas fa-folder-open"></i>{" "}
+                                            Pilih File
+                                        </button>
+                                    }
+                                />
+                            </div>
+                            <p className="mt-2 text-xs text-gray-500">Pilih dokumen yang ingin dilampirkan dari Media Library.</p>
                             {errors.attachment && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.attachment}</p>}
                         </div>
 
@@ -130,7 +140,7 @@ export default function Form({ pengumuman }) {
                         </div>
 
                         {/* Submit Actions */}
-                        <div className="pt-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3">
+                        <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 dark:border-gray-800">
                             <Link href={route('admin.pengumumans.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                                 Batal
                             </Link>
