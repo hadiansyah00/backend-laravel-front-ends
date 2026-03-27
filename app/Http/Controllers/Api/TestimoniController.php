@@ -23,7 +23,7 @@ class TestimoniController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data testimoni berhasil diambil',
-            'data' => $testimoni
+            'data' => $testimoni,
         ]);
     }
 
@@ -35,16 +35,16 @@ class TestimoniController extends Controller
     {
         $testimoni = Testimonial::find($id);
 
-        if (!$testimoni) {
+        if (! $testimoni) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data testimoni tidak ditemukan'
+                'message' => 'Data testimoni tidak ditemukan',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $testimoni
+            'data' => $testimoni,
         ]);
     }
 
@@ -60,7 +60,7 @@ class TestimoniController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $testimoni
+            'data' => $testimoni,
         ]);
     }
 }

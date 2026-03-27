@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Str;
 use App\Models\Tags;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TagSeeder extends Seeder
 {
@@ -25,7 +23,7 @@ class TagSeeder extends Seeder
             'Pengabdian Masyarakat',
             'Seminar',
             'Workshop',
-            'Beasiswa'
+            'Beasiswa',
         ];
 
         foreach ($tags as $tag) {

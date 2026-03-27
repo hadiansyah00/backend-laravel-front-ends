@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-          Schema::create('statistics', function (Blueprint $table) {
-        $table->id();
-        $table->string('title');   // Mahasiswa Aktif, Lulusan, dll
-        $table->integer('value');  // angka counter
-        $table->string('icon')->nullable(); // path icon
-        $table->integer('order')->default(0);
-        $table->timestamps();
-    });
+        Schema::create('statistics', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');   // Mahasiswa Aktif, Lulusan, dll
+            $table->integer('value');  // angka counter
+            $table->string('icon')->nullable(); // path icon
+            $table->integer('order')->default(0);
+            $table->timestamps();
+        });
     }
 
     /**

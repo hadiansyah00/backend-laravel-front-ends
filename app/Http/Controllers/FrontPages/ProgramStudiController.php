@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\FrontPages;
 
+use App\Http\Controllers\Controller;
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ProgramStudiController extends Controller
 {
-
     public function index()
     {
         $programs = ProgramStudi::latest()->paginate(10);
-        return view('admin.program-studi.index', compact('programs'));
+
+        return Inertia::render('Admin/ProgramStudi/Index', [
+            'programs' => $programs,
+        ]);
     }
 
     /**
@@ -21,7 +24,9 @@ class ProgramStudiController extends Controller
      */
     public function create()
     {
-        return view('admin.program-studi.create');
+        return Inertia::render('Admin/ProgramStudi/Form', [
+            'program' => null,
+        ]);
     }
 
     /**
@@ -30,10 +35,10 @@ class ProgramStudiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'link'        => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'link' => 'nullable|url',
         ]);
 
         if ($request->hasFile('image')) {
@@ -51,7 +56,10 @@ class ProgramStudiController extends Controller
     public function edit($id)
     {
         $program = ProgramStudi::findOrFail($id);
-        return view('admin.program-studi.edit', compact('program'));
+
+        return Inertia::render('Admin/ProgramStudi/Form', [
+            'program' => $program,
+        ]);
     }
 
     /**
@@ -62,10 +70,10 @@ class ProgramStudiController extends Controller
         $program = ProgramStudi::findOrFail($id);
 
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'link'        => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'link' => 'nullable|url',
         ]);
 
         if ($request->hasFile('image')) {

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::table('pendaftaran_email', function (Blueprint $table) {
-        $table->string('email')->unique()->after('phone');
-    });
+        Schema::table('pendaftaran_email', function (Blueprint $table) {
+            $table->string('email')->unique()->after('phone');
+        });
     }
 
     /**

@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\FrontPages;
-use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use App\Models\CompanyProfileVideo;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CompanyProfileVideoController extends Controller
 {
@@ -15,7 +16,9 @@ class CompanyProfileVideoController extends Controller
     {
         $videos = CompanyProfileVideo::orderBy('created_at', 'desc')->paginate(10);
 
-        return view('admin.companyprofile.index', compact('videos'));
+        return Inertia::render('Admin/CompanyProfile/Index', [
+            'videos' => $videos,
+        ]);
     }
 
     /**
@@ -23,7 +26,9 @@ class CompanyProfileVideoController extends Controller
      */
     public function create()
     {
-        return view('admin.companyprofile.create');
+        return Inertia::render('Admin/CompanyProfile/Form', [
+            'video' => null,
+        ]);
     }
 
     /**
@@ -32,17 +37,17 @@ class CompanyProfileVideoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'       => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video_url'   => 'required|url',
-            'is_active'   => 'boolean',
+            'video_url' => 'required|url',
+            'is_active' => 'boolean',
         ]);
 
         CompanyProfileVideo::create([
-            'title'       => $request->title,
+            'title' => $request->title,
             'description' => $request->description,
-            'video_url'   => $request->video_url,
-            'is_active'   => $request->boolean('is_active'),
+            'video_url' => $request->video_url,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()->route('admin.companyprofile.index')
@@ -56,7 +61,9 @@ class CompanyProfileVideoController extends Controller
     {
         $video = CompanyProfileVideo::findOrFail($id);
 
-        return view('admin.companyprofile.edit', compact('video'));
+        return Inertia::render('Admin/CompanyProfile/Form', [
+            'video' => $video,
+        ]);
     }
 
     /**
@@ -65,19 +72,19 @@ class CompanyProfileVideoController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title'       => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video_url'   => 'required|url',
-            'is_active'   => 'boolean',
+            'video_url' => 'required|url',
+            'is_active' => 'boolean',
         ]);
 
         $video = CompanyProfileVideo::findOrFail($id);
 
         $video->update([
-            'title'       => $request->title,
+            'title' => $request->title,
             'description' => $request->description,
-            'video_url'   => $request->video_url,
-            'is_active'   => $request->boolean('is_active'),
+            'video_url' => $request->video_url,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()->route('admin.companyprofile.index')

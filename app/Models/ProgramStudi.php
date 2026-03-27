@@ -15,8 +15,22 @@ class ProgramStudi extends Model
         'akreditasi',
         'gelar',
         'lama_studi',
+        'kaprodi_name',
+        'kaprodi_photo',
+        'kaprodi_profile',
+        'peluang_kerja',
         'image',
         'link',
         'is_active',
     ];
+
+    protected $casts = [
+        'peluang_kerja' => 'array',
+        'is_active' => 'boolean',
+    ];
+
+    public function alumni()
+    {
+        return $this->hasMany(Alumni::class, 'program_studi', 'name');
+    }
 }

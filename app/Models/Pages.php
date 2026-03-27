@@ -2,21 +2,23 @@
 
 namespace App\Models;
 
-use App\Traits\HasMeta;
-use App\Models\MetaSettings;
-use App\Models\PageSections;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Pages extends Model
 {
     use HasFactory;
 
     protected $table = 'pages';
+
     protected $primaryKey = 'id'; // default, pastikan ada
+
     public $incrementing = true;
+
     protected $keyType = 'int';
+
     protected $fillable = [
+        'menu_id',
         'title',
         'slug',
         'type',
@@ -27,8 +29,10 @@ class Pages extends Model
         'icon',
         'order',
         'parent_slug',
+        'hero_bg_image',
+        'hero_title',
+        'hero_subtitle',
     ];
-
 
     /**
      * Relasi ke section modular jika type = 'modular'
@@ -53,11 +57,20 @@ class Pages extends Model
     {
         return 'slug';
     }
+
     /**
      * Relasi ke MetaSetting berdasarkan slug
      */
     public function meta()
     {
         return $this->morphOne(MetaSettings::class, 'seoable');
+    }
+
+    /**
+     * Relasi ke Menu (hierarki struktur halaman)
+     */
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'menu_id');
     }
 }

@@ -9,6 +9,7 @@ class ArticleTag extends Model
 {
     /** @use HasFactory<\Database\Factories\ArticleTagFactory> */
     use HasFactory;
+
     protected $table = 'article_tag';
 
     protected $fillable = ['article_id', 'tag_id', 'is_featured'];

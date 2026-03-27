@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('testimonials', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('role')->nullable(); // alumni, mahasiswa, dll
-        $table->text('message');
-        $table->string('photo')->nullable(); // foto testimoni
-        $table->timestamps();
-    });
+            $table->id();
+            $table->string('name');
+            $table->string('role')->nullable(); // alumni, mahasiswa, dll
+            $table->text('message');
+            $table->string('photo')->nullable(); // foto testimoni
+            $table->timestamps();
+        });
     }
 
     /**

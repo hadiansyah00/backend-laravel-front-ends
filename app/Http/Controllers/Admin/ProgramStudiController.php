@@ -5,20 +5,26 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class ProgramStudiController extends Controller
 {
     public function index()
     {
         $programStudis = ProgramStudi::latest()->paginate(15);
-        return view('admin.program-studis.index', compact('programStudis'));
+
+        return Inertia::render('Admin/ProgramStudis/Index', [
+            'programStudis' => $programStudis
+        ]);
     }
 
     public function create()
     {
-        return view('admin.program-studis.create');
+        return Inertia::render('Admin/ProgramStudis/Form', [
+            'programStudi' => null
+        ]);
     }
 
     public function store(Request $request)
@@ -31,6 +37,10 @@ class ProgramStudiController extends Controller
             'akreditasi' => 'nullable|string|max:50',
             'gelar' => 'nullable|string|max:100',
             'lama_studi' => 'nullable|string|max:50',
+            'kaprodi_name' => 'nullable|string|max:255',
+            'kaprodi_profile' => 'nullable|string',
+            'peluang_kerja' => 'nullable|array',
+            'kaprodi_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|string|url',
             'is_active' => 'boolean',
@@ -41,7 +51,12 @@ class ProgramStudiController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('program_studi', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
+        }
+
+        if ($request->hasFile('kaprodi_photo')) {
+            $pathKaprodi = $request->file('kaprodi_photo')->store('kaprodi', 'public');
+            $validated['kaprodi_photo'] = 'storage/'.$pathKaprodi;
         }
 
         ProgramStudi::create($validated);
@@ -51,7 +66,9 @@ class ProgramStudiController extends Controller
 
     public function edit(ProgramStudi $programStudi)
     {
-        return view('admin.program-studis.edit', compact('programStudi'));
+        return Inertia::render('Admin/ProgramStudis/Form', [
+            'programStudi' => $programStudi
+        ]);
     }
 
     public function update(Request $request, ProgramStudi $programStudi)
@@ -64,6 +81,10 @@ class ProgramStudiController extends Controller
             'akreditasi' => 'nullable|string|max:50',
             'gelar' => 'nullable|string|max:100',
             'lama_studi' => 'nullable|string|max:50',
+            'kaprodi_name' => 'nullable|string|max:255',
+            'kaprodi_profile' => 'nullable|string',
+            'peluang_kerja' => 'nullable|array',
+            'kaprodi_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|string|url',
             'is_active' => 'boolean',
@@ -77,7 +98,15 @@ class ProgramStudiController extends Controller
                 Storage::disk('public')->delete(str_replace('storage/', '', $programStudi->image));
             }
             $path = $request->file('image')->store('program_studi', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
+        }
+
+        if ($request->hasFile('kaprodi_photo')) {
+            if ($programStudi->kaprodi_photo && str_starts_with($programStudi->kaprodi_photo, 'storage/')) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $programStudi->kaprodi_photo));
+            }
+            $pathKaprodi = $request->file('kaprodi_photo')->store('kaprodi', 'public');
+            $validated['kaprodi_photo'] = 'storage/'.$pathKaprodi;
         }
 
         $programStudi->update($validated);

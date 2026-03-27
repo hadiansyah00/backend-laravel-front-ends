@@ -15,7 +15,7 @@ class Document extends Model
         'file_path',
         'category',
         'is_active',
-        'user_id'
+        'user_id',
     ];
 
     public function user()

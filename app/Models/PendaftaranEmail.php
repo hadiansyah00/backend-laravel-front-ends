@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PendaftaranEmail extends Model
 {
     protected $table = 'pendaftaran_email';
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -14,6 +15,6 @@ class PendaftaranEmail extends Model
         'phone',
         'status',
         'email',
-        'password'
+        'password',
     ];
 }

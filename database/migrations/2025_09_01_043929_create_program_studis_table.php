@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('program_studis', function (Blueprint $table) {
-        $table->id();
-        $table->string('name'); // S1 Keperawatan, D3 Kebidanan, dll
-        $table->text('description')->nullable();
-        $table->string('image')->nullable(); // cover prodi
-        $table->string('link')->nullable();  // url detail prodi
-        $table->timestamps();
-    });
+            $table->id();
+            $table->string('name'); // S1 Keperawatan, D3 Kebidanan, dll
+            $table->text('description')->nullable();
+            $table->string('image')->nullable(); // cover prodi
+            $table->string('link')->nullable();  // url detail prodi
+            $table->timestamps();
+        });
     }
 
     /**

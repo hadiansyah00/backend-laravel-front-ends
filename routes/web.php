@@ -1,252 +1,231 @@
 <?php
 
-use App\Models\Article;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TagsController;
-use App\Http\Controllers\UserController;
-use App\Services\GoogleWorkspaceService;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\MetaController;
-use App\Http\Controllers\FrontPagesController;
-use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Admin\PagesController;
-use App\Http\Controllers\PendaftaranEmailController;
 use App\Http\Controllers\Admin\PageSectionController;
-use App\Http\Controllers\FrontPages\SliderController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
+use App\Http\Controllers\FrontPages\FrontSettingController;
+use App\Http\Controllers\FrontPages\SliderController;
 use App\Http\Controllers\FrontPages\StatisticController;
 use App\Http\Controllers\FrontPages\TestimonialController;
-use App\Http\Controllers\FrontPages\FrontSettingController;
-use App\Http\Controllers\FrontPages\ProgramStudiController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
+use App\Http\Controllers\FrontPagesController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PendaftaranEmailController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TagsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PublicInfoController;
+use Illuminate\Support\Facades\Route;
 
-
-
-// ================== API for Frontend ================== //
-
-
-
-Route::get('/test-google-auth', function (GoogleWorkspaceService $service) {
-    try {
-        $result = $service->testAuth();
-        dd('AUTH OK', $result);
-    } catch (\Google\Service\Exception $e) {
-        dd('AUTH FAILED', $e->getErrors());
-    } catch (\Exception $e) {
-        dd('GENERAL ERROR', $e->getMessage());
-    }
-});
-
-Route::get('/api/articles', function (Request $request) {
-    $query = Article::with(['category:id,name,slug'])
-        ->where('status', 'published')
-        ->latest('published_at');
-
-
-    // Filter kategori (pakai slug)
-    if ($request->filled('category')) {
-        $category = $request->category;
-        $query->whereHas('category', function ($q) use ($category) {
-            $q->where('slug', $category);
-        });
-    }
-
-    // Filter tahun
-    if ($request->filled('year')) {
-        $query->whereYear('published_at', $request->year);
-    }
-
-    // Filter pencarian
-    if ($request->filled('search')) {
-        $query->where(function ($q) use ($request) {
-            $q->where('title', 'like', '%' . $request->search . '%')
-                ->orWhere('excerpt', 'like', '%' . $request->search . '%');
-        });
-    }
-
-    $articles = $query->paginate(6);
-
-    return response()->json([
-        'data' => $articles->items(),
-        'pagination' => [
-            'current_page' => $articles->currentPage(),
-            'last_page'    => $articles->lastPage(),
-            'per_page'     => $articles->perPage(),
-            'total'        => $articles->total(),
-            'next_page_url' => $articles->nextPageUrl(),
-            'prev_page_url' => $articles->previousPageUrl(),
-        ]
-    ]);
-});
-
-// ================== FRONTEND ================== //
+// ================== FRONTEND (Public) ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
-Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
-
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/berita/{slug}', [FrontPagesController::class, 'beritaDetail'])->name('berita.detail');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
-Route::prefix('pendaftaran-email')->group(function () {
-    Route::get('/create', [PendaftaranEmailController::class, 'create'])->name('pendaftaran-email.create');
-    Route::post('/', [PendaftaranEmailController::class, 'store'])->name('pendaftaran-email.store');
-});
-Route::get('/pendidikan/{slug}', [PagesController::class, 'show'])
-    ->name('pendidikan.show');
 
 Route::get('/artikel', [BeritaController::class, 'index'])->name('berita.index');
 Route::get('/artikel/{article:slug}', [BeritaController::class, 'show'])->name('berita.show');
 Route::get('/berita-dan-artikel/filter', [BeritaController::class, 'filter'])->name('berita.filter');
 
+Route::get('/pendidikan/{slug}', [PagesController::class, 'show'])->name('pendidikan.show');
+
+// Pendaftaran Email (Public Form)
+Route::prefix('pendaftaran-email')->group(function () {
+    Route::get('/create', [PendaftaranEmailController::class, 'create'])->name('pendaftaran-email.create');
+    Route::post('/', [PendaftaranEmailController::class, 'store'])->name('pendaftaran-email.store');
+});
+
+// ================== PLACHOLDER ROUTES (Dari Menu Seeder) ================== //
+Route::get('/pengumuman', fn() => Inertia::render('Pengumuman'))->name('pengumuman.index');
+Route::get('/event', fn() => Inertia::render('Event'))->name('event.index');
+Route::get('/galeri', fn() => Inertia::render('Galeri'))->name('galeri.index');
+Route::get('/dokumen', fn() => Inertia::render('Dokumen'))->name('dokumen.index');
+Route::get('/dosen', fn() => Inertia::render('Dosen'))->name('dosen.index');
+Route::get('/alumni', fn() => Inertia::render('Alumni'))->name('alumni.index');
+
 // ================== AUTH ================== //
-// Register
 Route::get('/register', [RegisteredUserController::class, 'create'])
     ->middleware('guest')
     ->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware('guest');
 
-// Login
-// Login (hidden / random)
 Route::get('/boda-sbh-portal/login', [AuthenticatedSessionController::class, 'create'])
     ->middleware('guest')
     ->name('login');
-
 Route::post('/boda-sbh-portal/login', [AuthenticatedSessionController::class, 'store'])
     ->middleware('guest');
 
-// Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-
-// Dashboard
-Route::get('/dashboard', fn() => view('dashboard'))
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// ================== DASHBOARD ================== //
+Route::get('/dashboard', function () {
+    return \Inertia\Inertia::render('Admin/Dashboard', [
+        'stats' => [
+            'berita' => \App\Models\Article::count(),
+            'pengumuman' => \App\Models\Pengumuman::count(),
+            'event' => \App\Models\Event::count(),
+            'dosen' => \App\Models\Dosen::count(),
+            'alumni' => \App\Models\Alumni::count(),
+            'pages' => \App\Models\Pages::whereNotIn('category', ['berita'])->count(),
+            'users' => \App\Models\User::count(),
+            'roles' => \Spatie\Permission\Models\Role::count(),
+            'menus' => \App\Models\Menu::count(),
+            'fasilitas' => \App\Models\Fasilitas::count(),
+        ],
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // ================== ADMIN ================== //
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(function () {
 
-    // Profile
+    // --- Profile ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Users, Roles, Menus, Pages
+    // --- Core Resources ---
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('menus', MenuController::class);
     Route::resource('articles', ArticleController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('tags', TagsController::class);
+
+    // --- Content Modules (Phase 4-5) ---
     Route::resource('dosens', \App\Http\Controllers\Admin\DosenController::class);
     Route::resource('pengumumans', \App\Http\Controllers\Admin\PengumumanController::class);
     Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
     Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
     Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class);
     Route::resource('program-studis', \App\Http\Controllers\Admin\ProgramStudiController::class);
+    Route::resource('alumnis', \App\Http\Controllers\Admin\AlumniController::class);
+    Route::resource('lowongans', \App\Http\Controllers\Admin\LowonganController::class);
+    Route::resource('kalender', \App\Http\Controllers\Admin\KalenderAkademikController::class);
+    Route::resource('fasilitas', \App\Http\Controllers\Admin\FasilitasController::class);
 
+    // --- Pendaftaran Email (Admin) ---
     Route::get('pendaftaran-email', [PendaftaranEmailController::class, 'index'])->name('pendaftaran-email.index');
-    Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('endaftaran-email.show');
+    Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('pendaftaran-email.show');
     Route::delete('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'destroy'])->name('pendaftaran-email.destroy');
-    // Index semua halaman (admin list)
-    Route::get('/admin/pages', [PagesController::class, 'index'])->name('pages.index');
-    // Form tambah page
-    Route::get('/admin/pages/create', [PagesController::class, 'create'])->name('pages.create');
-    // Simpan page baru
-    Route::post('/admin/pages', [PagesController::class, 'store'])->name('pages.store');
-    // Edit page
-    Route::get('/admin/pages/{page}/edit', [PagesController::class, 'edit'])->name('pages.edit');
-    // Update page
-    Route::put('/admin/pages/{page}', [PagesController::class, 'update'])->name('pages.update');
-    // Hapus page
-    Route::delete('/admin/pages/{page}', [PagesController::class, 'destroy'])->name('pages.destroy');
 
+    // --- Tentang Kami (Custom CRUD) ---
+    Route::get('tentang-kami', [\App\Http\Controllers\Admin\TentangKamiController::class, 'index'])->name('tentang-kami.index');
+    Route::post('tentang-kami', [\App\Http\Controllers\Admin\TentangKamiController::class, 'storeOrUpdate'])->name('tentang-kami.store');
 
+    // --- Akademik (Unified Tab Page) ---
+    Route::get('akademik', [\App\Http\Controllers\Admin\AkademikController::class, 'index'])->name('akademik.index');
+    Route::post('akademik/prodi', [\App\Http\Controllers\Admin\AkademikController::class, 'storeOrUpdateProdi'])->name('akademik.prodi.store');
+
+    // --- Pages & Sections ---
+    Route::resource('pages', PagesController::class);
     Route::resource('pages.sections', PageSectionController::class)->shallow();
+
+    // --- Media Library ---
+    Route::resource('media', \App\Http\Controllers\MediaController::class)->only(['index', 'store', 'destroy']);
+
+    // --- SEO Meta ---
     Route::prefix('seo')->name('seo.')->group(function () {
         Route::get('{type}/{id}/edit', [MetaController::class, 'edit'])->name('edit');
         Route::put('{type}/{id}', [MetaController::class, 'update'])->name('update');
     });
 
-
-    // Permissions
+    // --- Permissions ---
     Route::post('permissions/store-multiple', [PermissionController::class, 'storeMultiple'])->name('permissions.storeMultiple');
     Route::resource('permissions', PermissionController::class)->except('show');
-    Route::prefix('front-pages')->group(function () {
-        // Sliders
-        Route::prefix('sliders')->group(function () {
-            Route::get('/', [SliderController::class, 'index'])->name('sliders.index');
-            Route::get('/create', [SliderController::class, 'create'])->name('sliders.create');
-            Route::post('/', [SliderController::class, 'store'])->name('sliders.store');
-            Route::get('/{id}/edit', [SliderController::class, 'edit'])->name('sliders.edit');
-            Route::put('/{id}', [SliderController::class, 'update'])->name('sliders.update');
-            Route::delete('/{id}', [SliderController::class, 'destroy'])->name('sliders.destroy');
-        });
 
-        // Testimonials
-        Route::prefix('testimonials')->group(function () {
-            Route::get('/', [TestimonialController::class, 'index'])->name('testimonials.index');
-            Route::get('/create', [TestimonialController::class, 'create'])->name('testimonials.create');
-            Route::post('/', [TestimonialController::class, 'store'])->name('testimonials.store');
-            Route::get('/{id}/edit', [TestimonialController::class, 'edit'])->name('testimonials.edit');
-            Route::put('/{id}', [TestimonialController::class, 'update'])->name('testimonials.update');
-            Route::delete('/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
-        });
+    // --- Front Pages Management ---
+    Route::prefix('front-pages')->group(function () {
+        // --- Beranda (Unified Homepage Management) ---
+        Route::get('beranda', [\App\Http\Controllers\Admin\BerandaController::class, 'index'])->name('beranda.index');
+        Route::post('beranda', [\App\Http\Controllers\Admin\BerandaController::class, 'storeOrUpdate'])->name('beranda.store');
 
         // Front Settings
-        Route::prefix('settings')->group(function () {
-            Route::get('/', [FrontSettingController::class, 'index'])->name('frontsettings.index');
-            Route::post('/', [FrontSettingController::class, 'update'])->name('frontsettings.update');
-        });
+        Route::get('settings', [FrontSettingController::class, 'index'])->name('settings.index');
+        Route::post('settings', [FrontSettingController::class, 'update'])->name('settings.update');
 
-
-        // Program Studi
-        Route::prefix('program-studi')->group(function () {
-            Route::get('/', [ProgramStudiController::class, 'index'])->name('programstudi.index');
-            Route::get('/create', [ProgramStudiController::class, 'create'])->name('programstudi.create');
-            Route::post('/', [ProgramStudiController::class, 'store'])->name('programstudi.store');
-            Route::get('/{id}/edit', [ProgramStudiController::class, 'edit'])->name('programstudi.edit');
-            Route::put('/{id}', [ProgramStudiController::class, 'update'])->name('programstudi.update');
-            Route::delete('/{id}', [ProgramStudiController::class, 'destroy'])->name('programstudi.destroy');
-        });
-
-        // Statistics
-        Route::prefix('statistics')->group(function () {
-            Route::get('/', [StatisticController::class, 'index'])->name('statistics.index');
-            Route::get('/create', [StatisticController::class, 'create'])->name('statistics.create');
-            Route::post('/', [StatisticController::class, 'store'])->name('statistics.store');
-            Route::get('/{id}/edit', [StatisticController::class, 'edit'])->name('statistics.edit');
-            Route::put('/{id}', [StatisticController::class, 'update'])->name('statistics.update');
-            Route::delete('/{id}', [StatisticController::class, 'destroy'])->name('statistics.destroy');
-        });
-
-        // Company Profile Video
-        Route::prefix('company-profile-videos')->group(function () {
-            Route::get('/', [CompanyProfileVideoController::class, 'index'])->name('companyprofile.index');
-            Route::get('/create', [CompanyProfileVideoController::class, 'create'])->name('companyprofile.create');
-            Route::post('/', [CompanyProfileVideoController::class, 'store'])->name('companyprofile.store');
-            Route::get('/{id}/edit', [CompanyProfileVideoController::class, 'edit'])->name('companyprofile.edit');
-            Route::put('/{id}', [CompanyProfileVideoController::class, 'update'])->name('companyprofile.update');
-            Route::delete('/{id}', [CompanyProfileVideoController::class, 'destroy'])->name('companyprofile.destroy');
-        });
+        // Meta (SEO) Settings
+        Route::get('seo/{type}/{id}', [MetaController::class, 'edit'])->name('seo.edit');
+        Route::put('seo/{type}/{id}', [MetaController::class, 'update'])->name('seo.update');
     });
 });
 
 
+// ================== DINAMIS PAGES (Frontend Static via PagesController) ================== //
+// Halaman-halaman di bawah ini di-handle oleh PagesController@show (catch-all) via /{slug}
+// Semua halaman di bawah ini menggunakan route /{slug} di bagian paling bawah.
+
+// INFORMASI ROUTES
+// (Route /berita dan /berita/{slug} sudah dihandle oleh BeritaController di atas)
+Route::get('/pengumuman', [PublicInfoController::class, 'pengumuman'])->name('front.pengumuman');
+Route::get('/pengumuman/{slug}', [PublicInfoController::class, 'pengumumanShow'])->name('front.pengumuman.show');
+
+Route::get('/event', [PublicInfoController::class, 'event'])->name('front.event');
+Route::get('/event/{slug}', [PublicInfoController::class, 'eventShow'])->name('front.event.show');
+
+Route::get('/dokumen', [PublicInfoController::class, 'dokumen'])->name('front.dokumen');
+Route::get('/galeri', [PublicInfoController::class, 'galeri'])->name('front.galeri');
 
 
-// ================== DYNAMIC PAGES ================== //
-// HARUS PALING BAWAH supaya tidak menimpa /login & /register
-// Route::get('/{page}', [PagesController::class, 'show'])->name('pages.show');
-Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
+// TENTANG KAMI ROUTES
+Route::name('front.tentang.')->prefix('tentang')->group(function () {
+    Route::get('/profil-stikes', [PublicInfoController::class, 'profilStikes'])->name('profil');
+    Route::get('/sambutan-ketua', [PublicInfoController::class, 'sambutanKetua'])->name('sambutan');
+    Route::get('/visi-misi', [PublicInfoController::class, 'visiMisi'])->name('visi_misi');
+    Route::get('/sejarah', [PublicInfoController::class, 'sejarah'])->name('sejarah');
+    Route::get('/struktur-organisasi', [PublicInfoController::class, 'strukturOrganisasi'])->name('struktur');
+});
+
+// MAHASISWA & ALUMNI ROUTES
+Route::get('/alumni', [PublicInfoController::class, 'alumni'])->name('front.alumni');
+Route::get('/lowongan', [PublicInfoController::class, 'lowongan'])->name('front.lowongan');
+Route::get('/kerjasama', [PublicInfoController::class, 'kerjasama'])->name('front.kerjasama');
+
+// DOSEN ROUTE
+Route::get('/dosen', [PublicInfoController::class, 'dosen'])->name('front.dosen');
+// ================== AKADEMIK & UNIT LEMBAGA ROUTES ================== //
+Route::get('/farmasi', [PublicInfoController::class, 'farmasi'])->name('front.farmasi');
+Route::get('/gizi', [PublicInfoController::class, 'gizi'])->name('front.gizi');
+Route::get('/kebidanan', [PublicInfoController::class, 'kebidanan'])->name('front.kebidanan');
+Route::get('/kalender-akademik', [PublicInfoController::class, 'kalenderAkademik'])->name('front.kalender');
+
+Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');
+Route::get('/perpustakaan', [PublicInfoController::class, 'perpustakaan'])->name('front.perpustakaan');
+
+Route::get('/unit-penelitian-dan-pengabdian-masyarakat', [PublicInfoController::class, 'uppm'])->name('front.uppm');
+Route::get('/unit-penjaminan-mutu-internal', [PublicInfoController::class, 'upmi'])->name('front.upmi');
+
+// ================== ARTIKEL ================== //
+Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
+Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');
+
+
+// ================== CATCH ALL (WAJIB PALING BAWAH) ================== //
+
+// Untuk halaman program studi / dynamic
+Route::get('/prodi/{slug}', [PublicInfoController::class, 'showProgramStudi'])
+    ->name('front.prodi.show');
+
+// Untuk halaman CMS (Pages Builder)
+// Route::get('/page/{slug}', [PagesController::class, 'show'])
+//     ->name('front.pages.show');
+
+Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
+Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');
 
 require __DIR__ . '/auth.php';
+
+// Original fallback to Modular Pages Builder
+// Biarkan ini di-comment atau di bypass sementara untuk review
+Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');

@@ -15,7 +15,7 @@ class Gallery extends Model
         'image',
         'category',
         'is_active',
-        'user_id'
+        'user_id',
     ];
 
     public function user()

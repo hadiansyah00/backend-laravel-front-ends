@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Gallery;
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class GalleryController extends Controller
 {
     public function index()
     {
         $galleries = Gallery::latest()->paginate(15);
-        return view('admin.galleries.index', compact('galleries'));
+
+        return Inertia::render('Admin/Galleries/Index', [
+            'galleries' => $galleries,
+        ]);
     }
 
     public function create()
     {
-        return view('admin.galleries.create');
+        return Inertia::render('Admin/Galleries/Form');
     }
 
     public function store(Request $request)
@@ -35,7 +39,7 @@ class GalleryController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('galleries', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
         }
 
         Gallery::create($validated);
@@ -45,7 +49,9 @@ class GalleryController extends Controller
 
     public function edit(Gallery $gallery)
     {
-        return view('admin.galleries.edit', compact('gallery'));
+        return Inertia::render('Admin/Galleries/Form', [
+            'gallery' => $gallery,
+        ]);
     }
 
     public function update(Request $request, Gallery $gallery)
@@ -65,7 +71,7 @@ class GalleryController extends Controller
                 Storage::disk('public')->delete(str_replace('storage/', '', $gallery->image));
             }
             $path = $request->file('image')->store('galleries', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = 'storage/'.$path;
         }
 
         $gallery->update($validated);

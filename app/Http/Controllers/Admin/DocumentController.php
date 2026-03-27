@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Document;
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class DocumentController extends Controller
 {
     public function index()
     {
         $documents = Document::latest()->paginate(15);
-        return view('admin.documents.index', compact('documents'));
+
+        return Inertia::render('Admin/Documents/Index', [
+            'documents' => $documents,
+        ]);
     }
 
     public function create()
     {
-        return view('admin.documents.create');
+        return Inertia::render('Admin/Documents/Form');
     }
 
     public function store(Request $request)
@@ -35,7 +39,7 @@ class DocumentController extends Controller
 
         if ($request->hasFile('file_path')) {
             $path = $request->file('file_path')->store('documents', 'public');
-            $validated['file_path'] = 'storage/' . $path;
+            $validated['file_path'] = 'storage/'.$path;
         }
 
         Document::create($validated);
@@ -45,7 +49,9 @@ class DocumentController extends Controller
 
     public function edit(Document $document)
     {
-        return view('admin.documents.edit', compact('document'));
+        return Inertia::render('Admin/Documents/Form', [
+            'document' => $document,
+        ]);
     }
 
     public function update(Request $request, Document $document)
@@ -65,7 +71,7 @@ class DocumentController extends Controller
                 Storage::disk('public')->delete(str_replace('storage/', '', $document->file_path));
             }
             $path = $request->file('file_path')->store('documents', 'public');
-            $validated['file_path'] = 'storage/' . $path;
+            $validated['file_path'] = 'storage/'.$path;
         }
 
         $document->update($validated);

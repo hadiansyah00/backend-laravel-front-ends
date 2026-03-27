@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Statistic;
+use Illuminate\Database\Seeder;
 
 class StatisticSeeder extends Seeder
 {
@@ -16,25 +16,25 @@ class StatisticSeeder extends Seeder
             [
                 'title' => 'Mahasiswa',
                 'value' => 1200,
-                'icon'  => 'fas fa-user-graduate',
+                'icon' => 'fas fa-user-graduate',
                 'order' => 1,
             ],
             [
                 'title' => 'Alumni',
                 'value' => 3500,
-                'icon'  => 'fas fa-users',
+                'icon' => 'fas fa-users',
                 'order' => 2,
             ],
             [
                 'title' => 'Dosen',
                 'value' => 80,
-                'icon'  => 'fas fa-chalkboard-teacher',
+                'icon' => 'fas fa-chalkboard-teacher',
                 'order' => 3,
             ],
             [
                 'title' => 'Program Studi',
                 'value' => 5,
-                'icon'  => 'fas fa-book',
+                'icon' => 'fas fa-book',
                 'order' => 4,
             ],
         ];

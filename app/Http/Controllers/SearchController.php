@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
+use App\Http\Resources\SearchResultResource;
 use App\Models\Pages;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Http\Resources\SearchResultResource;
 
 class SearchController extends Controller
 {
@@ -32,7 +30,7 @@ class SearchController extends Controller
             ->get();
 
         // mapping via Resource
-        $results = $pages->map(fn($p) => SearchResultResource::fromPage($p, $q));
+        $results = $pages->map(fn ($p) => SearchResultResource::fromPage($p, $q));
 
         // pagination manual
         $perPage = 10;
@@ -47,7 +45,7 @@ class SearchController extends Controller
         );
 
         return view('search.results', [
-            'q'       => $q,
+            'q' => $q,
             'results' => $paginatedResults,
         ]);
     }
