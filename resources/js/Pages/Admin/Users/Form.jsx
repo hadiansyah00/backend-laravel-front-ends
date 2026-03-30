@@ -39,37 +39,48 @@ export default function Form({ user, roles, isEdit }) {
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{isEdit ? 'Edit User' : 'Tambah User Baru'}</h2>}>
             <Head title={isEdit ? 'Edit User' : 'Tambah User'} />
 
-            <div className="max-w-3xl mx-auto py-6">
+            <div className="max-w-4xl mx-auto py-6">
                 <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-                    <form onSubmit={submit} className="p-6 sm:p-8 space-y-6">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <Link href={route('admin.users.index')} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                <i className="fas fa-arrow-left"></i>
+                            </Link>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                {isEdit ? 'Form Edit User' : 'Form Tambah User Baru'}
+                            </h3>
+                        </div>
+                    </div>
+
+                    <form onSubmit={submit} className="p-6 space-y-6">
 
                         <div className="space-y-5">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nama Lengkap <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={data.name}
                                     onChange={e => setData('name', e.target.value)}
-                                    className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                    className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm sm:text-sm"
                                     placeholder="Contoh: Admin Akademik Utama"
                                     required
                                 />
-                                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                                {errors.name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>}
                             </div>
 
                             {/* Email */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Alamat Email <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat Email <span className="text-red-500">*</span></label>
                                 <input
                                     type="email"
                                     value={data.email}
                                     onChange={e => setData('email', e.target.value)}
-                                    className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                    className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm sm:text-sm"
                                     placeholder="Contoh: admin@stikesbogorhusada.ac.id"
                                     required
                                 />
-                                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                                {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
                             </div>
 
                             <hr className="border-gray-100 dark:border-gray-800" />
@@ -77,26 +88,26 @@ export default function Form({ user, roles, isEdit }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 {/* Password */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password {isEdit && <span className="text-xs text-gray-400 font-normal">(Isi jika ingin ubah)</span>}</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password {isEdit && <span className="text-xs text-gray-400 font-normal">(Isi jika ingin ubah)</span>}</label>
                                     <input
                                         type="password"
                                         value={data.password}
                                         onChange={e => setData('password', e.target.value)}
-                                        className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                        className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm sm:text-sm"
                                         placeholder="Min. 8 Karakter"
                                         required={!isEdit}
                                     />
-                                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                                    {errors.password && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
                                 </div>
 
                                 {/* Password Confirm */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Konfirmasi Password</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Konfirmasi Password</label>
                                     <input
                                         type="password"
                                         value={data.password_confirmation}
                                         onChange={e => setData('password_confirmation', e.target.value)}
-                                        className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                        className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm sm:text-sm"
                                         placeholder="Ulangi Password"
                                         required={!isEdit || data.password.length > 0}
                                     />
@@ -107,7 +118,7 @@ export default function Form({ user, roles, isEdit }) {
 
                             {/* Roles Selection */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Penugasan Peran (Roles) <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Penugasan Peran (Roles) <span className="text-red-500">*</span></label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                     {roles.map(role => (
                                         <label key={role.id} className={`flex items-start p-3 border rounded-xl cursor-pointer transition-colors ${data.roles.includes(role.name) ? 'bg-indigo-50 border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800' : 'bg-white border-gray-200 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700'}`}>
@@ -128,21 +139,24 @@ export default function Form({ user, roles, isEdit }) {
                                         </label>
                                     ))}
                                 </div>
-                                {errors.roles && <p className="text-red-500 text-sm mt-2">{errors.roles}</p>}
+                                {errors.roles && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.roles}</p>}
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-gray-100 dark:border-gray-800">
-                            <Link href={route('admin.users.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-800">
+                            <Link href={route('admin.users.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 Batal
                             </Link>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
                             >
-                                {processing && <i className="fas fa-spinner fa-spin"></i>}
-                                Simpan Akun
+                                {processing ? (
+                                    <><i className="fas fa-spinner fa-spin"></i> Menyimpan...</>
+                                ) : (
+                                    <><i className="fas fa-save"></i> Simpan Akun</>
+                                )}
                             </button>
                         </div>
                     </form>

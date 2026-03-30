@@ -53,7 +53,7 @@ export default function Form({ role, permissions, isEdit }) {
                                 type="text"
                                 value={data.name}
                                 onChange={e => setData('name', e.target.value)}
-                                className="w-full max-w-md rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                className="w-full max-w-md rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
                                 placeholder="Contoh: author, editor, dll"
                                 required
                             />
@@ -94,13 +94,13 @@ export default function Form({ role, permissions, isEdit }) {
                         </div>
 
                         <div className="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-gray-100 dark:border-gray-800">
-                            <Link href={route('admin.roles.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <Link href={route('admin.roles.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                 Batal
                             </Link>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
                             >
                                 {processing && <i className="fas fa-spinner fa-spin"></i>}
                                 Simpan Role

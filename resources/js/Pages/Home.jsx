@@ -52,9 +52,32 @@ export default function Home({
             <Head>
                 <title>Beranda - STIKes Bogor Husada</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional."
+                    content="Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional di Bogor."
                 />
+                <meta head-key="og:title" property="og:title" content="Beranda - STIKes Bogor Husada" />
+                <meta head-key="og:description" property="og:description" content="Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional di Bogor." />
+                <meta head-key="og:url" property="og:url" content={typeof window !== 'undefined' ? window.location.href : 'https://sbh.ac.id/'} />
+                <meta head-key="twitter:title" name="twitter:title" content="Beranda - STIKes Bogor Husada" />
+                <meta head-key="twitter:description" name="twitter:description" content="Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional di Bogor." />
+                <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : 'https://sbh.ac.id/'} />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "EducationalOrganization",
+                        "name": "STIKes Bogor Husada",
+                        "url": typeof window !== 'undefined' ? window.location.origin : 'https://sbh.ac.id/',
+                        "logo": typeof window !== 'undefined' ? window.location.origin + "/assets/img/icon/logo_sbh_persegi.png" : "https://sbh.ac.id/assets/img/icon/logo_sbh_persegi.png",
+                        "description": "Kampus kesehatan terbaik yang mencetak tenaga medis profesional.",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": "Bogor",
+                            "addressRegion": "Jawa Barat",
+                            "addressCountry": "ID"
+                        }
+                    })}
+                </script>
             </Head>
 
             {/* 1. HERO SLIDER SECTION */}
@@ -789,36 +812,40 @@ export default function Home({
                 </section>
             )}
 
-            {/* 7. KERJA SAMA / JARINGAN MITRA (BARU) */}
             {kerjasamas && kerjasamas.length > 0 && (
-                <section className="py-16 border-gray-200 bg-gray-50 border-y">
+                <section className="py-20 bg-gradient-to-b from-white to-orange-50 dark:from-gray-900 dark:to-orange-900/10 border-b border-orange-100 dark:border-orange-900/20">
                     <div className="container px-6 mx-auto text-center lg:px-12">
-                        <span className="text-sm font-bold tracking-wider text-orange-600 uppercase">
+                        <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-orange-600 bg-orange-100 rounded-full dark:bg-orange-900/30 dark:text-orange-400 uppercase shadow-sm">
                             Jaringan Kami
                         </span>
-                        <h2 className="mt-2 mb-10 text-2xl font-bold text-gray-800 md:text-3xl">
+                        <h2 className="mb-12 text-3xl font-extrabold text-gray-900 dark:text-white md:text-4xl">
                             Mitra Kerjasama STIKes Bogor Husada
                         </h2>
 
-                        <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16 opacity-70">
+                        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
                             {kerjasamas.map((mitra, idx) => (
-                                <div
+                                <a
                                     key={idx}
-                                    className="flex items-center justify-center w-24 h-24 transition-all duration-500 md:w-32 md:h-32 grayscale hover:grayscale-0 hover:scale-110"
+                                    href={mitra.url || '#'}
+                                    target={mitra.url ? "_blank" : "_self"}
+                                    rel="noreferrer"
+                                    className={`flex items-center justify-center w-32 h-32 md:w-40 md:h-40 bg-white dark:bg-gray-800 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-orange-100 dark:border-gray-700 transition-all duration-300 group ${mitra.url ? 'hover:shadow-[0_8px_30px_-4px_rgba(234,88,12,0.15)] dark:hover:shadow-[0_8px_30px_-4px_rgba(234,88,12,0.2)] hover:-translate-y-2 cursor-pointer' : 'hover:-translate-y-1 hover:shadow-md'}`}
                                 >
-                                    <img
-                                        src={mitra.logo}
-                                        alt={mitra.name}
-                                        className="object-contain max-w-full max-h-full filter drop-shadow-sm"
-                                        title={mitra.name}
-                                    />
-                                </div>
+                                    <div className="w-[75%] h-[75%] relative flex items-center justify-center">
+                                        <img
+                                            src={mitra.logo.startsWith('http') ? mitra.logo : `/${mitra.logo}`}
+                                            alt={mitra.name}
+                                            className="object-contain max-w-full max-h-full transition-all duration-500 filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
+                                            title={mitra.name}
+                                        />
+                                    </div>
+                                </a>
                             ))}
                         </div>
-                        <div className="mt-10">
+                        <div className="mt-14">
                             <Link
                                 href="/kerjasama"
-                                className="text-sm font-bold text-orange-600 transition-colors hover:text-orange-800"
+                                className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold text-white transition-all bg-orange-600 rounded-xl hover:bg-orange-700 shadow-lg shadow-orange-500/30 focus:ring-4 focus:ring-orange-500/50"
                             >
                                 Lihat Semua Mitra Kerjasama &rarr;
                             </Link>

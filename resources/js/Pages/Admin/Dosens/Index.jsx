@@ -52,7 +52,7 @@ export default function Index({ dosens, filters, prodis }) {
                         </Link>
                     </div>
 
-                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20">
+                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
                         <div className="flex flex-col sm:flex-row gap-4">
                             <div className="flex-1 relative">
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -81,7 +81,7 @@ export default function Index({ dosens, filters, prodis }) {
                             </div>
                             <button
                                 onClick={handleFilter}
-                                className="inline-flex items-center justify-center px-4 py-2 bg-gray-800 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition shadow-sm"
+                                className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition shadow-sm"
                             >
                                 Filter
                             </button>
@@ -92,7 +92,7 @@ export default function Index({ dosens, filters, prodis }) {
                                         setProdi('');
                                         router.get(route('admin.dosens.index'));
                                     }}
-                                    className="inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-transparent rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-gray-300 dark:hover:bg-gray-600 transition shadow-sm"
+                                    className="inline-flex items-center justify-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm"
                                 >
                                     Reset
                                 </button>

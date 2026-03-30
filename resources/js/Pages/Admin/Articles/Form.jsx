@@ -258,7 +258,7 @@ export default function Form({
                                                 </span>
                                             </label>
                                             <select
-                                                className="w-full border-gray-300 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                className="w-full border-gray-300 rounded-xl shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={data.status}
                                                 onChange={(e) =>
                                                     setData(
@@ -282,7 +282,7 @@ export default function Form({
                                             </label>
                                             <input
                                                 type="datetime-local"
-                                                className="w-full border-gray-300 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                className="w-full border-gray-300 rounded-xl shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={data.published_at}
                                                 onChange={(e) =>
                                                     setData(
@@ -335,7 +335,7 @@ export default function Form({
                                             </label>
                                             <input
                                                 type="text"
-                                                className="w-full border-gray-300 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                className="w-full border-gray-300 rounded-xl shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={data.tags}
                                                 onChange={(e) =>
                                                     setData(
@@ -614,7 +614,7 @@ export default function Form({
                                             <div className="flex items-center gap-2">
                                                 <input
                                                     type="text"
-                                                    className="w-full text-xs border-gray-300 rounded-lg cursor-not-allowed bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                                    className="w-full text-xs border-gray-300 rounded-xl cursor-not-allowed bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
                                                     placeholder="Pilih dari media..."
                                                     value={data.og_image || ""}
                                                     readOnly
@@ -627,7 +627,7 @@ export default function Form({
                                                     trigger={
                                                         <button
                                                             type="button"
-                                                            className="shrink-0 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border border-gray-300 dark:border-gray-600"
+                                                            className="shrink-0 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border border-gray-300 dark:border-gray-600"
                                                         >
                                                             <i className="fas fa-image"></i>{" "}
                                                             Pilih Foto
@@ -661,7 +661,7 @@ export default function Form({
                                             <div className="flex items-center gap-2">
                                                 <input
                                                     type="text"
-                                                    className="w-full text-xs border-gray-300 rounded-lg cursor-not-allowed bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                                    className="w-full text-xs border-gray-300 rounded-xl cursor-not-allowed bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
                                                     placeholder="Pilih dari media..."
                                                     value={
                                                         data.twitter_image || ""
@@ -679,7 +679,7 @@ export default function Form({
                                                     trigger={
                                                         <button
                                                             type="button"
-                                                            className="shrink-0 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border border-gray-300 dark:border-gray-600"
+                                                            className="shrink-0 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border border-gray-300 dark:border-gray-600"
                                                         >
                                                             <i className="fas fa-image"></i>{" "}
                                                             Pilih Foto

@@ -30,16 +30,29 @@ class FrontSettingController extends Controller
     {
         $data = $request->except('_token');
 
+        // Fields that are stored as JSON
+        $jsonFields = ['footer_links', 'social_links'];
+
         foreach ($data as $key => $value) {
+            // Skip null values (e.g. file inputs that weren't changed)
+            if (is_null($value)) {
+                continue;
+            }
+
             // handle upload file
             if ($request->hasFile($key)) {
                 $path = $request->file($key)->store('uploads/settings', 'public');
                 $value = $path;
+                $type = 'image';
+            } elseif (in_array($key, $jsonFields)) {
+                $type = 'json';
+            } else {
+                $type = 'text';
             }
 
             FrontSetting::updateOrCreate(
                 ['key' => $key],
-                ['value' => $value, 'type' => is_file($value) ? 'image' : 'text']
+                ['value' => $value, 'type' => $type]
             );
 
             // clear cache supaya setting() baca ulang

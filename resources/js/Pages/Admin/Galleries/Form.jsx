@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
-
+import MediaPicker from "@/Components/MediaPicker";
 export default function Form({ gallery }) {
     const isEdit = !!gallery;
     const fileInputRef = useRef(null);
@@ -10,7 +10,7 @@ export default function Form({ gallery }) {
         title: gallery?.title || '',
         description: gallery?.description || '',
         category: gallery?.category || '',
-        image: null,
+        image: gallery?.image || '',
         is_active: gallery?.is_active ?? true,
         _method: isEdit ? 'PUT' : 'POST'
     });
@@ -94,38 +94,44 @@ export default function Form({ gallery }) {
                             {errors.description && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description}</p>}
                         </div>
 
-                        {/* Image Upload */}
+                        {/* Image Upload dengan MediaPicker */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih File Gambar {isEdit ? '(Opsional)' : '<span className="text-red-500">*</span>'}</label>
 
                             {isEdit && gallery?.image && (
                                 <div className="mb-4">
                                     <div className="w-48 aspect-video rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm relative group">
-                                        <img src={`/${gallery.image}`} alt="Current" className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <a href={`/${gallery.image}`} target="_blank" rel="noreferrer" className="text-white text-sm font-semibold hover:underline">Lihat Penuh</a>
+                                        <img src={gallery.image.startsWith('http') ? gallery.image : `/${gallery.image}`} alt="Current" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                                            <a href={gallery.image.startsWith('http') ? gallery.image : `/${gallery.image}`} target="_blank" rel="noreferrer" className="text-white text-sm font-semibold hover:underline">Lihat Penuh</a>
                                         </div>
                                     </div>
                                     <p className="text-xs text-gray-500 mt-2">Gambar saat ini. Folder akan otomatis menimpanya jika memilih file baru.</p>
                                 </div>
                             )}
 
-                            <div className="flex items-center justify-center w-full">
-                                <label className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer ${errors.image ? 'border-red-400 bg-red-50 dark:bg-red-900/10' : 'border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'}`}>
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <i className="fas fa-image text-4xl text-gray-400 mb-3"></i>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 font-semibold">{data.image ? data.image.name : 'Pilih atau drop file foto di sini'}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">JPG, JPEG, PNG, WEBP (Max. 5MB)</p>
-                                    </div>
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        ref={fileInputRef}
-                                        onChange={e => setData('image', e.target.files[0])}
-                                        accept="image/jpeg,image/png,image/jpg,image/webp"
-                                    />
-                                </label>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="text"
+                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
+                                    placeholder="Pilih gambar dari media library..."
+                                    value={data.image || ''}
+                                    readOnly
+                                />
+                                <MediaPicker
+                                    onSelect={(url) => setData("image", url)}
+                                    trigger={
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
+                                        >
+                                            <i className="fas fa-folder-open"></i>{" "}
+                                            Pilih Foto
+                                        </button>
+                                    }
+                                />
                             </div>
+                            <p className="mt-2 text-xs text-gray-500">Pilih foto yang ingin dilampirkan dari Media Library kampus.</p>
                             {errors.image && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium">{errors.image}</p>}
                         </div>
 

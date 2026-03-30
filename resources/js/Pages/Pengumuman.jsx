@@ -4,8 +4,12 @@ import { Head } from '@inertiajs/react';
 
 export default function Pengumuman() {
     return (
-        <MainLayout title="Pengumuman">
-            <Head title="Pengumuman" />
+        <MainLayout title="Pengumuman | STIKes Bogor Husada">
+            <Head>
+                <meta head-key="description" name="description" content="Informasi dan pengumuman terbaru dari STIKes Bogor Husada." />
+                <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/pengumuman'} />
+                <meta head-key="og:title" property="og:title" content="Pengumuman | STIKes Bogor Husada" />
+            </Head>
             <div className="pt-32 pb-24 bg-gray-50 min-h-screen">
                 <div className="container px-6 mx-auto lg:px-12">
                     <div className="max-w-4xl mx-auto p-10 bg-white shadow-lg rounded-3xl text-center">

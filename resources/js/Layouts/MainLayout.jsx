@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import AccessibilityWidget from "../Components/AccessibilityWidget";
+import FloatingWhatsApp from "../Components/FloatingWhatsApp";
 import { Head } from "@inertiajs/react";
 
 export default function MainLayout({ children, title }) {
@@ -26,6 +28,8 @@ export default function MainLayout({ children, title }) {
             <Navbar />
             <main className="flex-grow">{children}</main>
             <Footer />
+            <AccessibilityWidget />
+            <FloatingWhatsApp />
         </div>
     );
 }

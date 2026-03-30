@@ -10,7 +10,7 @@ export default function Form({ pengumuman }) {
     const { data, setData, post, put, errors, processing } = useForm({
         title: pengumuman?.title || '',
         content: pengumuman?.content || '',
-        attachment: null,
+        attachment: pengumuman?.attachment || '',
         is_active: pengumuman?.is_active ?? true,
         // Since we are uploading a file via PUT/PATCH, Inertia requires us to use POST with _method=PUT to send FormData correctly in Laravel.
         _method: isEdit ? 'PUT' : 'POST'
@@ -86,20 +86,20 @@ export default function Form({ pengumuman }) {
                                             <i className="text-lg fas fa-file-alt"></i>
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">Ada dokumen terlampir saat ini</p>
-                                            <a href={`/${pengumuman.attachment}`} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Dokumen</a>
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1">Ada dokumen terlampir saat ini</p>
+                                            <a href={pengumuman.attachment.startsWith('http') ? pengumuman.attachment : `/${pengumuman.attachment}`} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Dokumen</a>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-gray-500">Abaikan jika tidak ingin mengubah</p>
+                                    <p className="text-xs text-gray-500 hidden sm:block">Abaikan jika tidak ingin mengubah</p>
                                 </div>
                             )}
 
                             <div className="flex items-center gap-3">
                                 <input
                                     type="text"
-                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
                                     placeholder="Pilih dari media library..."
-                                    value={data.attachment}
+                                    value={data.attachment || ''}
                                     readOnly
                                 />
                                 <MediaPicker

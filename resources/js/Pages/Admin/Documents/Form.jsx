@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
-
+import MediaPicker from "@/Components/MediaPicker";
 export default function Form({ document }) {
     const isEdit = !!document;
     const fileInputRef = useRef(null);
@@ -10,7 +10,7 @@ export default function Form({ document }) {
         title: document?.title || '',
         description: document?.description || '',
         category: document?.category || '',
-        file_path: null,
+        file_path: document?.file_path || '',
         is_active: document?.is_active ?? true,
         _method: isEdit ? 'PUT' : 'POST'
     });
@@ -94,7 +94,7 @@ export default function Form({ document }) {
                             {errors.description && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description}</p>}
                         </div>
 
-                        {/* File Upload */}
+                        {/* File Upload dengan MediaPicker */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih File Dokumen {isEdit ? '(Opsional)' : '<span className="text-red-500">*</span>'}</label>
 
@@ -109,26 +109,32 @@ export default function Form({ document }) {
                                             <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-0.5">Sudah ada file terunggah</p>
                                         </div>
                                     </div>
-                                    <a href={`/${document.file_path}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 whitespace-nowrap bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-indigo-200 dark:border-indigo-700 shadow-sm transition-colors">Lihat Dokumen Saat Ini</a>
+                                    <a href={document.file_path.startsWith('http') ? document.file_path : `/${document.file_path}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 whitespace-nowrap bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-indigo-200 dark:border-indigo-700 shadow-sm transition-colors">Lihat Dokumen Saat Ini</a>
                                 </div>
                             )}
 
-                            <div className="flex items-center justify-center w-full">
-                                <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer ${errors.file_path ? 'border-red-400 bg-red-50 dark:bg-red-900/10' : 'border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'}`}>
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <i className="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-3"></i>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 font-semibold">{data.file_path ? data.file_path.name : 'Klik untuk upload dokumen'}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">PDF, DOC, DOCX, XLS, XLSX (Max. 10MB)</p>
-                                    </div>
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        ref={fileInputRef}
-                                        onChange={e => setData('file_path', e.target.files[0])}
-                                        accept=".pdf,.doc,.docx,.xls,.xlsx"
-                                    />
-                                </label>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="text"
+                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
+                                    placeholder="Pilih dokumen dari media library..."
+                                    value={data.file_path || ''}
+                                    readOnly
+                                />
+                                <MediaPicker
+                                    onSelect={(url) => setData("file_path", url)}
+                                    trigger={
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
+                                        >
+                                            <i className="fas fa-folder-open"></i>{" "}
+                                            Pilih File
+                                        </button>
+                                    }
+                                />
                             </div>
+                            <p className="mt-2 text-xs text-gray-500">Pilih dokumen yang ingin dilampirkan dari Media Library (PDF/Doc/XLS).</p>
                             {errors.file_path && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium">{errors.file_path}</p>}
                         </div>
 

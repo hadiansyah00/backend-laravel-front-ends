@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
+import MediaPicker from "@/Components/MediaPicker";
 
 export default function Form({ event }) {
     const isEdit = !!event;
@@ -19,7 +20,7 @@ export default function Form({ event }) {
         location: event?.location || '',
         start_date: formatDate(event?.start_date),
         end_date: formatDate(event?.end_date),
-        image: null,
+        image: event?.image || '',
         is_active: event?.is_active ?? true,
         _method: isEdit ? 'PUT' : 'POST'
     });
@@ -117,31 +118,47 @@ export default function Form({ event }) {
                             </div>
                         </div>
 
-                        {/* Image Attachment */}
+                        {/* Image Attachment dengan MediaPicker */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Poster Kegiatan / Gambar Banner</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Poster Kegiatan / Gambar Banner</label>
 
                             {isEdit && event?.image && (
-                                <div className="mb-4">
-                                    <div className="w-32 h-32 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
-                                        <img src={`/${event.image}`} alt="Current Poster" className="w-full h-full object-cover" />
+                                <div className="flex items-center justify-between p-3 mb-4 border bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800 rounded-xl">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-800 border border-indigo-200 dark:border-indigo-700">
+                                            <img src={event.image.startsWith('http') ? event.image : `/${event.image}`} alt="Current Poster" className="w-full h-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1">Ada poster terlampir saat ini</p>
+                                            <a href={event.image.startsWith('http') ? event.image : `/${event.image}`} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Poster Penuh</a>
+                                        </div>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">Gambar saat ini. Abaikan jika tidak ingin mengubah.</p>
+                                    <p className="text-xs text-gray-500 hidden sm:block">Abaikan jika tidak ingin mengubah</p>
                                 </div>
                             )}
 
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-indigo-50 file:text-indigo-700
-                                hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 dark:hover:file:bg-indigo-900/50 transition-colors"
-                                onChange={e => setData('image', e.target.files[0])}
-                                accept="image/jpeg,image/png,image/jpg,image/webp"
-                            />
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="text"
+                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
+                                    placeholder="Pilih poster kegiatan dari media library..."
+                                    value={data.image || ''}
+                                    readOnly
+                                />
+                                <MediaPicker
+                                    onSelect={(url) => setData("image", url)}
+                                    trigger={
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
+                                        >
+                                            <i className="fas fa-folder-open"></i>{" "}
+                                            Pilih File
+                                        </button>
+                                    }
+                                />
+                            </div>
+                            <p className="mt-2 text-xs text-gray-500">Pilih gambar poster kegiatan dari Media Library.</p>
                             {errors.image && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.image}</p>}
                         </div>
 

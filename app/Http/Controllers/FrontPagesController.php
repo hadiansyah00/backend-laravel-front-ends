@@ -10,6 +10,7 @@ use App\Models\Menu;
 use App\Models\Pengumuman;
 use App\Models\ProgramStudi;
 use App\Models\Alumni;
+use App\Models\Kerjasama;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response; // Gunakan Response dari Inertia
@@ -98,14 +99,10 @@ class FrontPagesController extends Controller
                 ->get();
         });
 
-        // 2. Data Statis Mitra Kerjasama (Bisa kamu ganti URL gambarnya)
-        $kerjasamas = [
-            ['name' => 'Kementerian Kesehatan', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/b/bf/Kementerian_Kesehatan_Republik_Indonesia_Logo.png'],
-            ['name' => 'RSUD Kota Bogor', 'logo' => 'https://rsudkotabogor.org/web/wp-content/uploads/2019/12/logo-rsud.png'],
-            ['name' => 'Dinas Kesehatan', 'logo' => 'https://dinkes.kotabogor.go.id/aset/images/logo.png'],
-            ['name' => 'Puskesmas', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Logo_Puskesmas.png'],
-            ['name' => 'Ikatan Bidan Indonesia', 'logo' => 'https://ibi.or.id/wp-content/uploads/2021/04/Logo-IBI.png'],
-        ];
+        // 8. Data Mitra Kerjasama (Cache 1 Jam)
+        $kerjasamas = Cache::remember('kerjasamas_home', 3600, function () {
+            return Kerjasama::where('is_active', true)->get();
+        });
         // Lempar data ke React Frontend
         return Inertia::render('Home', compact(
             'berita',

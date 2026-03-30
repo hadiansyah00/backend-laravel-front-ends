@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function EventDetail({ event, upcomingEvents }) {
     // Format helpers
@@ -20,6 +20,19 @@ export default function EventDetail({ event, upcomingEvents }) {
 
     return (
         <MainLayout title={event ? `Event: ${event.title} | STIKes Bogor Husada` : 'Event Tidak Ditemukan'}>
+            <Head>
+                <title>{event ? `Event: ${event.title} | STIKes Bogor Husada` : 'Event Tidak Ditemukan'}</title>
+                {event && (
+                    <>
+                        <meta head-key="description" name="description" content={event.description ? event.description.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Event di STIKes Bogor Husada'} />
+                        <meta head-key="og:title" property="og:title" content={event.title} />
+                        <meta head-key="og:description" property="og:description" content={event.description ? event.description.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Event di STIKes Bogor Husada'} />
+                        <meta head-key="og:image" property="og:image" content={typeof window !== 'undefined' ? window.location.origin + imageUrl : imageUrl} />
+                        <meta head-key="og:type" property="og:type" content="article" />
+                        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/'} />
+                    </>
+                )}
+            </Head>
             {event ? (
                 <>
                     {/* Split Header */}

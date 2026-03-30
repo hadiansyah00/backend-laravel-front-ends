@@ -77,13 +77,13 @@ class MediaController extends Controller
         return back()->with('success', 'Media berhasil diupload.');
     }
 
-    public function destroy(Media $media, Request $request)
+    public function destroy(Media $medium, Request $request)
     {
-        if ($media->path && Storage::disk($media->disk)->exists($media->path)) {
-            Storage::disk($media->disk)->delete($media->path);
+        if ($medium->path && Storage::disk($medium->disk)->exists($medium->path)) {
+            Storage::disk($medium->disk)->delete($medium->path);
         }
 
-        $media->delete();
+        $medium->delete();
 
         if ($request->wantsJson()) {
             return response()->json(['message' => 'Media deleted successfully']);

@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /boda-sbh-portal/
+Disallow: /storage/
+
+Sitemap: https://build.sbh.ac.id/sitemap.xml

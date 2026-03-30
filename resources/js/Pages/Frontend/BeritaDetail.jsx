@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function BeritaDetail({ article, related, recentPosts, categories, popularTags }) {
     // Formatting Helper
@@ -14,6 +14,37 @@ export default function BeritaDetail({ article, related, recentPosts, categories
 
     return (
         <MainLayout title={article ? `${article.title} | STIKes Bogor Husada` : 'Berita Tidak Ditemukan'}>
+            <Head>
+                <title>{article ? `${article.title} | STIKes Bogor Husada` : 'Berita Tidak Ditemukan'}</title>
+                {article && (
+                    <>
+                        <meta head-key="description" name="description" content={article.excerpt || article.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...'} />
+                        <meta head-key="og:title" property="og:title" content={article.title} />
+                        <meta head-key="og:description" property="og:description" content={article.excerpt || article.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...'} />
+                        <meta head-key="og:image" property="og:image" content={typeof window !== 'undefined' ? window.location.origin + imageUrl : imageUrl} />
+                        <meta head-key="og:url" property="og:url" content={typeof window !== 'undefined' ? window.location.href : '/'} />
+                        <meta head-key="og:type" property="og:type" content="article" />
+                        <meta head-key="twitter:title" name="twitter:title" content={article.title} />
+                        <meta head-key="twitter:description" name="twitter:description" content={article.excerpt || article.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...'} />
+                        <meta head-key="twitter:image" name="twitter:image" content={typeof window !== 'undefined' ? window.location.origin + imageUrl : imageUrl} />
+                        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/'} />
+                        <script type="application/ld+json">
+                            {JSON.stringify({
+                                "@context": "https://schema.org",
+                                "@type": "Article",
+                                "headline": article.title,
+                                "image": [typeof window !== 'undefined' ? window.location.origin + imageUrl : imageUrl],
+                                "datePublished": article.published_at || article.created_at,
+                                "dateModified": article.updated_at,
+                                "author": [{
+                                    "@type": "Person",
+                                    "name": "Admin STIKes Bogor Husada"
+                                }]
+                            })}
+                        </script>
+                    </>
+                )}
+            </Head>
             {/* Header Area */}
             {article ? (
                 <>

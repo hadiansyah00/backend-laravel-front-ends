@@ -33,7 +33,7 @@ class EventController extends Controller
             'location' => 'nullable|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
@@ -41,9 +41,9 @@ class EventController extends Controller
         $validated['is_active'] = $request->has('is_active');
         $validated['user_id'] = auth()->id();
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('events', 'public');
-            $validated['image'] = 'storage/'.$path;
+        if ($request->filled('image')) {
+            $parsedPath = parse_url($request->image, PHP_URL_PATH);
+            $validated['image'] = ltrim($parsedPath, '/');
         }
 
         Event::create($validated);
@@ -66,18 +66,17 @@ class EventController extends Controller
             'location' => 'nullable|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
 
-        if ($request->hasFile('image')) {
-            if ($event->image && str_starts_with($event->image, 'storage/')) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $event->image));
-            }
-            $path = $request->file('image')->store('events', 'public');
-            $validated['image'] = 'storage/'.$path;
+        if ($request->filled('image')) {
+            $parsedPath = parse_url($request->image, PHP_URL_PATH);
+            $validated['image'] = ltrim($parsedPath, '/');
+        } else {
+            $validated['image'] = null;
         }
 
         $event->update($validated);

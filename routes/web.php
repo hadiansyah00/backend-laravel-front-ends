@@ -24,9 +24,11 @@ use App\Http\Controllers\TagsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PublicInfoController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 // ================== FRONTEND (Public) ================== //
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/berita/{slug}', [FrontPagesController::class, 'beritaDetail'])->name('berita.detail');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
@@ -114,7 +116,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::resource('lowongans', \App\Http\Controllers\Admin\LowonganController::class);
     Route::resource('kalender', \App\Http\Controllers\Admin\KalenderAkademikController::class);
     Route::resource('fasilitas', \App\Http\Controllers\Admin\FasilitasController::class);
-
+    Route::resource('kerjasamas', \App\Http\Controllers\Admin\KerjasamaController::class);
     // --- Pendaftaran Email (Admin) ---
     Route::get('pendaftaran-email', [PendaftaranEmailController::class, 'index'])->name('pendaftaran-email.index');
     Route::get('pendaftaran-email/{id}', [PendaftaranEmailController::class, 'show'])->name('pendaftaran-email.show');

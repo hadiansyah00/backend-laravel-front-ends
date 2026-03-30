@@ -175,11 +175,11 @@ export default function Form({ programStudi }) {
                                             <div className="flex-1 space-y-3">
                                                 <div>
                                                     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Profesi / Jabatan</label>
-                                                    <input type="text" value={item.title} onChange={e => updatePeluangKerja(index, 'title', e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" placeholder="Cth: Apoteker Klinis" />
+                                                    <input type="text" value={item.title} onChange={e => updatePeluangKerja(index, 'title', e.target.value)} className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" placeholder="Cth: Apoteker Klinis" />
                                                 </div>
                                                 <div>
                                                     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Deskripsi / Peran</label>
-                                                    <input type="text" value={item.description} onChange={e => updatePeluangKerja(index, 'description', e.target.value)} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" placeholder="Deskripsi pekerjaan..." />
+                                                    <input type="text" value={item.description} onChange={e => updatePeluangKerja(index, 'description', e.target.value)} className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" placeholder="Deskripsi pekerjaan..." />
                                                 </div>
                                             </div>
                                             <button type="button" onClick={() => removePeluangKerja(index)} className="mt-6 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">

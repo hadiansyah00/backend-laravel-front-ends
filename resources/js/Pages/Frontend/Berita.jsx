@@ -28,6 +28,13 @@ export default function Berita({ articles, categories, filters = {} }) {
 
     return (
         <MainLayout title="Berita & Artikel | STIKes Bogor Husada">
+            <Head>
+                <meta head-key="description" name="description" content="Kumpulan berita, informasi, dan artikel terbaru dari STIKes Bogor Husada." />
+                <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/artikel'} />
+                <meta head-key="og:title" property="og:title" content="Berita & Artikel | STIKes Bogor Husada" />
+                <meta head-key="og:description" property="og:description" content="Kumpulan berita, informasi, dan artikel terbaru dari STIKes Bogor Husada." />
+            </Head>
+
             {/* --- IMPROVED HERO SECTION (Sama seperti Profil) --- */}
             <section className="relative w-full pt-32 pb-24 overflow-hidden bg-gray-900 md:pt-40 md:pb-32">
                 {/* Background Image & Overlay */}

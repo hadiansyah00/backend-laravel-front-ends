@@ -129,7 +129,7 @@ export default function Form({ fasilitasData }) {
                                                                     newItems[index].name = e.target.value;
                                                                     setFacilitiesItems(newItems);
                                                                     setData('facilities', newItems);
-                                                                }} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Judul Rincian (Contoh: Bed Pasien)" />
+                                                                }} className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Judul Rincian (Contoh: Bed Pasien)" />
                                                             </div>
                                                             <div className="w-1/3">
                                                                 <input type="text" value={item.icon || ''} onChange={e => {
@@ -137,7 +137,7 @@ export default function Form({ fasilitasData }) {
                                                                     newItems[index].icon = e.target.value;
                                                                     setFacilitiesItems(newItems);
                                                                     setData('facilities', newItems);
-                                                                }} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Icon Class (fa-check)" />
+                                                                }} className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Icon Class (fa-check)" />
                                                             </div>
                                                         </div>
                                                         <textarea value={item.description || ''} onChange={e => {
@@ -145,7 +145,7 @@ export default function Form({ fasilitasData }) {
                                                             newItems[index].description = e.target.value;
                                                             setFacilitiesItems(newItems);
                                                             setData('facilities', newItems);
-                                                        }} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Deskripsi Rincian" rows={2}></textarea>
+                                                        }} className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Deskripsi Rincian" rows={2}></textarea>
                                                     </div>
                                                     <button type="button" onClick={() => removeFacility(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-1" title="Hapus">
                                                         <i className="fas fa-times"></i>

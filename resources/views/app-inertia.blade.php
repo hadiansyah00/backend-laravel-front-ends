@@ -19,6 +19,15 @@
     @viteReactRefresh
     @vite(['resources/js/app.jsx', 'resources/css/app.css'])
     
+    <!-- Default SEO Fallbacks -->
+    <meta name="description" content="{{ setting('meta_description', 'Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional.') }}">
+    <meta name="keywords" content="{{ setting('meta_keywords', 'STIKes Bogor Husada, kampus kesehatan bogor, sekolah tinggi ilmu kesehatan') }}">
+    <meta property="og:title" content="{{ setting('meta_title', 'STIKes Bogor Husada') }}">
+    <meta property="og:description" content="{{ setting('meta_description', 'Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional.') }}">
+    <meta property="og:image" content="{{ asset('assets/img/icon/logo_sbh_persegi.png') }}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
     <!-- Inertia Head Injector -->
     @inertiaHead
 </head>

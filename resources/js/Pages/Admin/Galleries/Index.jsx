@@ -25,7 +25,7 @@ export default function Index({ galleries }) {
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Daftar Galeri</h3>
                             <p className="text-sm text-gray-500 mt-1">Kelola album foto, dokumentasi kegiatan, dan aset visual lainnya.</p>
                         </div>
-                        <Link href={route('admin.galleries.create')} className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-sm">
+                        <Link href={route('admin.galleries.create')} className="inline-flex items-center justify-center px-4 py-2.5 bg-indigo-600 border border-transparent rounded-xl font-bold text-sm text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-sm">
                             <i className="fas fa-plus mr-2"></i> Tambah Foto
                         </Link>
                     </div>
@@ -34,13 +34,13 @@ export default function Index({ galleries }) {
                         {dataList && dataList.length > 0 ? dataList.map((item) => (
                             <div key={item.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm group hover:shadow-md transition-all">
                                 <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-900">
-                                    <img src={`/${item.image}`} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    <img src={item.image.startsWith('http') ? item.image : `/${item.image}`} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <Link href={route('admin.galleries.edit', item.id)} title="Edit Gambar" className="w-8 h-8 rounded-lg bg-white/90 text-indigo-600 flex items-center justify-center shadow hover:bg-white hover:scale-105 transition-all">
+                                    <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <Link href={route('admin.galleries.edit', item.id)} title="Edit Gambar" className="w-8 h-8 rounded-xl bg-white/90 backdrop-blur-sm text-indigo-600 flex items-center justify-center shadow hover:bg-white hover:scale-105 transition-all">
                                             <i className="fas fa-edit"></i>
                                         </Link>
-                                        <button onClick={() => handleDelete(item.id)} title="Hapus Gambar" className="w-8 h-8 rounded-lg bg-white/90 text-red-600 flex items-center justify-center shadow hover:bg-white hover:scale-105 transition-all">
+                                        <button onClick={() => handleDelete(item.id)} title="Hapus Gambar" className="w-8 h-8 rounded-xl bg-white/90 backdrop-blur-sm text-red-600 flex items-center justify-center shadow hover:bg-white hover:scale-105 transition-all">
                                             <i className="fas fa-trash-alt"></i>
                                         </button>
                                     </div>

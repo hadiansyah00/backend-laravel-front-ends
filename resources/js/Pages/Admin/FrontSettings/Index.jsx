@@ -9,20 +9,55 @@ export default function Index({ settings }) {
         return settings[key]?.value || defaultVal;
     };
 
-    const { data, setData, post, processing, errors } = useForm({
+    // Parse JSON settings safely
+    const parseJsonSetting = (key, defaultVal = []) => {
+        try {
+            const val = settings[key]?.value;
+            if (!val) return defaultVal;
+            return typeof val === 'string' ? JSON.parse(val) : val;
+        } catch {
+            return defaultVal;
+        }
+    };
+
+    // Initialize footer links from DB
+    const [footerLinks, setFooterLinks] = useState(() => {
+        const parsed = parseJsonSetting('footer_links', []);
+        // Ensure structure: [{ title: '', links: [{ text: '', url: '' }] }]
+        if (parsed.length === 0) {
+            return [{ title: 'Menu', links: [{ text: '', url: '' }] }];
+        }
+        return parsed;
+    });
+
+    // Initialize social links from DB
+    const [socialLinks, setSocialLinks] = useState(() => {
+        const parsed = parseJsonSetting('social_links', []);
+        if (parsed.length === 0) {
+            return [{ name: '', url: '', icon: 'fab fa-facebook' }];
+        }
+        return parsed;
+    });
+
+    const { data, setData, post, processing } = useForm({
         site_name: getSetting('site_name', 'STIKes Bogor Husada'),
         site_description: getSetting('site_description', ''),
         contact_email: getSetting('contact_email', ''),
+        contact_email_link: getSetting('contact_email_link', ''),
         contact_phone: getSetting('contact_phone', ''),
+        contact_phone_link: getSetting('contact_phone_link', ''),
         contact_address: getSetting('contact_address', ''),
+        copyright_text: getSetting('copyright_text', `© ${new Date().getFullYear()} STIKes Bogor Husada. All rights reserved.`),
         social_facebook: getSetting('social_facebook', ''),
         social_instagram: getSetting('social_instagram', ''),
         social_youtube: getSetting('social_youtube', ''),
         social_twitter: getSetting('social_twitter', ''),
         social_tiktok: getSetting('social_tiktok', ''),
         google_analytics_id: getSetting('google_analytics_id', ''),
-
-        // File inputs mapped to null initially (only sent if changed)
+        // JSON fields will be stringified on submit
+        footer_links: '',
+        social_links: '',
+        // File inputs
         site_logo: null,
         site_favicon: null,
         og_default_image: null,
@@ -30,20 +65,90 @@ export default function Index({ settings }) {
 
     const [activeTab, setActiveTab] = useState('branding');
 
+    // =================== Footer Links Handlers ===================
+    const addFooterGroup = () => {
+        setFooterLinks([...footerLinks, { title: '', links: [{ text: '', url: '' }] }]);
+    };
+    const removeFooterGroup = (groupIdx) => {
+        setFooterLinks(footerLinks.filter((_, i) => i !== groupIdx));
+    };
+    const updateFooterGroupTitle = (groupIdx, title) => {
+        const updated = [...footerLinks];
+        updated[groupIdx].title = title;
+        setFooterLinks(updated);
+    };
+    const addFooterLink = (groupIdx) => {
+        const updated = [...footerLinks];
+        updated[groupIdx].links.push({ text: '', url: '' });
+        setFooterLinks(updated);
+    };
+    const removeFooterLink = (groupIdx, linkIdx) => {
+        const updated = [...footerLinks];
+        updated[groupIdx].links = updated[groupIdx].links.filter((_, i) => i !== linkIdx);
+        setFooterLinks(updated);
+    };
+    const updateFooterLink = (groupIdx, linkIdx, field, value) => {
+        const updated = [...footerLinks];
+        updated[groupIdx].links[linkIdx][field] = value;
+        setFooterLinks(updated);
+    };
+
+    // =================== Social Links Handlers ===================
+    const socialIconOptions = [
+        { value: 'fab fa-facebook', label: 'Facebook', color: 'text-blue-600' },
+        { value: 'fab fa-instagram', label: 'Instagram', color: 'text-pink-500' },
+        { value: 'fab fa-youtube', label: 'YouTube', color: 'text-red-500' },
+        { value: 'fab fa-twitter', label: 'Twitter / X', color: 'text-sky-500' },
+        { value: 'fab fa-tiktok', label: 'TikTok', color: 'text-gray-900 dark:text-white' },
+        { value: 'fab fa-linkedin', label: 'LinkedIn', color: 'text-blue-700' },
+        { value: 'fab fa-whatsapp', label: 'WhatsApp', color: 'text-green-500' },
+        { value: 'fab fa-telegram', label: 'Telegram', color: 'text-sky-400' },
+    ];
+    const addSocialLink = () => {
+        setSocialLinks([...socialLinks, { name: '', url: '', icon: 'fab fa-facebook' }]);
+    };
+    const removeSocialLink = (idx) => {
+        setSocialLinks(socialLinks.filter((_, i) => i !== idx));
+    };
+    const updateSocialLink = (idx, field, value) => {
+        const updated = [...socialLinks];
+        updated[idx][field] = value;
+        // Auto-set name from icon selection
+        if (field === 'icon') {
+            const found = socialIconOptions.find(o => o.value === value);
+            if (found) updated[idx].name = found.label;
+        }
+        setSocialLinks(updated);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // FrontSettingController@update expects a POST with file uploads (so we use POST intentionally)
+        // Stringify JSON fields before sending
+        data.footer_links = JSON.stringify(footerLinks);
+        data.social_links = JSON.stringify(socialLinks);
+
         post(route('admin.settings.update'), {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Pengaturan Global berhasil disimpan!');
+                toast.success('Pengaturan berhasil disimpan!');
             },
             onError: () => {
-                toast.error('Gagal menyimpan pengaturan. Silakan periksa form.');
+                toast.error('Gagal menyimpan. Silakan periksa form.');
             }
         });
     };
+
+    // Common input class
+    const inputClass = "w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition-colors";
+
+    const tabs = [
+        { id: 'branding', label: 'Branding & Logo', icon: 'fas fa-paint-brush' },
+        { id: 'contact', label: 'Info Kontak', icon: 'fas fa-address-book' },
+        { id: 'footer', label: 'Footer Links', icon: 'fas fa-link' },
+        { id: 'social', label: 'Media Sosial', icon: 'fab fa-instagram' },
+        { id: 'seo', label: 'SEO & Analytics', icon: 'fas fa-search' },
+    ];
 
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Pengaturan Front & SEO Global</h2>}>
@@ -51,52 +156,40 @@ export default function Index({ settings }) {
 
             <div className="max-w-7xl mx-auto py-6">
                 <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    {/* Header */}
                     <div className="p-6 border-b border-gray-100 dark:border-gray-800">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                             Konfigurasi Website Utama
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">Atur identitas utama, kontak footer, dan metadata SEO dasar untuk seluruh halaman.</p>
+                        <p className="text-sm text-gray-500 mt-1">Atur identitas, kontak, navigasi footer, metadata SEO, dan social media links untuk seluruh halaman.</p>
                     </div>
 
+                    {/* Tab Navigation */}
                     <div className="border-b border-gray-200 dark:border-gray-800 flex overflow-x-auto hide-scrollbar">
                         <nav className="flex -mb-px px-6 min-w-max">
-                            <button
-                                onClick={() => setActiveTab('branding')}
-                                className={`whitespace-nowrap pb-4 px-4 pt-4 border-b-2 font-medium text-sm transition-colors ${activeTab === 'branding' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
-                            >
-                                <i className="fas fa-paint-brush mr-2"></i> Branding & Logo
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('contact')}
-                                className={`whitespace-nowrap pb-4 px-4 pt-4 border-b-2 font-medium text-sm transition-colors ${activeTab === 'contact' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
-                            >
-                                <i className="fas fa-address-book mr-2"></i> Info Kontak & Footer
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('social')}
-                                className={`whitespace-nowrap pb-4 px-4 pt-4 border-b-2 font-medium text-sm transition-colors ${activeTab === 'social' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
-                            >
-                                <i className="fab fa-instagram mr-2"></i> Media Sosial
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('seo')}
-                                className={`whitespace-nowrap pb-4 px-4 pt-4 border-b-2 font-medium text-sm transition-colors ${activeTab === 'seo' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
-                            >
-                                <i className="fas fa-search mr-2"></i> Global SEO & Analytics
-                            </button>
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab.id}
+                                    type="button"
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`whitespace-nowrap pb-4 px-4 pt-4 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                                >
+                                    <i className={`${tab.icon} mr-2`}></i> {tab.label}
+                                </button>
+                            ))}
                         </nav>
                     </div>
 
                     <form onSubmit={handleSubmit} className="p-6 space-y-8">
 
-                        {/* Tab 1: Branding */}
+                        {/* =================== Tab 1: Branding =================== */}
                         {activeTab === 'branding' && (
                             <div className="space-y-6 animate-fade-in">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Situs / Institusi</label>
                                     <input
                                         type="text"
-                                        className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        className={inputClass}
                                         value={data.site_name}
                                         onChange={e => setData('site_name', e.target.value)}
                                         placeholder="STIKes Bogor Husada"
@@ -138,104 +231,295 @@ export default function Index({ settings }) {
                             </div>
                         )}
 
-                        {/* Tab 2: Contact Info */}
+                        {/* =================== Tab 2: Contact Info =================== */}
                         {activeTab === 'contact' && (
                             <div className="space-y-6 animate-fade-in">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Resmi</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <i className="fas fa-envelope text-indigo-500 mr-1.5"></i>Email Resmi (Tampil)
+                                        </label>
                                         <input
                                             type="email"
-                                            className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                            className={inputClass}
                                             value={data.contact_email}
                                             onChange={e => setData('contact_email', e.target.value)}
                                             placeholder="info@sbh.ac.id"
                                         />
+                                        <p className="mt-1 text-xs text-gray-400">Teks email yang ditampilkan di footer & kontak.</p>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Telepon / WhatsApp</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <i className="fas fa-at text-indigo-500 mr-1.5"></i>Email Link (href mailto:)
+                                        </label>
                                         <input
                                             type="text"
-                                            className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                            className={inputClass}
+                                            value={data.contact_email_link}
+                                            onChange={e => setData('contact_email_link', e.target.value)}
+                                            placeholder="mailto:info@sbh.ac.id"
+                                        />
+                                        <p className="mt-1 text-xs text-gray-400">Format: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">mailto:email@domain.com</code></p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <i className="fas fa-phone text-green-500 mr-1.5"></i>Nomor Telepon (Tampil)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={inputClass}
                                             value={data.contact_phone}
                                             onChange={e => setData('contact_phone', e.target.value)}
-                                            placeholder="+62 811 2233 4455"
+                                            placeholder="+62 251 8312xxx"
                                         />
+                                        <p className="mt-1 text-xs text-gray-400">Teks nomor yang ditampilkan kepada pengunjung.</p>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <i className="fas fa-phone-alt text-green-500 mr-1.5"></i>Nomor Telepon Link (href tel:)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={inputClass}
+                                            value={data.contact_phone_link}
+                                            onChange={e => setData('contact_phone_link', e.target.value)}
+                                            placeholder="+622518312xxx"
+                                        />
+                                        <p className="mt-1 text-xs text-gray-400">Nomor tanpa spasi untuk link <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">tel:</code></p>
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat Lengkap (Tampil di Footer & Kontak)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-map-marker-alt text-red-500 mr-1.5"></i>Alamat Lengkap
+                                    </label>
                                     <textarea
                                         rows={3}
-                                        className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        className={inputClass}
                                         value={data.contact_address}
                                         onChange={e => setData('contact_address', e.target.value)}
-                                        placeholder="Jl. Sholeh Iskandar No.4, Kedungbadak..."
+                                        placeholder="Jl. Indragiri No. 4, Babakan, Bogor Tim., Kota Bogor, Jawa Barat 16128"
                                     ></textarea>
                                 </div>
+
+                                <hr className="border-gray-200 dark:border-gray-800" />
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="far fa-copyright text-gray-500 mr-1.5"></i>Teks Copyright Footer
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={data.copyright_text}
+                                        onChange={e => setData('copyright_text', e.target.value)}
+                                        placeholder={`© ${new Date().getFullYear()} STIKes Bogor Husada. All rights reserved.`}
+                                    />
+                                    <p className="mt-1 text-xs text-gray-400">Teks yang ditampilkan di bagian paling bawah footer.</p>
+                                </div>
                             </div>
                         )}
 
-                        {/* Tab 3: Social Media */}
-                        {activeTab === 'social' && (
+                        {/* =================== Tab 3: Footer Links =================== */}
+                        {activeTab === 'footer' && (
                             <div className="space-y-6 animate-fade-in">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="flex items-center justify-between">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-instagram text-pink-500 mr-2"></i>Link Instagram</label>
-                                        <input
-                                            type="url"
-                                            className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                            value={data.social_instagram}
-                                            onChange={e => setData('social_instagram', e.target.value)}
-                                            placeholder="https://instagram.com/stikesbogorhusada"
-                                        />
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">Navigasi Footer</h4>
+                                        <p className="text-xs text-gray-500 mt-0.5">Kelola grup link yang akan ditampilkan di footer website. Setiap grup memiliki judul dan daftar link.</p>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-youtube text-red-500 mr-2"></i>Link YouTube</label>
-                                        <input
-                                            type="url"
-                                            className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                            value={data.social_youtube}
-                                            onChange={e => setData('social_youtube', e.target.value)}
-                                            placeholder="https://youtube.com/@stikesbogorhusada"
-                                        />
+                                    <button
+                                        type="button"
+                                        onClick={addFooterGroup}
+                                        className="px-4 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 dark:bg-indigo-900/30 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors flex items-center gap-1.5"
+                                    >
+                                        <i className="fas fa-plus"></i> Tambah Grup
+                                    </button>
+                                </div>
+
+                                {footerLinks.map((group, groupIdx) => (
+                                    <div key={groupIdx} className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-5 space-y-4">
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex-1">
+                                                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Judul Grup #{groupIdx + 1}</label>
+                                                <input
+                                                    type="text"
+                                                    className={inputClass}
+                                                    value={group.title}
+                                                    onChange={e => updateFooterGroupTitle(groupIdx, e.target.value)}
+                                                    placeholder="Contoh: Tentang Kami"
+                                                />
+                                            </div>
+                                            {footerLinks.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeFooterGroup(groupIdx)}
+                                                    className="mt-5 p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                    title="Hapus grup ini"
+                                                >
+                                                    <i className="fas fa-trash-alt"></i>
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-2 pl-4 border-l-2 border-indigo-200 dark:border-indigo-800">
+                                            {group.links?.map((link, linkIdx) => (
+                                                <div key={linkIdx} className="flex items-center gap-3">
+                                                    <input
+                                                        type="text"
+                                                        className={`${inputClass} flex-1`}
+                                                        value={link.text}
+                                                        onChange={e => updateFooterLink(groupIdx, linkIdx, 'text', e.target.value)}
+                                                        placeholder="Teks link (misal: Visi & Misi)"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        className={`${inputClass} flex-1 font-mono text-xs`}
+                                                        value={link.url}
+                                                        onChange={e => updateFooterLink(groupIdx, linkIdx, 'url', e.target.value)}
+                                                        placeholder="/tentang/visi-misi"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeFooterLink(groupIdx, linkIdx)}
+                                                        className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                                                        title="Hapus link"
+                                                    >
+                                                        <i className="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            <button
+                                                type="button"
+                                                onClick={() => addFooterLink(groupIdx)}
+                                                className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:text-indigo-800 transition-colors flex items-center gap-1 mt-2"
+                                            >
+                                                <i className="fas fa-plus text-[10px]"></i> Tambah Link
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-facebook text-blue-600 mr-2"></i>Link Facebook</label>
-                                        <input
-                                            type="url"
-                                            className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                            value={data.social_facebook}
-                                            onChange={e => setData('social_facebook', e.target.value)}
-                                            placeholder="https://facebook.com/..."
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-tiktok text-gray-900 dark:text-white mr-2"></i>Link TikTok</label>
-                                        <input
-                                            type="url"
-                                            className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                            value={data.social_tiktok}
-                                            onChange={e => setData('social_tiktok', e.target.value)}
-                                            placeholder="https://tiktok.com/@..."
-                                        />
+                                ))}
+
+                                {/* Preview */}
+                                <div className="bg-gray-900 text-white rounded-xl p-6">
+                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4"><i className="fas fa-eye mr-1.5"></i>Preview Footer Links</p>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                        {footerLinks.map((group, idx) => (
+                                            <div key={idx}>
+                                                <h5 className="font-semibold uppercase text-sm text-white">{group.title || 'Judul Grup'}</h5>
+                                                <ul className="mt-2 space-y-1 text-xs text-gray-400">
+                                                    {group.links?.map((link, i) => (
+                                                        <li key={i}>{link.text || 'Link tanpa teks'}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* Tab 4: Global SEO & Analytics */}
+                        {/* =================== Tab 4: Social Media =================== */}
+                        {activeTab === 'social' && (
+                            <div className="space-y-8 animate-fade-in">
+                                {/* Individual Social Links for SEO (meta tags) */}
+                                <div>
+                                    <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1">Link Media Sosial (SEO Meta)</h4>
+                                    <p className="text-xs text-gray-500 mb-4">Link ini digunakan sebagai referensi di meta tag & structured data untuk SEO.</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-instagram text-pink-500 mr-2"></i>Instagram</label>
+                                            <input type="url" className={inputClass} value={data.social_instagram} onChange={e => setData('social_instagram', e.target.value)} placeholder="https://instagram.com/stikesbogorhusada" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-youtube text-red-500 mr-2"></i>YouTube</label>
+                                            <input type="url" className={inputClass} value={data.social_youtube} onChange={e => setData('social_youtube', e.target.value)} placeholder="https://youtube.com/@stikesbogorhusada" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-facebook text-blue-600 mr-2"></i>Facebook</label>
+                                            <input type="url" className={inputClass} value={data.social_facebook} onChange={e => setData('social_facebook', e.target.value)} placeholder="https://facebook.com/..." />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-tiktok text-gray-900 dark:text-white mr-2"></i>TikTok</label>
+                                            <input type="url" className={inputClass} value={data.social_tiktok} onChange={e => setData('social_tiktok', e.target.value)} placeholder="https://tiktok.com/@..." />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><i className="fab fa-twitter text-sky-500 mr-2"></i>Twitter / X</label>
+                                            <input type="url" className={inputClass} value={data.social_twitter} onChange={e => setData('social_twitter', e.target.value)} placeholder="https://twitter.com/..." />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr className="border-gray-200 dark:border-gray-800" />
+
+                                {/* Dynamic Social Links for Footer Display */}
+                                <div>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white">Ikon Sosial Media (Footer)</h4>
+                                            <p className="text-xs text-gray-500 mt-0.5">Kelola ikon sosial media yang tampil di baris bawah footer. Data ini tersimpan sebagai JSON di <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">social_links</code>.</p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={addSocialLink}
+                                            className="px-4 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 dark:bg-indigo-900/30 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors flex items-center gap-1.5"
+                                        >
+                                            <i className="fas fa-plus"></i> Tambah
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {socialLinks.map((social, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3">
+                                                {/* Icon Preview */}
+                                                <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center flex-shrink-0">
+                                                    <i className={`${social.icon} text-lg ${socialIconOptions.find(o => o.value === social.icon)?.color || 'text-gray-400'}`}></i>
+                                                </div>
+                                                <select
+                                                    className="rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white text-sm py-2 w-40 flex-shrink-0"
+                                                    value={social.icon}
+                                                    onChange={e => updateSocialLink(idx, 'icon', e.target.value)}
+                                                >
+                                                    {socialIconOptions.map(opt => (
+                                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                    ))}
+                                                </select>
+                                                <input
+                                                    type="url"
+                                                    className={`${inputClass} flex-1`}
+                                                    value={social.url}
+                                                    onChange={e => updateSocialLink(idx, 'url', e.target.value)}
+                                                    placeholder="https://..."
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeSocialLink(idx)}
+                                                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                    title="Hapus"
+                                                >
+                                                    <i className="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* =================== Tab 5: Global SEO & Analytics =================== */}
                         {activeTab === 'seo' && (
                             <div className="space-y-6 animate-fade-in">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Global Meta Description (Fallback)</label>
                                     <textarea
                                         rows={3}
-                                        className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        className={inputClass}
                                         value={data.site_description}
                                         onChange={e => setData('site_description', e.target.value)}
                                         placeholder="Deskripsi global yang akan digunakan jika halaman tidak memiliki meta deskripsi spesifik."
                                     ></textarea>
+                                    <p className="mt-1 text-xs text-gray-400">Disarankan 150-160 karakter. Saat ini: <span className="font-mono font-bold">{data.site_description.length}</span> karakter.</p>
                                 </div>
 
                                 <div>
@@ -253,7 +537,7 @@ export default function Index({ settings }) {
                                             onChange={e => setData('og_default_image', e.target.files[0])}
                                         />
                                     </div>
-                                    <p className="mt-2 text-xs text-gray-500">Gambar yang akan ditampilkan saat link website di-share di sosial media jika halaman tersebut tidak mempunyai thumbnail khusus.</p>
+                                    <p className="mt-2 text-xs text-gray-500">Gambar yang akan ditampilkan saat link website di-share di sosial media jika halaman tersebut tidak mempunyai thumbnail khusus. Resolusi ideal: 1200x630px.</p>
                                 </div>
 
                                 <hr className="border-gray-200 dark:border-gray-800" />
@@ -262,7 +546,7 @@ export default function Index({ settings }) {
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Google Analytics ID (Opsional)</label>
                                     <input
                                         type="text"
-                                        className="w-full md:w-1/2 rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono"
+                                        className={`${inputClass} md:w-1/2 font-mono`}
                                         value={data.google_analytics_id}
                                         onChange={e => setData('google_analytics_id', e.target.value)}
                                         placeholder="G-XXXXXXXXXX"
@@ -272,6 +556,7 @@ export default function Index({ settings }) {
                             </div>
                         )}
 
+                        {/* Submit Bar */}
                         <div className="pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 rounded-b-2xl bg-gray-50/50 dark:bg-gray-800/30 -mx-6 -mb-6 px-6 py-4">
                             <button
                                 type="submit"
@@ -287,8 +572,8 @@ export default function Index({ settings }) {
             </div>
 
             <style>{`
-                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-                .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+                .animate-fade-in { animation: fadeIn 0.3s ease-out; }
                 .hide-scrollbar::-webkit-scrollbar { display: none; }
                 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>

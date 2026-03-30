@@ -79,7 +79,7 @@ export default function Form({ permission, isEdit }) {
                                     type="text"
                                     value={data.name}
                                     onChange={e => setData('name', e.target.value)}
-                                    className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                    className="w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
                                     placeholder="Contoh: create articles"
                                     required
                                 />
@@ -88,13 +88,13 @@ export default function Form({ permission, isEdit }) {
                             </div>
 
                             <div className="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-gray-100 dark:border-gray-800">
-                                <Link href={route('admin.permissions.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <Link href={route('admin.permissions.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                     Batal
                                 </Link>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                    className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
                                 >
                                     {processing && <i className="fas fa-spinner fa-spin"></i>}
                                     Simpan
@@ -120,7 +120,7 @@ export default function Form({ permission, isEdit }) {
                                                 type="text"
                                                 value={perm.name}
                                                 onChange={e => handleMultiChange(index, e.target.value)}
-                                                className="flex-1 rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
+                                                className="flex-1 rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
                                                 placeholder={`Permission ke-${index + 1} (contoh: view reports)`}
                                                 required
                                             />
@@ -139,13 +139,13 @@ export default function Form({ permission, isEdit }) {
                             </div>
 
                             <div className="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-gray-100 dark:border-gray-800">
-                                <Link href={route('admin.permissions.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <Link href={route('admin.permissions.index')} className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                     Selesai / Kembali
                                 </Link>
                                 <button
                                     type="submit"
                                     disabled={data.permissions.some(p => p.name.trim() === '')}
-                                    className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                    className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center gap-2"
                                 >
                                     <i className="fas fa-save"></i>
                                     Simpan Batch

@@ -30,16 +30,16 @@ class DocumentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:100',
-            'file_path' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240', // Max 10MB
+            'file_path' => 'required|string',
             'is_active' => 'boolean',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
         $validated['user_id'] = auth()->id();
 
-        if ($request->hasFile('file_path')) {
-            $path = $request->file('file_path')->store('documents', 'public');
-            $validated['file_path'] = 'storage/'.$path;
+        if ($request->filled('file_path')) {
+            $parsedPath = parse_url($request->file_path, PHP_URL_PATH);
+            $validated['file_path'] = ltrim($parsedPath, '/');
         }
 
         Document::create($validated);
@@ -60,18 +60,17 @@ class DocumentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:100',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+            'file_path' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
 
-        if ($request->hasFile('file_path')) {
-            if ($document->file_path && str_starts_with($document->file_path, 'storage/')) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $document->file_path));
-            }
-            $path = $request->file('file_path')->store('documents', 'public');
-            $validated['file_path'] = 'storage/'.$path;
+        if ($request->filled('file_path')) {
+            $parsedPath = parse_url($request->file_path, PHP_URL_PATH);
+            $validated['file_path'] = ltrim($parsedPath, '/');
+        } else {
+            $validated['file_path'] = null;
         }
 
         $document->update($validated);

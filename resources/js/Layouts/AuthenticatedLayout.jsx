@@ -102,7 +102,11 @@ export default function AuthenticatedLayout({ header, children }) {
                     </Link>
                     <Link href={route('admin.galleries.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.galleries.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
                         <i className={`fas fa-images w-6 text-center text-lg mr-4 ${route().current('admin.galleries.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
-                        <span>Galeri Foto & Video</span>
+                        <span className="flex-1">Galeri Visual</span>
+                    </Link>
+                    <Link href={route('admin.kerjasamas.index')} className={`flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group ${route().current('admin.kerjasamas.*') ? 'bg-white dark:bg-gray-800/80 shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-700/50 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/30 hover:text-gray-900 dark:hover:text-white'}`}>
+                        <i className={`fas fa-handshake w-6 text-center text-lg mr-4 ${route().current('admin.kerjasamas.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors'}`}></i>
+                        <span className="flex-1">Jaringan Mitra</span>
                     </Link>
 
                     <div className="pt-8 my-2"></div>

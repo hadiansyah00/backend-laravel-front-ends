@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function PengumumanDetail({ pengumuman, recentPengumumans }) {
     // Formatting Helper
@@ -15,6 +15,18 @@ export default function PengumumanDetail({ pengumuman, recentPengumumans }) {
 
     return (
         <MainLayout title={pengumuman ? `${pengumuman.title} | STIKes Bogor Husada` : 'Pengumuman Tidak Ditemukan'}>
+            <Head>
+                <title>{pengumuman ? `${pengumuman.title} | STIKes Bogor Husada` : 'Pengumuman Tidak Ditemukan'}</title>
+                {pengumuman && (
+                    <>
+                        <meta head-key="description" name="description" content={pengumuman.content ? pengumuman.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Pengumuman STIKes Bogor Husada'} />
+                        <meta head-key="og:title" property="og:title" content={pengumuman.title} />
+                        <meta head-key="og:description" property="og:description" content={pengumuman.content ? pengumuman.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Pengumuman STIKes Bogor Husada'} />
+                        <meta head-key="og:type" property="og:type" content="article" />
+                        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/'} />
+                    </>
+                )}
+            </Head>
             {pengumuman ? (
                 <>
                     <section className="pt-32 pb-16 bg-blue-50 dark:bg-gray-900 border-b border-blue-100 dark:border-gray-800">
