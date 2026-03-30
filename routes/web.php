@@ -176,7 +176,7 @@ Route::get('/event/{slug}', [PublicInfoController::class, 'eventShow'])->name('f
 
 Route::get('/dokumen', [PublicInfoController::class, 'dokumen'])->name('front.dokumen');
 Route::get('/galeri', [PublicInfoController::class, 'galeri'])->name('front.galeri');
-
+Route::get('/kontak', fn() => \Inertia\Inertia::render('Templates/Kontak'))->name('front.kontak');
 
 // TENTANG KAMI ROUTES
 Route::name('front.tentang.')->prefix('tentang')->group(function () {
@@ -228,4 +228,4 @@ require __DIR__ . '/auth.php';
 
 // Original fallback to Modular Pages Builder
 // Biarkan ini di-comment atau di bypass sementara untuk review
-Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
+// Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');

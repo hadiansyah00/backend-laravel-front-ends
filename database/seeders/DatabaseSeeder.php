@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             // AlumniSeeder::class,
             // DosenSeeder::class,
             // KalenderSeeder::class,
-            FasilitasSeeder::class,
+            // FasilitasSeeder::class,
             // CategorySeeder::class,
             // TagsSeeder::class,
             // ArticleSeeder::class,
