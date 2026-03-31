@@ -6,13 +6,8 @@ use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\FrontPages\CompanyProfileVideoController;
 use App\Http\Controllers\FrontPages\FrontSettingController;
-use App\Http\Controllers\FrontPages\SliderController;
-use App\Http\Controllers\FrontPages\StatisticController;
-use App\Http\Controllers\FrontPages\TestimonialController;
 use App\Http\Controllers\FrontPagesController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PendaftaranEmailController;
@@ -33,10 +28,6 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/berita/{slug}', [FrontPagesController::class, 'beritaDetail'])->name('berita.detail');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
 
-Route::get('/artikel', [BeritaController::class, 'index'])->name('berita.index');
-Route::get('/artikel/{article:slug}', [BeritaController::class, 'show'])->name('berita.show');
-Route::get('/berita-dan-artikel/filter', [BeritaController::class, 'filter'])->name('berita.filter');
-
 Route::get('/pendidikan/{slug}', [PagesController::class, 'show'])->name('pendidikan.show');
 
 // Pendaftaran Email (Public Form)
@@ -44,14 +35,6 @@ Route::prefix('pendaftaran-email')->group(function () {
     Route::get('/create', [PendaftaranEmailController::class, 'create'])->name('pendaftaran-email.create');
     Route::post('/', [PendaftaranEmailController::class, 'store'])->name('pendaftaran-email.store');
 });
-
-// ================== PLACHOLDER ROUTES (Dari Menu Seeder) ================== //
-Route::get('/pengumuman', fn() => Inertia::render('Pengumuman'))->name('pengumuman.index');
-Route::get('/event', fn() => Inertia::render('Event'))->name('event.index');
-Route::get('/galeri', fn() => Inertia::render('Galeri'))->name('galeri.index');
-Route::get('/dokumen', fn() => Inertia::render('Dokumen'))->name('dokumen.index');
-Route::get('/dosen', fn() => Inertia::render('Dosen'))->name('dosen.index');
-Route::get('/alumni', fn() => Inertia::render('Alumni'))->name('alumni.index');
 
 // ================== AUTH ================== //
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -169,7 +152,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
 // Semua halaman di bawah ini menggunakan route /{slug} di bagian paling bawah.
 
 // INFORMASI ROUTES
-// (Route /berita dan /berita/{slug} sudah dihandle oleh BeritaController di atas)
+// (Route /artikel sudah dihandle oleh PublicInfoController di bawah)
 Route::get('/pengumuman', [PublicInfoController::class, 'pengumuman'])->name('front.pengumuman');
 Route::get('/pengumuman/{slug}', [PublicInfoController::class, 'pengumumanShow'])->name('front.pengumuman.show');
 
@@ -212,22 +195,13 @@ Route::get('/unit-penjaminan-mutu-internal', [PublicInfoController::class, 'upmi
 Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
 Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');
 
-
 // ================== CATCH ALL (WAJIB PALING BAWAH) ================== //
 
 // Untuk halaman program studi / dynamic
 Route::get('/prodi/{slug}', [PublicInfoController::class, 'showProgramStudi'])
     ->name('front.prodi.show');
 
-// Untuk halaman CMS (Pages Builder)
-// Route::get('/page/{slug}', [PagesController::class, 'show'])
-//     ->name('front.pages.show');
-
-Route::get('/artikel', [PublicInfoController::class, 'berita'])->name('frontend.berita.index');
-Route::get('/artikel/{slug}', [PublicInfoController::class, 'beritaShow'])->name('frontend.berita.show');
+// Untuk halaman CMS (Pages Builder) — nonaktif sementara
+// Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
 
 require __DIR__ . '/auth.php';
-
-// Original fallback to Modular Pages Builder
-// Biarkan ini di-comment atau di bypass sementara untuk review
-// Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');

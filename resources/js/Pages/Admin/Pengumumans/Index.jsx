@@ -55,7 +55,7 @@ export default function Index({ pengumumans }) {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {item.attachment ? (
-                                                <a href={`/${item.attachment}`} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400">
+                                                <a href={item.attachment.startsWith('http') ? item.attachment : (item.attachment.startsWith('/') ? item.attachment : `/storage/${item.attachment.replace(/^storage\//, '')}`)} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400">
                                                     <i className="fas fa-paperclip mr-1.5"></i> Lihat File
                                                 </a>
                                             ) : (

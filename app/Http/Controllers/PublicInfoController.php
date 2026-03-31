@@ -342,9 +342,12 @@ class PublicInfoController extends Controller
      */
     public function kerjasama(Request $request)
     {
-        // Kerjasama belum memiliki model sendiri, tampilkan halaman statis
+        $kerjasamas = \App\Models\Kerjasama::where('is_active', true)
+            ->latest()
+            ->get();
+
         return Inertia::render('Frontend/Kerjasama', [
-            'kerjasamas' => collect(),
+            'kerjasamas' => $kerjasamas,
         ]);
     }
     // ================== BERITA & ARTIKEL ==================

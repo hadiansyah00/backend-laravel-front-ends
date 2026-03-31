@@ -50,7 +50,7 @@ export default function Sejarah({ data }) {
                         </span>
                         <div className="w-20 h-1.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full mx-auto"></div>
                     </div>
-                    <div className="prose prose-lg prose-orange text-gray-700 max-w-none whitespace-pre-wrap leading-relaxed" 
+                    <div className="prose prose-lg prose-orange text-gray-700 max-w-none leading-relaxed" 
                          dangerouslySetInnerHTML={{ __html: textContent }} />
                 </div>
             </div>

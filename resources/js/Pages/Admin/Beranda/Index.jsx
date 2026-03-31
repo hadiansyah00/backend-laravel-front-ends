@@ -215,9 +215,6 @@ export default function Index({ data, types }) {
         // Eksekusi request post
         post(route("admin.beranda.store"), {
             preserveScroll: true,
-            onSuccess: () => {
-                toast.success(`Berhasil menyimpan data ${types[activeTab]}`);
-            },
             onError: (err) => {
                 toast.error("Gagal menyimpan data. Cek kembali form Anda.");
                 console.error("Error validasi:", err);

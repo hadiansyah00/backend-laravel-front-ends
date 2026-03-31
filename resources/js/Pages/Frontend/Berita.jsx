@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MainLayout from "@/Layouts/MainLayout";
-import { Link, router } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 
 export default function Berita({ articles, categories, filters = {} }) {
     // State untuk form pencarian

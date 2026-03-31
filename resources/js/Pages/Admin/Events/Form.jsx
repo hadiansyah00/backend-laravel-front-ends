@@ -126,11 +126,11 @@ export default function Form({ event }) {
                                 <div className="flex items-center justify-between p-3 mb-4 border bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800 rounded-xl">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-800 border border-indigo-200 dark:border-indigo-700">
-                                            <img src={event.image.startsWith('http') ? event.image : `/${event.image}`} alt="Current Poster" className="w-full h-full object-cover" />
+                                            <img src={event.image.startsWith('http') ? event.image : (event.image.startsWith('/') ? event.image : `/storage/${event.image.replace(/^storage\//, '')}`)} alt="Current Poster" className="w-full h-full object-cover" />
                                         </div>
                                         <div>
                                             <p className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1">Ada poster terlampir saat ini</p>
-                                            <a href={event.image.startsWith('http') ? event.image : `/${event.image}`} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Poster Penuh</a>
+                                            <a href={event.image.startsWith('http') ? event.image : (event.image.startsWith('/') ? event.image : `/storage/${event.image.replace(/^storage\//, '')}`)} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Poster Penuh</a>
                                         </div>
                                     </div>
                                     <p className="text-xs text-gray-500 hidden sm:block">Abaikan jika tidak ingin mengubah</p>

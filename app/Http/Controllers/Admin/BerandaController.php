@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Beranda;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -53,6 +54,17 @@ class BerandaController extends Controller
 
             // Tampilkan nama tipe yang ramah dibaca
             $typeName = Beranda::TYPES[$validated['type']] ?? 'Bagian';
+
+            // 3. Hapus cache terkait agar perubahan langsung terlihat di frontend
+            Cache::forget('beranda_data');
+            Cache::forget('berita_terbaru_home');
+            Cache::forget('menus_active');
+            Cache::forget('program_studis_active');
+            Cache::forget('pengumuman_terbaru');
+            Cache::forget('events_terbaru');
+            Cache::forget('galleries_terbaru');
+            Cache::forget('alumnis_home');
+            Cache::forget('kerjasamas_home');
 
             return redirect()->back()->with('success', "Pengaturan {$typeName} berhasil disimpan.");
 
