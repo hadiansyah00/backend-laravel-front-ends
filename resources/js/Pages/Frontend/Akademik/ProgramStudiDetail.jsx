@@ -1,7 +1,6 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import Hero from '@/Sections/Hero';
-
+import { Head, Link } from '@inertiajs/react'; // <-- FIX: Tambahkan Link di sini
 export default function ProgramStudiDetail({ programData }) {
     if (!programData) {
         return (

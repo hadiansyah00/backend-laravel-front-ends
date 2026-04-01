@@ -1,8 +1,8 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import DynamicSectionsRenderer from '@/Components/Sections/DynamicSectionsRenderer';
-import Hero from '@/Sections/Hero';
-import { Head } from '@inertiajs/react';
+// import Hero from '@/Sections/Hero'; <-- Boleh dihapus karena sudah pakai Hero custom
+import { Head, Link } from '@inertiajs/react'; // <-- FIX: Tambahkan Link di sini
 
 export default function UPPM({ fasilitasData }) {
     // 1. Ensure data is always an object safely

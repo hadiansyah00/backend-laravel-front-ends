@@ -1,8 +1,6 @@
 import React from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import Hero from '@/Sections/Hero';
-import { Head } from '@inertiajs/react';
-
+import { Head, Link } from '@inertiajs/react'; // <-- FIX: Tambahkan Link di sini
 export default function Kalender({ kalenders = {} }) {
     const ganjil = kalenders.Ganjil || [];
     const genap = kalenders.Genap || [];
