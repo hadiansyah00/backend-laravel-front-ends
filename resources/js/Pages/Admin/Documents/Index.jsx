@@ -62,7 +62,7 @@ export default function Index({ documents }) {
                                                 <div>
                                                     <div className="text-sm font-bold text-gray-900 dark:text-white line-clamp-1">
                                                         {item.file_path ? (
-                                                            <a href={`/${item.file_path}`} target="_blank" rel="noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                                            <a href={item.file_path.startsWith('http') ? item.file_path : (item.file_path.startsWith('/') ? item.file_path : `/${item.file_path}`)} target="_blank" rel="noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                                 {item.title}
                                                             </a>
                                                         ) : (

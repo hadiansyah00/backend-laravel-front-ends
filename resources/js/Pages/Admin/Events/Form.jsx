@@ -122,44 +122,45 @@ export default function Form({ event }) {
                         <div>
                             <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Poster Kegiatan / Gambar Banner</label>
 
-                            {isEdit && event?.image && (
-                                <div className="flex items-center justify-between p-3 mb-4 border bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800 rounded-xl">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-800 border border-indigo-200 dark:border-indigo-700">
-                                            <img src={event.image.startsWith('http') ? event.image : (event.image.startsWith('/') ? event.image : `/storage/${event.image.replace(/^storage\//, '')}`)} alt="Current Poster" className="w-full h-full object-cover" />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1">Ada poster terlampir saat ini</p>
-                                            <a href={event.image.startsWith('http') ? event.image : (event.image.startsWith('/') ? event.image : `/storage/${event.image.replace(/^storage\//, '')}`)} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Poster Penuh</a>
+                            <div className="flex flex-col gap-4">
+                                {/* Preview Selected Image */}
+                                {data.image && (
+                                    <div className="relative group overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-indigo-200 dark:border-indigo-700 border-dashed rounded-2xl w-full max-w-sm aspect-video">
+                                        <img 
+                                            src={data.image.startsWith('http') ? data.image : (data.image.startsWith('/') ? data.image : `/${data.image}`)} 
+                                            alt="Preview Poster" 
+                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setData('image', '')} 
+                                                className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transform hover:scale-105 transition-all flex items-center shadow-lg"
+                                            >
+                                                <i className="fas fa-trash-alt mr-2"></i> Hapus Poster
+                                            </button>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-gray-500 hidden sm:block">Abaikan jika tidak ingin mengubah</p>
-                                </div>
-                            )}
+                                )}
 
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="text"
-                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
-                                    placeholder="Pilih poster kegiatan dari media library..."
-                                    value={data.image || ''}
-                                    readOnly
-                                />
-                                <MediaPicker
-                                    onSelect={(url) => setData("image", url)}
-                                    trigger={
-                                        <button
-                                            type="button"
-                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
-                                        >
-                                            <i className="fas fa-folder-open"></i>{" "}
-                                            Pilih File
-                                        </button>
-                                    }
-                                />
+                                {/* Trigger MediaPicker */}
+                                {!data.image && (
+                                    <MediaPicker
+                                        onSelect={(url) => setData("image", url)}
+                                        trigger={
+                                            <div className="w-full max-w-sm aspect-video border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl cursor-pointer bg-gray-50 hover:bg-indigo-50 dark:bg-gray-900 dark:hover:bg-indigo-900/20 transition-all flex flex-col items-center justify-center group overflow-hidden">
+                                                <div className="w-16 h-16 mb-3 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                                                    <i className="fas fa-image text-2xl"></i>
+                                                </div>
+                                                <span className="font-bold text-gray-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Pilih Poster Kegiatan</span>
+                                                <span className="text-xs text-gray-500 text-center max-w-[80%]">Klik di sini untuk membuka Media Library dan merekatkan gambar dari koleksi Anda.</span>
+                                            </div>
+                                        }
+                                    />
+                                )}
                             </div>
-                            <p className="mt-2 text-xs text-gray-500">Pilih gambar poster kegiatan dari Media Library.</p>
-                            {errors.image && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.image}</p>}
+                            
+                            {errors.image && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium"><i className="fas fa-exclamation-circle mr-1"></i> {errors.image}</p>}
                         </div>
 
                         {/* Status / Is Active */}
