@@ -25,7 +25,6 @@ use Inertia\Inertia;
 Route::get('/', [FrontPagesController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
-Route::get('/berita/{slug}', [FrontPagesController::class, 'beritaDetail'])->name('berita.detail');
 Route::get('/wilayah-organisasi', [FrontPagesController::class, 'wilayahOrganisasi'])->name('wilayah');
 
 Route::get('/pendidikan/{slug}', [PagesController::class, 'show'])->name('pendidikan.show');
@@ -141,8 +140,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
         Route::post('settings', [FrontSettingController::class, 'update'])->name('settings.update');
 
         // Meta (SEO) Settings
-        Route::get('seo/{type}/{id}', [MetaController::class, 'edit'])->name('seo.edit');
-        Route::put('seo/{type}/{id}', [MetaController::class, 'update'])->name('seo.update');
+        // Route::get('seo/{type}/{id}', [MetaController::class, 'edit'])->name('seo.edit'); // Removed duplicate
+        // Route::put('seo/{type}/{id}', [MetaController::class, 'update'])->name('seo.update'); // Removed duplicate
     });
 });
 
@@ -180,9 +179,9 @@ Route::get('/kerjasama', [PublicInfoController::class, 'kerjasama'])->name('fron
 // DOSEN ROUTE
 Route::get('/dosen', [PublicInfoController::class, 'dosen'])->name('front.dosen');
 // ================== AKADEMIK & UNIT LEMBAGA ROUTES ================== //
-Route::get('/farmasi', [PublicInfoController::class, 'farmasi'])->name('front.farmasi');
-Route::get('/gizi', [PublicInfoController::class, 'gizi'])->name('front.gizi');
-Route::get('/kebidanan', [PublicInfoController::class, 'kebidanan'])->name('front.kebidanan');
+Route::get('/s1-farmasi', [PublicInfoController::class, 'farmasi'])->name('front.farmasi');
+Route::get('/s1-gizi', [PublicInfoController::class, 'gizi'])->name('front.gizi');
+Route::get('/d3-kebidanan', [PublicInfoController::class, 'kebidanan'])->name('front.kebidanan');
 Route::get('/kalender-akademik', [PublicInfoController::class, 'kalenderAkademik'])->name('front.kalender');
 
 Route::get('/laboratorium', [PublicInfoController::class, 'laboratorium'])->name('front.laboratorium');

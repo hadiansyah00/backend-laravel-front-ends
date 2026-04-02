@@ -59,14 +59,10 @@ export default function Navbar() {
     };
 
     const socials = [
-        { icon: 'fab fa-instagram', url: 'https://www.instagram.com/stikesbogorhusada/' },
-        { icon: 'fab fa-tiktok', url: 'https://www.tiktok.com/@stikesbogorhusada' },
-        { icon: 'fab fa-facebook-f', url: 'https://www.facebook.com/stikesboda' },
-        { icon: 'fab fa-youtube', url: 'https://www.youtube.com/channel/UCLVS17eZrNYWgiAuMCYkkXA' },
-    ];
-
-    const contacts = [
-        { icon: 'fab fa-whatsapp', text: '0811-1011-1560', url: 'https://wa.me/6281110111560' },
+        { icon: 'fab fa-instagram', url: 'https://www.instagram.com/stikesbogorhusada/', label: 'Instagram' },
+        { icon: 'fab fa-tiktok', url: 'https://www.tiktok.com/@stikesbogorhusada', label: 'TikTok' },
+        { icon: 'fab fa-facebook-f', url: 'https://www.facebook.com/stikesboda', label: 'Facebook' },
+        { icon: 'fab fa-youtube', url: 'https://www.youtube.com/channel/UCLVS17eZrNYWgiAuMCYkkXA', label: 'YouTube' },
     ];
 
     const getLogoUrl = () => {
@@ -78,30 +74,54 @@ export default function Navbar() {
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${!atTop ? '-translate-y-10' : ''}`}>
-            {/* Top Bar - Lebih elegan dengan warna gradien lembut */}
-            <div className="w-full text-white bg-gradient-to-r from-orange-700 to-orange-600 shadow-sm relative z-50">
-                <div className="container flex flex-col items-center justify-between gap-2 px-6 py-2 mx-auto md:flex-row md:gap-0 max-w-7xl">
-                    <div className="flex items-center space-x-6 text-sm">
+            {/* Top Bar - Sleek & Modern */}
+            <div className="w-full text-white bg-gradient-to-r from-orange-800 via-orange-700 to-orange-600 relative z-50 overflow-hidden">
+                {/* Subtle animated shimmer */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_6s_ease-in-out_infinite]" style={{ backgroundSize: '200% 100%' }}></div>
+
+                <div className="container relative flex items-center justify-between px-6 py-2 mx-auto max-w-7xl">
+                    {/* Left: Social Icons */}
+                    <div className="hidden md:flex items-center gap-1">
                         {socials.map((social, idx) => (
-                            <a key={idx} href={social.url} target="_blank" rel="noopener noreferrer" className="transition-all duration-300 opacity-80 hover:opacity-100 hover:scale-125 hover:text-orange-100">
-                                <i className={`${social.icon}`}></i>
+                            <a
+                                key={idx}
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={social.label}
+                                className="w-7 h-7 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/15 transition-all duration-300 text-xs"
+                            >
+                                <i className={social.icon}></i>
                             </a>
                         ))}
+                        <span className="w-px h-4 bg-white/20 mx-2"></span>
+                        <span className="text-[11px] text-white/60 font-medium tracking-wide">
+                            <i className="fas fa-envelope mr-1.5 text-[10px]"></i>info@sbh.ac.id
+                        </span>
                     </div>
 
-                    <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
-                        <div className="flex items-center space-x-6">
-                            {contacts.map((contact, idx) => (
-                                <a key={idx} href={contact.url} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-xs font-semibold tracking-wide transition-opacity opacity-90 hover:opacity-100 hover:underline underline-offset-4">
-                                    <i className={`${contact.icon} text-sm`}></i>
-                                    <span className="hidden sm:inline">{contact.text}</span>
-                                </a>
-                            ))}
+                    {/* Center: Running Text (mobile shows this) */}
+                    <div className="flex-1 md:flex-initial overflow-hidden mx-4">
+                        <div className="flex items-center gap-2 text-[11px] font-medium text-white/80 whitespace-nowrap animate-[marquee_25s_linear_infinite] md:animate-none">
+                            <i className="fas fa-graduation-cap text-orange-300 text-[10px]"></i>
+                            <span>Selamat Datang di Website Resmi STIKes Bogor Husada</span>
+                            <span className="hidden md:inline text-white/40 mx-2">•</span>
+                            <span className="hidden md:inline">Kampus Unggulan Bidang Kesehatan di Kota Bogor</span>
                         </div>
-                        <a href="https://pmb.sbh.ac.id/" target="_blank" rel="noreferrer" className="px-5 py-1.5 text-xs font-extrabold tracking-wide text-orange-600 uppercase transition-all duration-300 bg-white shadow-md rounded-full hover:bg-orange-50 hover:shadow-lg hover:scale-105 active:scale-95">
-                            Pendaftaran PMB
-                        </a>
                     </div>
+
+                    {/* Right: PMB CTA */}
+                    <a
+                        href="https://pmb.sbh.ac.id/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="relative group flex items-center gap-2 px-4 py-1.5 text-[11px] font-extrabold tracking-wider text-orange-700 uppercase bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 shrink-0"
+                    >
+                        <span className="absolute inset-0 rounded-full bg-gradient-to-r from-orange-200/50 to-yellow-200/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        <i className="fas fa-user-plus relative text-[10px] text-orange-500 group-hover:text-orange-600 transition-colors"></i>
+                        <span className="relative hidden sm:inline">Pendaftaran PMB</span>
+                        <span className="relative sm:hidden">PMB</span>
+                    </a>
                 </div>
             </div>
 

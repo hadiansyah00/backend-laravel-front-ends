@@ -141,7 +141,7 @@ export default function Index({ articles, filters }) {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <a href={`/berita/${item.slug}`} target="_blank" rel="noreferrer" title="Lihat di Web" className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors">
+                                                <a href={`/artikel/${item.slug}`} target="_blank" rel="noreferrer" title="Lihat di Web" className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors">
                                                     <i className="fas fa-external-link-alt"></i>
                                                 </a>
                                                 <Link href={route('admin.seo.edit', { type: 'articles', id: item.id })} title="SEO Meta Data" className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50 transition-colors">

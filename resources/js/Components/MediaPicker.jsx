@@ -55,31 +55,33 @@ export default function MediaPicker({ onSelect, trigger, acceptType = 'all' }) {
     }, [isOpen, search, activeFilter]);
 
     const handleUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
 
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Gagal upload: Maksimal ukuran file adalah 5MB');
+        const oversized = files.filter(f => f.size > 5 * 1024 * 1024);
+        if (oversized.length > 0) {
+            alert(`Gagal upload: ${oversized.length} file melebihi batas maksimal 5MB. Pastikan semua file di bawah 5MB.`);
             return;
         }
 
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('collection_name', 'default');
-
         setUploading(true);
         try {
-            await axios.post(route('admin.media.store'), formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Accept': 'application/json'
-                }
-            });
+            await Promise.all(files.map(async (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('collection_name', 'default');
+
+                return axios.post(route('admin.media.store'), formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Accept': 'application/json'
+                    }
+                });
+            }));
             fetchMedia();
         } catch (error) {
             console.error('Error uploading:', error);
-            const errorMsg = error.response?.data?.errors?.file?.[0] || 'Upload gagal. Pastikan format file didukung dan ukuran tidak melebihi 5MB.';
-            alert(errorMsg);
+            alert('Sebagian atau seluruh file gagal diunggah. Pastikan format didukung dan ukuran sesuai.');
         } finally {
             setUploading(false);
             if (fileInputRef.current) {
@@ -150,7 +152,7 @@ export default function MediaPicker({ onSelect, trigger, acceptType = 'all' }) {
                             </div>
 
                             <div>
-                                <input type="file" ref={fileInputRef} onChange={handleUpload} className="hidden" accept={ACCEPT_MAP[acceptType] || ACCEPT_MAP.all} />
+                                <input type="file" multiple ref={fileInputRef} onChange={handleUpload} className="hidden" accept={ACCEPT_MAP[acceptType] || ACCEPT_MAP.all} />
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}

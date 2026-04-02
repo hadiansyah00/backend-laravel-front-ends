@@ -3,10 +3,16 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import AccessibilityWidget from "../Components/AccessibilityWidget";
 import FloatingWhatsApp from "../Components/FloatingWhatsApp";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 
 export default function MainLayout({ children, title }) {
+    const { settings } = usePage().props;
     const [loading, setLoading] = useState(true);
+
+    const siteName = settings?.site_name || "STIKes Bogor Husada";
+    const pageTitle = title ? `${title} | ${siteName}` : (settings?.seo_title || siteName);
+    const metaDesc = settings?.seo_description || "Website Resmi STIKes Bogor Husada";
+    const metaKeywords = settings?.seo_keywords || "STIKes, Kesehatan, Bogor, Husada";
 
     useEffect(() => {
         // Simple loading simulation matching the original Alpine.js vibe
@@ -17,7 +23,14 @@ export default function MainLayout({ children, title }) {
     return (
         <div className="pt-[104px] font-sans antialiased text-gray-900 bg-gray-50 min-h-screen flex flex-col">
             {" "}
-            <Head title={title || "Beranda"} />
+            <Head>
+                <title>{pageTitle}</title>
+                <meta name="description" content={metaDesc} />
+                <meta name="keywords" content={metaKeywords} />
+                <meta property="og:title" content={pageTitle} />
+                <meta property="og:description" content={metaDesc} />
+                {settings?.site_logo && <meta property="og:image" content={`/storage/${settings.site_logo}`} />}
+            </Head>
             {/* Loading Spinner */}
             {loading && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 bg-white/80 backdrop-blur-sm">

@@ -303,7 +303,7 @@ export default function Home({
                                     <div className="relative pt-[60%] overflow-hidden bg-gray-200">
                                         {prodi.image ? (
                                             <img
-                                                src={`/storage/${prodi.image}`}
+                                                src={typeof prodi.image === 'string' ? (prodi.image.startsWith("http") || prodi.image.startsWith("/") ? prodi.image : `/storage/${prodi.image}`) : ''}
                                                 alt={prodi.name}
                                                 className="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                                             />
