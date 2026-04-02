@@ -47,7 +47,7 @@ export default function Index({ events }) {
                                             <div className="flex items-center gap-4">
                                                 {item.image ? (
                                                     <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700">
-                                                        <img src={item.image.startsWith('http') ? item.image : (item.image.startsWith('/') ? item.image : `/${item.image}`)} alt={item.title} className="w-full h-full object-cover" />
+                                                        <img src={typeof item.image === 'string' ? (item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `/storage/${item.image}`) : ''} alt={item.title} className="w-full h-full object-cover" />
                                                     </div>
                                                 ) : (
                                                     <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 shadow-sm border border-gray-200 dark:border-gray-700">

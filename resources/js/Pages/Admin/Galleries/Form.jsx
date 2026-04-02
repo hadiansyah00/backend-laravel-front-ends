@@ -96,43 +96,58 @@ export default function Form({ gallery }) {
 
                         {/* Image Upload dengan MediaPicker */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih File Gambar {isEdit ? '(Opsional)' : '<span className="text-red-500">*</span>'}</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Pilih File Gambar <span dangerouslySetInnerHTML={{ __html: isEdit ? '(Opsional)' : '<span class="text-red-500">*</span>' }} />
+                            </label>
 
-                            {isEdit && gallery?.image && (
-                                <div className="mb-4">
-                                    <div className="w-48 aspect-video rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm relative group">
-                                        <img src={gallery.image.startsWith('http') ? gallery.image : `/${gallery.image}`} alt="Current" className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                                            <a href={gallery.image.startsWith('http') ? gallery.image : `/${gallery.image}`} target="_blank" rel="noreferrer" className="text-white text-sm font-semibold hover:underline">Lihat Penuh</a>
+                            <div className="flex flex-col gap-4">
+                                {/* Preview Selected Image */}
+                                {data.image && (
+                                    <div className="relative group overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-indigo-200 dark:border-indigo-700 border-dashed rounded-2xl w-full max-w-sm aspect-video shadow-sm">
+                                        <img
+                                            src={typeof data.image === 'string' ? (data.image.startsWith('http') || data.image.startsWith('/') ? data.image : `/storage/${data.image}`) : ''}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                                            <a
+                                                href={typeof data.image === 'string' ? (data.image.startsWith('http') || data.image.startsWith('/') ? data.image : `/storage/${data.image}`) : '#'}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="px-4 py-2 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 backdrop-blur-md transition-all flex items-center"
+                                            >
+                                                <i className="fas fa-external-link-alt mr-2"></i> Lihat Penuh
+                                            </a>
+                                            <button
+                                                type="button"
+                                                onClick={() => setData('image', '')}
+                                                className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transform hover:scale-105 transition-all flex items-center shadow-lg"
+                                            >
+                                                <i className="fas fa-trash-alt mr-2"></i> Hapus Foto
+                                            </button>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">Gambar saat ini. Folder akan otomatis menimpanya jika memilih file baru.</p>
-                                </div>
-                            )}
+                                )}
 
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="text"
-                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
-                                    placeholder="Pilih gambar dari media library..."
-                                    value={data.image || ''}
-                                    readOnly
-                                />
-                                <MediaPicker
-                                    onSelect={(url) => setData("image", url)}
-                                    trigger={
-                                        <button
-                                            type="button"
-                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
-                                        >
-                                            <i className="fas fa-folder-open"></i>{" "}
-                                            Pilih Foto
-                                        </button>
-                                    }
-                                />
+                                {/* Trigger MediaPicker */}
+                                {!data.image && (
+                                    <MediaPicker
+                                        acceptType="image"
+                                        onSelect={(url) => setData("image", url)}
+                                        trigger={
+                                            <div className="w-full max-w-sm aspect-video border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl cursor-pointer bg-gray-50 hover:bg-indigo-50 dark:bg-gray-900 dark:hover:bg-indigo-900/20 transition-all flex flex-col items-center justify-center group overflow-hidden">
+                                                <div className="w-16 h-16 mb-3 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                                                    <i className="fas fa-image text-2xl"></i>
+                                                </div>
+                                                <span className="font-bold text-gray-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Pilih Foto Galeri</span>
+                                                <span className="text-xs text-gray-500 text-center max-w-[80%]">Klik di sini untuk membuka Media Library dan memilih gambar dari koleksi Anda.</span>
+                                            </div>
+                                        }
+                                    />
+                                )}
                             </div>
-                            <p className="mt-2 text-xs text-gray-500">Pilih foto yang ingin dilampirkan dari Media Library kampus.</p>
-                            {errors.image && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium">{errors.image}</p>}
+                            
+                            {errors.image && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium"><i className="fas fa-exclamation-circle mr-1"></i> {errors.image}</p>}
                         </div>
 
                         {/* Status / Is Active */}

@@ -5,9 +5,9 @@ import toast from 'react-hot-toast';
 import MediaPicker from '@/Components/MediaPicker';
 
 const TABS = [
-    { key: 'farmasi', label: 'S1 Farmasi', icon: 'fas fa-pills', slug: 's1-farmasi', defaultName: 'S1 Farmasi' },
-    { key: 'gizi', label: 'S1 Gizi', icon: 'fas fa-apple-alt', slug: 's1-gizi', defaultName: 'S1 Gizi' },
-    { key: 'kebidanan', label: 'D3 Kebidanan', icon: 'fas fa-baby', slug: 'd3-kebidanan', defaultName: 'D3 Kebidanan' },
+    { key: 'farmasi', label: 'S1 Farmasi', icon: 'fas fa-pills', searchKey: 'farmasi', defaultName: 'S1 Farmasi' },
+    { key: 'gizi', label: 'S1 Gizi', icon: 'fas fa-apple-alt', searchKey: 'gizi', defaultName: 'S1 Gizi' },
+    { key: 'kebidanan', label: 'D3 Kebidanan', icon: 'fas fa-baby', searchKey: 'kebidanan', defaultName: 'D3 Kebidanan' },
     { key: 'kalender', label: 'Kalender Akademik', icon: 'fas fa-calendar-alt', type: 'link' },
     { key: 'dosen', label: 'Data Dosen', icon: 'fas fa-chalkboard-teacher', type: 'link' },
 ];
@@ -322,8 +322,14 @@ export default function Index({ prodiMap, dosenCount, dosenRecent, kalenderCount
     const [activeTab, setActiveTab] = useState(TABS[0].key);
     const currentTab = TABS.find(t => t.key === activeTab);
 
-    const getProdi = (slug) => {
-        return prodiMap[slug] || null;
+    const getProdi = (searchKey) => {
+        if (!searchKey) return null;
+        const values = Object.values(prodiMap);
+        return values.find(p => {
+            const nameLower = (p.name || '').toLowerCase();
+            const slugLower = (p.slug || '').toLowerCase();
+            return nameLower.includes(searchKey.toLowerCase()) || slugLower.includes(searchKey.toLowerCase());
+        }) || null;
     };
 
     return (
@@ -348,8 +354,8 @@ export default function Index({ prodiMap, dosenCount, dosenRecent, kalenderCount
                                 >
                                     <i className={tab.icon}></i>
                                     {tab.label}
-                                    {tab.type !== 'link' && getProdi(tab.slug) && (
-                                        <span className="ml-1 w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+                                    {tab.type !== 'link' && getProdi(tab.searchKey) && (
+                                        <span className="ml-1 w-2 h-2 rounded-full bg-green-400 inline-block" title="Data Sudah Ada"></span>
                                     )}
                                 </button>
                             ))}
@@ -383,7 +389,7 @@ export default function Index({ prodiMap, dosenCount, dosenRecent, kalenderCount
                         ) : (
                             <ProdiForm
                                 key={currentTab.key}
-                                prodi={getProdi(currentTab.slug)}
+                                prodi={getProdi(currentTab.searchKey)}
                                 tabConfig={currentTab}
                             />
                         )}

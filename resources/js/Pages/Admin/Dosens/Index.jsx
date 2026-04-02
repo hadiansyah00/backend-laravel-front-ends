@@ -118,10 +118,10 @@ export default function Index({ dosens, filters, prodis }) {
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm bg-gray-100 dark:bg-gray-800 flex-shrink-0">
                                                     {item.photo ? (
-                                                        <img src={`/${item.photo}`} alt={item.name} className="w-full h-full object-cover" />
+                                                        <img src={typeof item.photo === 'string' ? (item.photo.startsWith('http') || item.photo.startsWith('/') ? item.photo : `/storage/${item.photo}`) : ''} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.outerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-400 font-bold text-lg bg-gray-200 dark:bg-gray-700">${(item.name?.charAt(0) || '?').toUpperCase()}</div>`; }} />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-lg bg-gray-200 dark:bg-gray-700">
-                                                            {item.name ? item.name.charAt(0).toUpperCase() : '?'}
+                                                            {(item.name?.charAt(0) || '?').toUpperCase()}
                                                         </div>
                                                     )}
                                                 </div>

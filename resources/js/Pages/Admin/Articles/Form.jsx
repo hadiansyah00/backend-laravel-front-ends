@@ -22,7 +22,7 @@ export default function Form({
         slug: article?.slug || "",
         excerpt: article?.excerpt || "",
         content: article?.content || "",
-        thumbnail: null,
+        thumbnail: article?.thumbnail || null,
         status: article?.status || "draft",
         published_at: article?.published_at
             ? new Date(article.published_at).toISOString().slice(0, 16)
@@ -43,8 +43,8 @@ export default function Form({
         twitter_title: article?.meta?.twitter_title || "",
         twitter_description: article?.meta?.twitter_description || "",
         twitter_site: article?.meta?.twitter_site || "",
-        og_image: null,
-        twitter_image: null,
+        og_image: article?.meta?.og_image || null,
+        twitter_image: article?.meta?.twitter_image || null,
 
         _method: isEdit ? "PUT" : "POST",
     });
@@ -330,24 +330,75 @@ export default function Form({
                                         </div>
 
                                         <div>
-                                            <label className="block mb-1 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">
-                                                Tags (Pisahkan dgn Koma)
+                                            <label className="block mb-2 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">
+                                                Tags
                                             </label>
-                                            <input
-                                                type="text"
-                                                className="w-full border-gray-300 rounded-xl shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                value={data.tags}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "tags",
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                placeholder="Kesehatan, Medis, Kampus..."
-                                            />
-                                            <p className="mt-1 text-[10px] text-gray-500">
-                                                Cth: Kampus, Pendidikan, Gizi
-                                            </p>
+                                            
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                                {data.tags ? data.tags.split(',').filter(t => t.trim()).map((tag, idx) => {
+                                                    const trimmedTag = tag.trim();
+                                                    return (
+                                                        <span key={idx} className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 px-2.5 py-1 rounded-lg text-sm font-medium flex items-center gap-1.5 border border-indigo-200 dark:border-indigo-800 shadow-sm transition-all group hover:bg-indigo-200 dark:hover:bg-indigo-800/80">
+                                                            <span>#</span>{trimmedTag}
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => setData('tags', data.tags.split(',').filter(t => t.trim() !== trimmedTag).join(','))} 
+                                                                className="text-indigo-500 hover:text-red-500 transition-colors bg-white/50 dark:bg-black/20 hover:bg-white dark:hover:bg-black/50 rounded-full w-4 h-4 flex items-center justify-center -mr-0.5"
+                                                            >
+                                                                &times;
+                                                            </button>
+                                                        </span>
+                                                    );
+                                                }) : (
+                                                    <span className="text-xs text-gray-400 italic">Belum ada tag terpilih</span>
+                                                )}
+                                            </div>
+                                            
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    id="tag-input"
+                                                    className="w-full border-gray-300 rounded-xl shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    placeholder="Ketik tag baru lalu enter (Atau koma)..."
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' || e.key === ',') {
+                                                            e.preventDefault();
+                                                            const newTag = e.currentTarget.value.trim();
+                                                            if (newTag) {
+                                                                const currentTags = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+                                                                if (!currentTags.includes(newTag)) {
+                                                                    setData('tags', [...currentTags, newTag].join(','));
+                                                                }
+                                                            }
+                                                            e.currentTarget.value = '';
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            
+                                            {availableTagsList && availableTagsList.length > 0 && (
+                                                <div className="mt-4 p-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                    <span className="text-xs text-gray-500 font-medium block mb-2"><i className="fas fa-tags mr-1"></i> Saran Tag (Klik untuk tambah):</span>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {availableTagsList.filter(t => !(data.tags ? data.tags.split(',').map(x => x.trim()).filter(Boolean) : []).includes(t.name)).map((t, i) => (
+                                                            <button 
+                                                                key={i} 
+                                                                type="button" 
+                                                                onClick={() => {
+                                                                    const currentTags = data.tags ? data.tags.split(',').map(x => x.trim()).filter(Boolean) : [];
+                                                                    setData('tags', [...currentTags, t.name].join(','));
+                                                                }}
+                                                                className="text-xs font-medium bg-white dark:bg-gray-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-300 px-3 py-1.5 rounded-lg transition-all border border-gray-200 dark:border-gray-700 shadow-sm"
+                                                            >
+                                                                + {t.name}
+                                                            </button>
+                                                        ))}
+                                                        {availableTagsList.filter(t => !(data.tags ? data.tags.split(',').map(x => x.trim()).filter(Boolean) : []).includes(t.name)).length === 0 && (
+                                                            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium"><i className="fas fa-check-circle mr-1"></i> Semua tag sudah terpilih.</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
@@ -360,14 +411,7 @@ export default function Form({
                                             <div className="relative mb-4 overflow-hidden border border-gray-200 aspect-video rounded-xl dark:border-gray-700">
                                                 <img
                                                     src={
-                                                        data.thumbnail.startsWith(
-                                                            "http",
-                                                        ) ||
-                                                        data.thumbnail.startsWith(
-                                                            "/storage",
-                                                        )
-                                                            ? data.thumbnail
-                                                            : `/storage/${data.thumbnail}`
+                                                        typeof data.thumbnail === 'string' ? (data.thumbnail.startsWith("http") || data.thumbnail.startsWith("/") ? data.thumbnail : `/storage/${data.thumbnail}`) : ''
                                                     }
                                                     alt="Thumbnail"
                                                     className="object-cover w-full h-full"
@@ -597,14 +641,7 @@ export default function Form({
                                                 <div className="relative w-full h-32 mb-3 overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700">
                                                     <img
                                                         src={
-                                                            data.og_image.startsWith(
-                                                                "http",
-                                                            ) ||
-                                                            data.og_image.startsWith(
-                                                                "/storage",
-                                                            )
-                                                                ? data.og_image
-                                                                : `/storage/${data.og_image}`
+                                                            typeof data.og_image === 'string' ? (data.og_image.startsWith("http") || data.og_image.startsWith("/") ? data.og_image : `/storage/${data.og_image}`) : ''
                                                         }
                                                         alt="OG Cover"
                                                         className="object-cover w-full h-full"
@@ -644,14 +681,7 @@ export default function Form({
                                                 <div className="relative w-full h-32 mb-3 overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700">
                                                     <img
                                                         src={
-                                                            data.twitter_image.startsWith(
-                                                                "http",
-                                                            ) ||
-                                                            data.twitter_image.startsWith(
-                                                                "/storage",
-                                                            )
-                                                                ? data.twitter_image
-                                                                : `/storage/${data.twitter_image}`
+                                                            typeof data.twitter_image === 'string' ? (data.twitter_image.startsWith("http") || data.twitter_image.startsWith("/") ? data.twitter_image : `/storage/${data.twitter_image}`) : ''
                                                         }
                                                         alt="Twitter Cover"
                                                         className="object-cover w-full h-full"

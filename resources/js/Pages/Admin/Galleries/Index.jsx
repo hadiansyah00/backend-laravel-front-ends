@@ -3,8 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 
 export default function Index({ galleries }) {
-
-    const dataList = galleries && galleries.data ? galleries.data : galleries;
+    // Pastikan kita menangani data array biasa atau struktur paginasi Laravel
+    const dataList = galleries?.data || galleries || [];
+    const hasPagination = galleries?.links && galleries.links.length > 3;
 
     const handleDelete = (id) => {
         if (confirm('Apakah Anda yakin ingin menghapus foto galeri ini?')) {
@@ -15,68 +16,124 @@ export default function Index({ galleries }) {
     };
 
     return (
-        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Manajemen Galeri</h2>}>
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Manajemen Galeri
+                </h2>
+            }
+        >
             <Head title="Galeri Foto & Video" />
 
-            <div className="max-w-7xl mx-auto py-6">
-                <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="overflow-hidden bg-white border border-gray-100 shadow-sm sm:rounded-2xl dark:bg-gray-900 dark:border-gray-800">
+
+                    {/* Header Section */}
+                    <div className="flex flex-col gap-4 p-6 border-b border-gray-100 sm:flex-row sm:items-center justify-between dark:border-gray-800">
                         <div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Daftar Galeri</h3>
-                            <p className="text-sm text-gray-500 mt-1">Kelola album foto, dokumentasi kegiatan, dan aset visual lainnya.</p>
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Kelola album foto, dokumentasi kegiatan, dan aset visual lainnya.
+                            </p>
                         </div>
-                        <Link href={route('admin.galleries.create')} className="inline-flex items-center justify-center px-4 py-2.5 bg-indigo-600 border border-transparent rounded-xl font-bold text-sm text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-sm">
-                            <i className="fas fa-plus mr-2"></i> Tambah Foto
+                        <Link
+                            href={route('admin.galleries.create')}
+                            className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-white transition bg-indigo-600 border border-transparent rounded-xl shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            <i className="mr-2 fas fa-plus"></i> Tambah Foto
                         </Link>
                     </div>
 
-                    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {dataList && dataList.length > 0 ? dataList.map((item) => (
-                            <div key={item.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm group hover:shadow-md transition-all">
-                                <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-900">
-                                    <img src={item.image.startsWith('http') ? item.image : `/${item.image}`} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                    <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <Link href={route('admin.galleries.edit', item.id)} title="Edit Gambar" className="w-8 h-8 rounded-xl bg-white/90 backdrop-blur-sm text-indigo-600 flex items-center justify-center shadow hover:bg-white hover:scale-105 transition-all">
-                                            <i className="fas fa-edit"></i>
-                                        </Link>
-                                        <button onClick={() => handleDelete(item.id)} title="Hapus Gambar" className="w-8 h-8 rounded-xl bg-white/90 backdrop-blur-sm text-red-600 flex items-center justify-center shadow hover:bg-white hover:scale-105 transition-all">
-                                            <i className="fas fa-trash-alt"></i>
-                                        </button>
+                    {/* Grid Section */}
+                    <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                        {dataList.length > 0 ? (
+                            dataList.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="overflow-hidden transition-all bg-white border border-gray-200 shadow-sm rounded-2xl dark:bg-gray-800 dark:border-gray-700 group hover:shadow-md hover:-translate-y-1 relative flex flex-col"
+                                >
+                                    <div className="relative overflow-hidden bg-gray-100 aspect-video dark:bg-gray-900 shrink-0">
+                                        <img
+                                            src={typeof item.image === 'string' ? (item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `/storage/${item.image}`) : ''}
+                                            alt={item.title}
+                                            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                                        />
+
+                                        {/* Overlay & Actions */}
+                                        <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:opacity-100"></div>
+
+                                        <div className="absolute flex items-center gap-2 transition-opacity duration-300 opacity-0 top-3 right-3 group-hover:opacity-100">
+                                            <Link
+                                                href={route('admin.galleries.edit', item.id)}
+                                                title="Edit Gambar"
+                                                className="flex items-center justify-center w-8 h-8 text-indigo-600 transition-all shadow rounded-xl bg-white/90 backdrop-blur-sm hover:bg-white hover:scale-110"
+                                            >
+                                                <i className="fas fa-edit"></i>
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(item.id)}
+                                                title="Hapus Gambar"
+                                                className="flex items-center justify-center w-8 h-8 text-red-600 transition-all shadow rounded-xl bg-white/90 backdrop-blur-sm hover:bg-white hover:scale-110"
+                                            >
+                                                <i className="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+
+                                        {/* Status Badge */}
+                                        <div className="absolute top-3 left-3">
+                                            <span
+                                                className={`px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase rounded-lg shadow-sm backdrop-blur-md ${item.is_active
+                                                        ? 'bg-emerald-500/90 text-white'
+                                                        : 'bg-gray-800/90 text-gray-200'
+                                                    }`}
+                                            >
+                                                {item.is_active ? 'Publik' : 'Draft'}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="absolute top-2 left-2">
-                                        <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-md shadow-sm backdrop-blur-md ${item.is_active ? 'bg-emerald-500/80 text-white' : 'bg-gray-800/80 text-gray-300'}`}>
-                                            {item.is_active ? 'Publik' : 'Draft'}
-                                        </span>
+
+                                    {/* Card Content */}
+                                    <div className="flex flex-col flex-1 p-4">
+                                        <h4 className="font-bold text-gray-900 line-clamp-2 dark:text-white" title={item.title}>
+                                            {item.title}
+                                        </h4>
+                                        <div className="flex items-end justify-between flex-1 mt-4">
+                                            <span className="px-2.5 py-1 text-xs font-medium text-indigo-700 bg-indigo-50 rounded-md dark:bg-indigo-900/40 dark:text-indigo-300">
+                                                {item.category || 'Galeri Umum'}
+                                            </span>
+                                            <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                                                {new Date(item.created_at).toLocaleDateString('id-ID', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="p-4">
-                                    <h4 className="font-bold text-gray-900 dark:text-white line-clamp-1">{item.title}</h4>
-                                    <div className="flex items-center justify-between mt-2">
-                                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-md">
-                                            {item.category || 'Galeri'}
-                                        </span>
-                                        <span className="text-[10px] text-gray-500">
-                                            {new Date(item.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        )) : (
-                            <div className="col-span-full py-12 text-center text-gray-500">
-                                <i className="fas fa-images text-4xl mb-3 text-gray-300"></i>
-                                <p>Belum ada foto di galeri.</p>
+                            ))
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500 col-span-full">
+                                <i className="mb-4 text-5xl text-gray-300 fas fa-images dark:text-gray-600"></i>
+                                <p className="text-lg font-medium text-gray-900 dark:text-gray-300">Belum ada foto</p>
+                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Silakan tambahkan foto baru untuk mengisi galeri.</p>
                             </div>
                         )}
                     </div>
 
-                    {galleries && galleries.links && galleries.links.length > 3 && (
-                        <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-center gap-2">
+                    {/* Pagination Section */}
+                    {hasPagination && (
+                        <div className="flex flex-wrap items-center justify-center gap-2 px-6 py-4 border-t border-gray-100 dark:border-gray-800">
                             {galleries.links.map((link, idx) => (
                                 <Link
                                     key={idx}
                                     href={link.url || '#'}
-                                    className={`px-3 py-1.5 min-w-[32px] text-center text-sm rounded-md transition-colors ${link.active ? 'bg-indigo-600 text-white font-medium shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'} ${!link.url ? 'opacity-50 cursor-not-allowed hidden' : ''}`}
+                                    onClick={(e) => !link.url && e.preventDefault()}
+                                    className={`px-3.5 py-2 min-w-[36px] text-center text-sm rounded-lg transition-colors font-medium border ${link.active
+                                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700'
+                                        } ${!link.url ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
+                                        }`}
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
                             ))}

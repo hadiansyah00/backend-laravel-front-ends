@@ -73,41 +73,55 @@ export default function Form({ kerjasama }) {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Logo Institusi <span className="text-red-500">*</span></label>
 
-                            {isEdit && kerjasama?.logo && (
-                                <div className="mb-4">
-                                    <div className="w-32 h-32 aspect-square rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 shadow-sm relative group p-2">
-                                        <img src={kerjasama.logo.startsWith('http') ? kerjasama.logo : `/${kerjasama.logo}`} alt="Current Logo" className="w-full h-full object-contain" />
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm rounded-xl">
-                                            <a href={kerjasama.logo.startsWith('http') ? kerjasama.logo : `/${kerjasama.logo}`} target="_blank" rel="noreferrer" className="text-white text-xs font-semibold hover:underline">Lihat Logo</a>
+                            <div className="flex flex-col gap-4">
+                                {/* Preview Selected Logo */}
+                                {data.logo && (
+                                    <div className="relative group overflow-hidden bg-white dark:bg-gray-800 border-2 border-indigo-200 dark:border-indigo-700 border-dashed rounded-2xl w-full max-w-[16rem] aspect-square shadow-sm p-4 flex items-center justify-center">
+                                        <img
+                                            src={typeof data.logo === 'string' ? (data.logo.startsWith('http') || data.logo.startsWith('/') ? data.logo : `/storage/${data.logo}`) : ''}
+                                            alt="Preview"
+                                            className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                                            <a
+                                                href={typeof data.logo === 'string' ? (data.logo.startsWith('http') || data.logo.startsWith('/') ? data.logo : `/storage/${data.logo}`) : '#'}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="px-4 py-2 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 backdrop-blur-md transition-all flex items-center"
+                                            >
+                                                <i className="fas fa-external-link-alt mr-2"></i> Lihat Penuh
+                                            </a>
+                                            <button
+                                                type="button"
+                                                onClick={() => setData('logo', '')}
+                                                className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transform hover:scale-105 transition-all flex items-center shadow-lg"
+                                            >
+                                                <i className="fas fa-trash-alt mr-2"></i> Hapus Logo
+                                            </button>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">Logo yang sedang terpasang.</p>
-                                </div>
-                            )}
+                                )}
 
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="text"
-                                    className="w-full text-sm border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 focus:ring-0 dark:bg-gray-900 dark:border-gray-700 dark:text-white shadow-sm"
-                                    placeholder="Pilih logo dari media library..."
-                                    value={data.logo || ''}
-                                    readOnly
-                                />
-                                <MediaPicker
-                                    onSelect={(url) => setData("logo", url)}
-                                    trigger={
-                                        <button
-                                            type="button"
-                                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 transition border border-indigo-200 rounded-lg shrink-0 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:hover:bg-indigo-900/50 dark:text-indigo-400"
-                                        >
-                                            <i className="fas fa-folder-open"></i>{" "}
-                                            Pilih Media
-                                        </button>
-                                    }
-                                />
+                                {/* Trigger MediaPicker */}
+                                {!data.logo && (
+                                    <MediaPicker
+                                        acceptType="image"
+                                        onSelect={(url) => setData("logo", url)}
+                                        trigger={
+                                            <div className="w-full max-w-[16rem] aspect-square border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl cursor-pointer bg-gray-50 hover:bg-indigo-50 dark:bg-gray-900 dark:hover:bg-indigo-900/20 transition-all flex flex-col items-center justify-center group overflow-hidden">
+                                                <div className="w-16 h-16 mb-3 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                                                    <i className="fas fa-images text-2xl"></i>
+                                                </div>
+                                                <span className="font-bold text-gray-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors text-center px-4">Pilih Logo Mitra</span>
+                                                <span className="text-xs text-gray-500 text-center max-w-[80%]">Pilih dari Media Library atau unggah file PNG transparan.</span>
+                                            </div>
+                                        }
+                                    />
+                                )}
                             </div>
+                            
                             <p className="mt-2 text-xs text-gray-500">Gunakan ekstensi PNG yang memiliki background transparan minimal resolusi 200px agar terlihat rapi.</p>
-                            {errors.logo && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium">{errors.logo}</p>}
+                            {errors.logo && <p className="mt-2 text-sm text-red-600 dark:text-red-400 font-medium"><i className="fas fa-exclamation-circle mr-1"></i> {errors.logo}</p>}
                         </div>
 
                         {/* Status / Is Active */}

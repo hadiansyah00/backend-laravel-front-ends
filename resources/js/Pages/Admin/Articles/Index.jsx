@@ -104,7 +104,7 @@ export default function Index({ articles, filters }) {
                                             <div className="flex items-start gap-4">
                                                 {item.thumbnail ? (
                                                     <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 mt-1">
-                                                        <img src={`/storage/${item.thumbnail.replace('storage/', '')}`} alt={item.title} className="w-full h-full object-cover" />
+                                                        <img src={typeof item.thumbnail === 'string' ? (item.thumbnail.startsWith('http') || item.thumbnail.startsWith('/') ? item.thumbnail : `/storage/${item.thumbnail}`) : ''} alt={item.title} className="w-full h-full object-cover" />
                                                     </div>
                                                 ) : (
                                                     <div className="flex-shrink-0 w-16 h-16 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 shadow-sm border border-gray-200 dark:border-gray-700 mt-1">

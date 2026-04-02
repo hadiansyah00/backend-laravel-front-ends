@@ -127,7 +127,7 @@ export default function Form({ event }) {
                                 {data.image && (
                                     <div className="relative group overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-indigo-200 dark:border-indigo-700 border-dashed rounded-2xl w-full max-w-sm aspect-video">
                                         <img 
-                                            src={data.image.startsWith('http') ? data.image : (data.image.startsWith('/') ? data.image : `/${data.image}`)} 
+                                            src={typeof data.image === 'string' ? (data.image.startsWith('http') || data.image.startsWith('/') ? data.image : `/storage/${data.image}`) : ''} 
                                             alt="Preview Poster" 
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
@@ -146,6 +146,7 @@ export default function Form({ event }) {
                                 {/* Trigger MediaPicker */}
                                 {!data.image && (
                                     <MediaPicker
+                                        acceptType="image"
                                         onSelect={(url) => setData("image", url)}
                                         trigger={
                                             <div className="w-full max-w-sm aspect-video border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl cursor-pointer bg-gray-50 hover:bg-indigo-50 dark:bg-gray-900 dark:hover:bg-indigo-900/20 transition-all flex flex-col items-center justify-center group overflow-hidden">

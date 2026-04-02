@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import MediaPicker from "@/Components/MediaPicker";
 
 export default function Form({ dosen, prodis }) {
     const isEdit = !!dosen;
@@ -169,9 +170,9 @@ export default function Form({ dosen, prodis }) {
                                 </label>
 
                                 <div className="flex gap-4 items-center w-full">
-                                    {isEdit && dosen?.photo ? (
-                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white dark:border-gray-700 shadow-sm flex-shrink-0 bg-gray-100">
-                                            <img src={`/${dosen.photo}`} alt={dosen.name} className="w-full h-full object-cover" />
+                                    {data.photo ? (
+                                        <div className="w-16 h-16 rounded-full border-2 border-white dark:border-gray-700 shadow-sm flex-shrink-0 bg-gray-100 relative overflow-hidden">
+                                            <img src={typeof data.photo === 'string' ? (data.photo.startsWith("http") || data.photo.startsWith("/") ? data.photo : `/storage/${data.photo}`) : ''} alt="Foto Dosen" className="w-full h-full object-cover" />
                                         </div>
                                     ) : (
                                         <div className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 flex-shrink-0">
@@ -179,13 +180,25 @@ export default function Form({ dosen, prodis }) {
                                         </div>
                                     )}
 
-                                    <div className="flex-1">
+                                    <div className="flex-1 space-y-2">
                                         <input
-                                            type="file"
-                                            ref={photoInputRef}
-                                            className="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 transition-colors cursor-pointer"
-                                            onChange={e => setData('photo', e.target.files[0])}
-                                            accept="image/jpeg,image/png,image/jpg"
+                                            type="text"
+                                            className="w-full text-xs font-mono border-gray-300 cursor-not-allowed rounded-xl bg-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-500"
+                                            placeholder="Pilih file dari Media Library..."
+                                            value={data.photo || ""}
+                                            readOnly
+                                        />
+                                        <MediaPicker
+                                            onSelect={(url) => setData("photo", url)}
+                                            acceptType="image"
+                                            trigger={
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center justify-center w-full gap-2 px-4 py-2 text-sm font-semibold text-indigo-700 transition border border-indigo-200 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-300 dark:hover:bg-indigo-900/50"
+                                                >
+                                                    <i className="fas fa-folder-open"></i> Buka Media Library
+                                                </button>
+                                            }
                                         />
                                         <p className="mt-1.5 text-[10px] text-gray-500">Maksimal 2MB, format JPG/PNG, rasio 1:1, latar belakang rapi.</p>
                                         {errors.photo && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.photo}</p>}

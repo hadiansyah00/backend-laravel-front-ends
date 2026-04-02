@@ -34,7 +34,7 @@ export default function Index({ kerjasamas }) {
                         {dataList && dataList.length > 0 ? dataList.map((item) => (
                             <div key={item.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col items-center p-4">
                                 <div className="relative w-full aspect-square flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-xl mb-4 group overflow-hidden">
-                                    <img src={item.logo.startsWith('http') ? item.logo : `/${item.logo}`} alt={item.name} className="max-w-[80%] max-h-[80%] object-contain group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={typeof item.logo === 'string' ? (item.logo.startsWith('http') || item.logo.startsWith('/') ? item.logo : `/storage/${item.logo}`) : ''} alt={item.name} className="max-w-[80%] max-h-[80%] object-contain group-hover:scale-110 transition-transform duration-500" />
                                     
                                     {/* Action Overlays */}
                                     <div className="absolute inset-0 bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">

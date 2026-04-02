@@ -3,7 +3,8 @@ import MainLayout from "@/Layouts/MainLayout";
 import { Link } from "@inertiajs/react";
 
 export default function Lowongan({ lowongans }) {
-    const jobList = lowongans || [];
+    // lowongans is paginated, so the actual array is inside lowongans.data
+    const jobList = lowongans?.data || [];
 
     const getImageUrl = (imagePath, fallbackName) => {
         if (imagePath) return `/storage/${imagePath.replace("storage/", "")}`;

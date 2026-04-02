@@ -833,7 +833,7 @@ export default function Home({
                                 >
                                     <div className="w-[75%] h-[75%] relative flex items-center justify-center">
                                         <img
-                                            src={mitra.logo.startsWith('http') ? mitra.logo : `/${mitra.logo}`}
+                                            src={typeof mitra.logo === 'string' ? (mitra.logo.startsWith('http') || mitra.logo.startsWith('/') ? mitra.logo : `/storage/${mitra.logo}`) : ''}
                                             alt={mitra.name}
                                             className="object-contain max-w-full max-h-full transition-all duration-500 filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
                                             title={mitra.name}

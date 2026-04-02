@@ -42,9 +42,10 @@ class DatabaseSeeder extends Seeder
                 // TagsSeeder::class,
                 // ArticleSeeder::class,
                 // ArticleTagSeeder::class,
-            KerjasamaSeeder::class,
-            // EventSeeder::class,
-            // PengumumanSeeder::class,
+                // KerjasamaSeeder::class,
+                // EventSeeder::class,
+                // PengumumanSeeder::class,
+            LowonganSeeder::class,
 
 
 

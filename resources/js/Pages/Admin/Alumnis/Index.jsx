@@ -47,16 +47,17 @@ export default function Index({ alumnis }) {
                                         {/* PROFIL */}
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-full overflow-hidden border bg-gray-100">
+                                                <div className="w-12 h-12 rounded-full overflow-hidden border bg-gray-100 flex-shrink-0">
                                                     {item.photo ? (
                                                         <img
-                                                            src={`/storage/${item.photo}`}
+                                                            src={typeof item.photo === 'string' ? (item.photo.startsWith('http') || item.photo.startsWith('/') ? item.photo : `/storage/${item.photo}`) : ''}
                                                             alt={item.name}
                                                             className="w-full h-full object-cover"
+                                                            onError={(e) => { e.target.outerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 font-bold">${(item.name?.charAt(0) || 'A').toUpperCase()}</div>`; }}
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold">
-                                                            {item.name?.charAt(0)}
+                                                            {(item.name?.charAt(0) || 'A').toUpperCase()}
                                                         </div>
                                                     )}
                                                 </div>
