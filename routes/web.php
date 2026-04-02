@@ -4,8 +4,6 @@ use App\Http\Controllers\Admin\MetaController;
 use App\Http\Controllers\Admin\PagesController;
 use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FrontPages\FrontSettingController;
 use App\Http\Controllers\FrontPagesController;
@@ -35,22 +33,7 @@ Route::prefix('pendaftaran-email')->group(function () {
     Route::post('/', [PendaftaranEmailController::class, 'store'])->name('pendaftaran-email.store');
 });
 
-// ================== AUTH ================== //
-Route::get('/register', [RegisteredUserController::class, 'create'])
-    ->middleware('guest')
-    ->name('register');
-Route::post('/register', [RegisteredUserController::class, 'store'])
-    ->middleware('guest');
-
-Route::get('/boda-sbh-portal/login', [AuthenticatedSessionController::class, 'create'])
-    ->middleware('guest')
-    ->name('login');
-Route::post('/boda-sbh-portal/login', [AuthenticatedSessionController::class, 'store'])
-    ->middleware('guest');
-
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
+// Auth routes loaded from routes/auth.php (require at bottom of file)
 
 // ================== DASHBOARD ================== //
 Route::get('/dashboard', function () {
