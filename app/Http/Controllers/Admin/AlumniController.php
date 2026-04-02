@@ -75,23 +75,14 @@ class AlumniController extends Controller
             'tempat_kerja' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255',
             'testimonial' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|string',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
-
-        // Update photo
-        if ($request->hasFile('photo')) {
-            if ($alumni->photo) {
-                Storage::disk('public')->delete($alumni->photo);
-            }
-
-            $path = $request->file('photo')->store('alumni', 'public');
-            $validated['photo'] = $path;
-        }
+        $validated['photo'] = $request->photo;
 
         $alumni->update($validated);
 

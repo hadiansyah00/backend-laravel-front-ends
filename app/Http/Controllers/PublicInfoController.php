@@ -74,17 +74,17 @@ class PublicInfoController extends Controller
     // ================== AKADEMIK ==================
     public function farmasi()
     {
-        $programData = \App\Models\ProgramStudi::where('slug', 'farmasi')->firstOrFail();
+        $programData = \App\Models\ProgramStudi::where('slug', 's1-farmasi')->firstOrFail();
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
     }
     public function gizi()
     {
-        $programData = \App\Models\ProgramStudi::where('slug', 'gizi')->firstOrFail();
+        $programData = \App\Models\ProgramStudi::where('slug', 's1-gizi')->firstOrFail();
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
     }
     public function kebidanan()
     {
-        $programData = \App\Models\ProgramStudi::where('slug', 'kebidanan')->firstOrFail();
+        $programData = \App\Models\ProgramStudi::where('slug', 'd3-kebidanan')->firstOrFail();
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
     }
     public function showProgramStudi($slug)
@@ -293,13 +293,15 @@ class PublicInfoController extends Controller
      */
     public function alumni(Request $request)
     {
-        $query = Alumni::where('is_active', 1)->orderBy('name');
+        $query = Alumni::with('programStudi')->where('is_active', 1)->orderBy('name');
 
         if ($request->filled('tahun_lulus')) {
             $query->where('tahun_lulus', $request->tahun_lulus);
         }
         if ($request->filled('prodi')) {
-            $query->where('program_studi', $request->prodi);
+            $query->whereHas('programStudi', function ($q) use ($request) {
+                $q->where('name', $request->prodi);
+            });
         }
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -307,8 +309,11 @@ class PublicInfoController extends Controller
 
         $alumnis = $query->paginate(12);
 
-        $tahunList = Alumni::select('tahun_lulus')->distinct()->orderByDesc('tahun_lulus')->pluck('tahun_lulus');
-        $prodiList = Alumni::select('program_studi')->distinct()->orderBy('program_studi')->pluck('program_studi');
+        $tahunList = Alumni::where('is_active', 1)->select('tahun_lulus')->whereNotNull('tahun_lulus')->distinct()->orderByDesc('tahun_lulus')->pluck('tahun_lulus');
+        
+        $prodiList = \App\Models\ProgramStudi::whereHas('alumni', function ($q) {
+            $q->where('is_active', 1);
+        })->orderBy('name')->pluck('name');
 
         return Inertia::render('Frontend/Alumni', [
             'alumnis' => $alumnis,

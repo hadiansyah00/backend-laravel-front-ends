@@ -31,6 +31,6 @@ class ProgramStudi extends Model
 
     public function alumni()
     {
-        return $this->hasMany(Alumni::class, 'program_studi', 'name');
+        return $this->hasMany(Alumni::class, 'program_studi_id');
     }
 }

@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 
+const getPhotoUrl = (photo) => {
+    if (!photo || typeof photo !== 'string') return null;
+    if (photo.startsWith('http') || photo.startsWith('/')) return photo;
+    if (photo.startsWith('storage/')) return `/${photo}`;
+    return `/storage/${photo}`;
+};
+
 export default function Index({ dosens, filters, prodis }) {
     const { data: dataList, links } = dosens;
 
@@ -117,8 +124,8 @@ export default function Index({ dosens, filters, prodis }) {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                                                    {item.photo ? (
-                                                        <img src={typeof item.photo === 'string' ? (item.photo.startsWith('http') || item.photo.startsWith('/') ? item.photo : `/storage/${item.photo}`) : ''} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.outerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-400 font-bold text-lg bg-gray-200 dark:bg-gray-700">${(item.name?.charAt(0) || '?').toUpperCase()}</div>`; }} />
+                                                    {getPhotoUrl(item.photo) ? (
+                                                        <img src={getPhotoUrl(item.photo)} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.outerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-400 font-bold text-lg bg-gray-200 dark:bg-gray-700">${(item.name?.charAt(0) || '?').toUpperCase()}</div>`; }} />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-lg bg-gray-200 dark:bg-gray-700">
                                                             {(item.name?.charAt(0) || '?').toUpperCase()}

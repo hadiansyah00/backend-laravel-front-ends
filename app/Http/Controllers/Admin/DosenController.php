@@ -61,7 +61,7 @@ class DosenController extends Controller
             'name' => 'required|string|max:255',
             'position' => 'nullable|string|max:255',
             'prodi' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|string',
             'bio' => 'nullable|string',
             'linkedin_url' => 'nullable|url',
             'email' => 'nullable|email|max:255',
@@ -69,12 +69,8 @@ class DosenController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('dosens', 'public');
-            $validated['photo'] = 'storage/'.$path;
-        }
+        $validated['is_active'] = $request->boolean('is_active');
+        $validated['photo'] = $request->photo;
 
         Dosen::create($validated);
 
@@ -99,7 +95,7 @@ class DosenController extends Controller
             'name' => 'required|string|max:255',
             'position' => 'nullable|string|max:255',
             'prodi' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|string',
             'bio' => 'nullable|string',
             'linkedin_url' => 'nullable|url',
             'email' => 'nullable|email|max:255',
@@ -107,15 +103,8 @@ class DosenController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-
-        if ($request->hasFile('photo')) {
-            if ($dosen->photo && str_starts_with($dosen->photo, 'storage/')) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $dosen->photo));
-            }
-            $path = $request->file('photo')->store('dosens', 'public');
-            $validated['photo'] = 'storage/'.$path;
-        }
+        $validated['is_active'] = $request->boolean('is_active');
+        $validated['photo'] = $request->photo;
 
         $dosen->update($validated);
 

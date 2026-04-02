@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import MainLayout from "@/Layouts/MainLayout";
-import HeroStaticSection from "@/Components/Sections/HeroStaticSection";
 import { router, Link } from "@inertiajs/react";
 
 export default function Alumni({
@@ -16,9 +15,9 @@ export default function Alumni({
     const [prodi, setProdi] = useState(filters.prodi || "");
 
     const getImageUrl = (imagePath) => {
-        return imagePath
-            ? `/storage/${imagePath.replace("storage/", "")}`
-            : "/assets/img/dosen/default.png";
+        if (!imagePath) return "/assets/img/dosen/default.png";
+        if (imagePath.startsWith("http") || imagePath.startsWith("/")) return imagePath;
+        return `/storage/${imagePath}`;
     };
 
     const handleFilter = (e) => {
@@ -213,6 +212,9 @@ export default function Alumni({
                                                     )}
                                                     alt={alumni.name}
                                                     className="object-cover w-full h-full transition-transform group-hover:scale-110"
+                                                    onError={(e) => {
+                                                        e.target.src = "/assets/img/dosen/default.png";
+                                                    }}
                                                 />
                                             </div>
                                             <p className="relative z-10 mb-6 italic font-medium text-gray-600 dark:text-gray-300">
@@ -231,7 +233,7 @@ export default function Alumni({
                                                         "Alumni"}
                                                 </p>
                                                 <p className="mt-2 text-xs text-gray-500">
-                                                    {alumni.program_studi ||
+                                                    {alumni.program_studi?.name ||
                                                         "STIKes Bogor Husada"}
                                                     {alumni.tahun_lulus
                                                         ? ` - Angkatan ${alumni.tahun_lulus}`
