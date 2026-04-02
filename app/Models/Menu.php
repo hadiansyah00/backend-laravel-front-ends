@@ -48,17 +48,15 @@ class Menu extends Model
     public function getLinkAttribute()
     {
         if ($this->type === 'page') {
-            // 1. Kalau ada relasi page & slugnya ada
+            // Gunakan slug untuk membuat URL langsung (tanpa named route)
             if ($this->page && $this->page->slug) {
-                return route('front.pages.show', $this->page->slug);
+                return url('/' . $this->page->slug);
             }
 
-            // 2. Kalau tidak ada relasi page, coba pakai slug dari menu
             if ($this->slug) {
-                return route('front.pages.show', $this->slug);
+                return url('/' . $this->slug);
             }
 
-            // 3. Kalau dua-duanya kosong → fallback
             return '#';
         }
 

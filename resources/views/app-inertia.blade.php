@@ -15,10 +15,20 @@
         $seoTitle       = ($seo['title'] ?? null) ?: setting('meta_title', config('app.name', 'STIKes Bogor Husada'));
         $seoDescription = ($seo['description'] ?? null) ?: setting('meta_description', 'Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional di Bogor.');
         $seoKeywords    = ($seo['keywords'] ?? null) ?: setting('meta_keywords', 'STIKes Bogor Husada, kampus kesehatan bogor, sekolah tinggi ilmu kesehatan, pendaftaran mahasiswa baru');
-        $seoImage       = ($seo['image'] ?? null) ?: asset('assets/img/icon/logo_sbh_persegi.png');
+        $seoImage       = ($seo['image'] ?? null) ?: (setting('og_image') ? asset('storage/' . setting('og_image')) : asset('assets/img/icon/logo_sbh_persegi.png'));
         $seoUrl         = ($seo['url'] ?? null) ?: url()->current();
         $seoType        = ($seo['type'] ?? null) ?: 'website';
-        $seoAuthor      = ($seo['author'] ?? null) ?: 'STIKes Bogor Husada';
+        $seoAuthor      = ($seo['author'] ?? null) ?: setting('site_name', 'STIKes Bogor Husada');
+
+        // OG bisa punya judul/deskripsi sendiri yg beda dari meta biasa
+        $ogTitle        = ($seo['og_title'] ?? null) ?: setting('og_title') ?: $seoTitle;
+        $ogDescription  = ($seo['og_description'] ?? null) ?: setting('og_description') ?: $seoDescription;
+
+        // Twitter Card Type dari setting
+        $twitterCard    = setting('twitter_card', 'summary_large_image');
+
+        // Favicon dari setting atau fallback
+        $faviconUrl     = setting('site_favicon') ? asset('storage/' . setting('site_favicon')) : asset('assets/img/icon/logo-bulet-sbh.png');
     @endphp
 
     <title inertia>{{ $seoTitle }}</title>
@@ -30,25 +40,25 @@
     <meta name="robots" content="{{ $seo['robots'] ?? 'index, follow' }}">
     <link rel="canonical" href="{{ $seoUrl }}">
 
-    {{-- Open Graph / Facebook --}}
+    {{-- Open Graph / Facebook / WhatsApp --}}
     <meta property="og:type" content="{{ $seoType }}">
     <meta property="og:url" content="{{ $seoUrl }}">
-    <meta property="og:title" content="{{ $seoTitle }}">
-    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:title" content="{{ $ogTitle }}">
+    <meta property="og:description" content="{{ $ogDescription }}">
     <meta property="og:image" content="{{ $seoImage }}">
-    <meta property="og:site_name" content="STIKes Bogor Husada">
+    <meta property="og:site_name" content="{{ setting('site_name', 'STIKes Bogor Husada') }}">
     <meta property="og:locale" content="id_ID">
 
     {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="{{ $twitterCard }}">
     <meta name="twitter:url" content="{{ $seoUrl }}">
-    <meta name="twitter:title" content="{{ $seoTitle }}">
-    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <meta name="twitter:title" content="{{ $ogTitle }}">
+    <meta name="twitter:description" content="{{ $ogDescription }}">
     <meta name="twitter:image" content="{{ $seoImage }}">
 
-    {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/icon/logo-bulet-sbh.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/img/icon/logo-bulet-sbh.png') }}">
+    {{-- Favicon (dari admin setting atau fallback) --}}
+    <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
@@ -62,17 +72,25 @@
         <script type="application/ld+json">{!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'EducationalOrganization',
-            'name' => 'STIKes Bogor Husada',
+            'name' => setting('site_name', 'STIKes Bogor Husada'),
             'url' => url('/'),
             'logo' => asset('assets/img/icon/logo_sbh_persegi.png'),
             'description' => $seoDescription,
             'address' => [
                 '@type' => 'PostalAddress',
+                'streetAddress' => setting('contact_address', ''),
                 'addressLocality' => 'Bogor',
                 'addressRegion' => 'Jawa Barat',
                 'addressCountry' => 'ID',
             ],
+            'telephone' => setting('contact_phone', ''),
+            'email' => setting('contact_email', ''),
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+    @endif
+
+    {{-- Google Analytics (dari admin setting) --}}
+    @if(setting('google_analytics'))
+        {!! setting('google_analytics') !!}
     @endif
 
     {{-- Scripts --}}

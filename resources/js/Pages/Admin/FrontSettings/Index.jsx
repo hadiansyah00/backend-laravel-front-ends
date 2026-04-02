@@ -23,7 +23,6 @@ export default function Index({ settings }) {
     // Initialize footer links from DB
     const [footerLinks, setFooterLinks] = useState(() => {
         const parsed = parseJsonSetting('footer_links', []);
-        // Ensure structure: [{ title: '', links: [{ text: '', url: '' }] }]
         if (parsed.length === 0) {
             return [{ title: 'Menu', links: [{ text: '', url: '' }] }];
         }
@@ -40,27 +39,43 @@ export default function Index({ settings }) {
     });
 
     const { data, setData, post, processing } = useForm({
+        // ======== Branding ========
         site_name: getSetting('site_name', 'STIKes Bogor Husada'),
-        site_description: getSetting('site_description', ''),
+        // File inputs
+        logo_main: null,
+        logo_sticky: null,
+        site_logo: null,
+        site_favicon: null,
+
+        // ======== Contact ========
         contact_email: getSetting('contact_email', ''),
         contact_email_link: getSetting('contact_email_link', ''),
         contact_phone: getSetting('contact_phone', ''),
         contact_phone_link: getSetting('contact_phone_link', ''),
         contact_address: getSetting('contact_address', ''),
         copyright_text: getSetting('copyright_text', `© ${new Date().getFullYear()} STIKes Bogor Husada. All rights reserved.`),
+
+        // ======== SEO Global ========
+        meta_title: getSetting('meta_title', 'STIKes Bogor Husada'),
+        meta_description: getSetting('meta_description', ''),
+        meta_keywords: getSetting('meta_keywords', ''),
+        og_title: getSetting('og_title', ''),
+        og_description: getSetting('og_description', ''),
+        og_default_image: null, // file upload → stored as og_image
+        twitter_card: getSetting('twitter_card', 'summary_large_image'),
+        google_analytics: getSetting('google_analytics', ''),
+        google_analytics_id: getSetting('google_analytics_id', ''),
+
+        // ======== Social Media (individual) ========
         social_facebook: getSetting('social_facebook', ''),
         social_instagram: getSetting('social_instagram', ''),
         social_youtube: getSetting('social_youtube', ''),
         social_twitter: getSetting('social_twitter', ''),
         social_tiktok: getSetting('social_tiktok', ''),
-        google_analytics_id: getSetting('google_analytics_id', ''),
-        // JSON fields will be stringified on submit
+
+        // ======== JSON fields (stringified on submit) ========
         footer_links: '',
         social_links: '',
-        // File inputs
-        site_logo: null,
-        site_favicon: null,
-        og_default_image: null,
     });
 
     const [activeTab, setActiveTab] = useState('branding');
@@ -96,6 +111,7 @@ export default function Index({ settings }) {
     // =================== Social Links Handlers ===================
     const socialIconOptions = [
         { value: 'fab fa-facebook', label: 'Facebook', color: 'text-blue-600' },
+        { value: 'fab fa-facebook-f', label: 'Facebook (alt)', color: 'text-blue-600' },
         { value: 'fab fa-instagram', label: 'Instagram', color: 'text-pink-500' },
         { value: 'fab fa-youtube', label: 'YouTube', color: 'text-red-500' },
         { value: 'fab fa-twitter', label: 'Twitter / X', color: 'text-sky-500' },
@@ -113,7 +129,6 @@ export default function Index({ settings }) {
     const updateSocialLink = (idx, field, value) => {
         const updated = [...socialLinks];
         updated[idx][field] = value;
-        // Auto-set name from icon selection
         if (field === 'icon') {
             const found = socialIconOptions.find(o => o.value === value);
             if (found) updated[idx].name = found.label;
@@ -142,12 +157,24 @@ export default function Index({ settings }) {
     // Common input class
     const inputClass = "w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition-colors";
 
+    // Image preview helper
+    const ImagePreview = ({ settingKey, label, height = 'h-16', width = 'w-32' }) => {
+        const val = getSetting(settingKey);
+        if (!val) return null;
+        return (
+            <div className={`${width} ${height} bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center p-2`}>
+                <img src={`/storage/${val}`} alt={label} className="max-h-full max-w-full object-contain" />
+            </div>
+        );
+    };
+
     const tabs = [
         { id: 'branding', label: 'Branding & Logo', icon: 'fas fa-paint-brush' },
         { id: 'contact', label: 'Info Kontak', icon: 'fas fa-address-book' },
         { id: 'footer', label: 'Footer Links', icon: 'fas fa-link' },
         { id: 'social', label: 'Media Sosial', icon: 'fab fa-instagram' },
-        { id: 'seo', label: 'SEO & Analytics', icon: 'fas fa-search' },
+        { id: 'seo', label: 'SEO & Meta Tags', icon: 'fas fa-search' },
+        { id: 'analytics', label: 'Analytics & Script', icon: 'fas fa-chart-line' },
     ];
 
     return (
@@ -161,7 +188,7 @@ export default function Index({ settings }) {
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                             Konfigurasi Website Utama
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">Atur identitas, kontak, navigasi footer, metadata SEO, dan social media links untuk seluruh halaman.</p>
+                        <p className="text-sm text-gray-500 mt-1">Atur identitas, kontak, navigasi footer, metadata SEO, Open Graph, dan social media links untuk seluruh halaman.</p>
                     </div>
 
                     {/* Tab Navigation */}
@@ -195,31 +222,66 @@ export default function Index({ settings }) {
                                         placeholder="STIKes Bogor Husada"
                                     />
                                 </div>
+
+                                <hr className="border-gray-200 dark:border-gray-800" />
+
+                                {/* Logo Main */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Upload Logo Utama</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-image text-indigo-500 mr-1.5"></i>Logo Utama (Navbar saat di atas)
+                                    </label>
                                     <div className="flex items-center gap-6">
-                                        {getSetting('site_logo') && (
-                                            <div className="w-32 h-16 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center p-2">
-                                                <img src={`/storage/${getSetting('site_logo')}`} alt="Logo" className="max-h-full max-w-full object-contain" />
-                                            </div>
-                                        )}
+                                        <ImagePreview settingKey="logo_main" label="Logo Main" />
                                         <input
                                             type="file"
                                             accept="image/*"
                                             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/40 dark:file:text-indigo-400"
+                                            onChange={e => setData('logo_main', e.target.files[0])}
+                                        />
+                                    </div>
+                                    <p className="mt-2 text-xs text-gray-500">Logo yang muncul di Navbar saat halaman masih di paling atas (belum scroll). Rekomendasi PNG transparan.</p>
+                                </div>
+
+                                {/* Logo Sticky */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-thumbtack text-orange-500 mr-1.5"></i>Logo Sticky (Navbar saat scroll)
+                                    </label>
+                                    <div className="flex items-center gap-6">
+                                        <ImagePreview settingKey="logo_sticky" label="Logo Sticky" />
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 dark:file:bg-orange-900/40 dark:file:text-orange-400"
+                                            onChange={e => setData('logo_sticky', e.target.files[0])}
+                                        />
+                                    </div>
+                                    <p className="mt-2 text-xs text-gray-500">Logo yang muncul setelah user scroll ke bawah (biasanya lebih kecil/compact).</p>
+                                </div>
+
+                                {/* site_logo (general logo) */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-building text-green-500 mr-1.5"></i>Logo Umum (Footer & Lainnya)
+                                    </label>
+                                    <div className="flex items-center gap-6">
+                                        <ImagePreview settingKey="site_logo" label="Logo Site" />
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 dark:file:bg-green-900/40 dark:file:text-green-400"
                                             onChange={e => setData('site_logo', e.target.files[0])}
                                         />
                                     </div>
-                                    <p className="mt-2 text-xs text-gray-500">Gunakan format PNG transparan untuk hasil terbaik (resolusi rekomendasi: minimal 300x100px).</p>
                                 </div>
+
+                                {/* Favicon */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Upload Favicon (Ikon Tab)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-globe text-blue-500 mr-1.5"></i>Favicon (Ikon Tab Browser)
+                                    </label>
                                     <div className="flex items-center gap-6">
-                                        {getSetting('site_favicon') && (
-                                            <div className="w-12 h-12 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center p-2">
-                                                <img src={`/storage/${getSetting('site_favicon')}`} alt="Favicon" className="max-h-full max-w-full object-contain" />
-                                            </div>
-                                        )}
+                                        <ImagePreview settingKey="site_favicon" label="Favicon" width="w-12" height="h-12" />
                                         <input
                                             type="file"
                                             accept="image/png, image/x-icon"
@@ -274,7 +336,6 @@ export default function Index({ settings }) {
                                             onChange={e => setData('contact_phone', e.target.value)}
                                             placeholder="+62 251 8312xxx"
                                         />
-                                        <p className="mt-1 text-xs text-gray-400">Teks nomor yang ditampilkan kepada pengunjung.</p>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -287,7 +348,6 @@ export default function Index({ settings }) {
                                             onChange={e => setData('contact_phone_link', e.target.value)}
                                             placeholder="+622518312xxx"
                                         />
-                                        <p className="mt-1 text-xs text-gray-400">Nomor tanpa spasi untuk link <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">tel:</code></p>
                                     </div>
                                 </div>
                                 <div>
@@ -316,7 +376,6 @@ export default function Index({ settings }) {
                                         onChange={e => setData('copyright_text', e.target.value)}
                                         placeholder={`© ${new Date().getFullYear()} STIKes Bogor Husada. All rights reserved.`}
                                     />
-                                    <p className="mt-1 text-xs text-gray-400">Teks yang ditampilkan di bagian paling bawah footer.</p>
                                 </div>
                             </div>
                         )}
@@ -327,7 +386,7 @@ export default function Index({ settings }) {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h4 className="text-sm font-bold text-gray-900 dark:text-white">Navigasi Footer</h4>
-                                        <p className="text-xs text-gray-500 mt-0.5">Kelola grup link yang akan ditampilkan di footer website. Setiap grup memiliki judul dan daftar link.</p>
+                                        <p className="text-xs text-gray-500 mt-0.5">Kelola grup link yang akan ditampilkan di footer website.</p>
                                     </div>
                                     <button
                                         type="button"
@@ -458,7 +517,7 @@ export default function Index({ settings }) {
                                     <div className="flex items-center justify-between mb-4">
                                         <div>
                                             <h4 className="text-sm font-bold text-gray-900 dark:text-white">Ikon Sosial Media (Footer)</h4>
-                                            <p className="text-xs text-gray-500 mt-0.5">Kelola ikon sosial media yang tampil di baris bawah footer. Data ini tersimpan sebagai JSON di <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">social_links</code>.</p>
+                                            <p className="text-xs text-gray-500 mt-0.5">Kelola ikon sosial media yang tampil di baris bawah footer.</p>
                                         </div>
                                         <button
                                             type="button"
@@ -472,7 +531,6 @@ export default function Index({ settings }) {
                                     <div className="space-y-3">
                                         {socialLinks.map((social, idx) => (
                                             <div key={idx} className="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3">
-                                                {/* Icon Preview */}
                                                 <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center flex-shrink-0">
                                                     <i className={`${social.icon} text-lg ${socialIconOptions.find(o => o.value === social.icon)?.color || 'text-gray-400'}`}></i>
                                                 </div>
@@ -507,29 +565,96 @@ export default function Index({ settings }) {
                             </div>
                         )}
 
-                        {/* =================== Tab 5: Global SEO & Analytics =================== */}
+                        {/* =================== Tab 5: SEO & Meta Tags =================== */}
                         {activeTab === 'seo' && (
                             <div className="space-y-6 animate-fade-in">
+                                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-300">
+                                    <i className="fas fa-info-circle mr-2"></i>
+                                    Pengaturan ini menjadi <strong>fallback default</strong> untuk semua halaman. Halaman yang memiliki meta spesifik di controller (artikel, event, dll.) akan menggunakan data spesifik halaman tersebut.
+                                </div>
+
+                                {/* Meta Title */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Global Meta Description (Fallback)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-heading text-indigo-500 mr-1.5"></i>Meta Title (Judul Tab & Google)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={data.meta_title}
+                                        onChange={e => setData('meta_title', e.target.value)}
+                                        placeholder="STIKes Bogor Husada - Kampus Kesehatan Terbaik di Bogor"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-400">Judul utama yang ditampilkan di tab browser dan hasil pencarian Google. Ideal: 50-60 karakter. Saat ini: <span className="font-mono font-bold">{data.meta_title.length}</span></p>
+                                </div>
+
+                                {/* Meta Description */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-align-left text-green-500 mr-1.5"></i>Meta Description
+                                    </label>
                                     <textarea
                                         rows={3}
                                         className={inputClass}
-                                        value={data.site_description}
-                                        onChange={e => setData('site_description', e.target.value)}
+                                        value={data.meta_description}
+                                        onChange={e => setData('meta_description', e.target.value)}
                                         placeholder="Deskripsi global yang akan digunakan jika halaman tidak memiliki meta deskripsi spesifik."
                                     ></textarea>
-                                    <p className="mt-1 text-xs text-gray-400">Disarankan 150-160 karakter. Saat ini: <span className="font-mono font-bold">{data.site_description.length}</span> karakter.</p>
+                                    <p className="mt-1 text-xs text-gray-400">Deskripsi yang muncul di bawah judul pada hasil pencarian Google. Ideal: 150-160 karakter. Saat ini: <span className="font-mono font-bold">{data.meta_description.length}</span></p>
                                 </div>
 
+                                {/* Meta Keywords */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Default Open Graph Image (FB/WA/Twitter)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-tags text-orange-500 mr-1.5"></i>Meta Keywords
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={data.meta_keywords}
+                                        onChange={e => setData('meta_keywords', e.target.value)}
+                                        placeholder="STIKes Bogor Husada, kampus kesehatan, PMB, pendaftaran mahasiswa baru"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-400">Pisahkan kata kunci dengan koma. Ini menjadi fallback jika halaman tidak memiliki keywords sendiri.</p>
+                                </div>
+
+                                <hr className="border-gray-200 dark:border-gray-800" />
+
+                                <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                    <i className="fab fa-facebook-square text-blue-600"></i> Open Graph (Facebook / WhatsApp / Telegram)
+                                </h4>
+
+                                {/* OG Title */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">OG Title</label>
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={data.og_title}
+                                        onChange={e => setData('og_title', e.target.value)}
+                                        placeholder="STIKes Bogor Husada - Kampus Kesehatan Unggul"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-400">Judul yang muncul saat link website di-share. Kosongkan untuk menggunakan Meta Title sebagai fallback.</p>
+                                </div>
+
+                                {/* OG Description */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">OG Description</label>
+                                    <textarea
+                                        rows={2}
+                                        className={inputClass}
+                                        value={data.og_description}
+                                        onChange={e => setData('og_description', e.target.value)}
+                                        placeholder="Tempat belajar dan berkembang di bidang kesehatan bersama STIKes Bogor Husada."
+                                    ></textarea>
+                                    <p className="mt-1 text-xs text-gray-400">Deskripsi yang tampil di WhatsApp/Facebook saat link di-share. Kosongkan untuk menggunakan Meta Description.</p>
+                                </div>
+
+                                {/* OG Image */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">OG Image (Gambar Share Default)</label>
                                     <div className="flex items-center gap-6">
-                                        {getSetting('og_default_image') && (
-                                            <div className="w-48 h-auto bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center p-2">
-                                                <img src={`/storage/${getSetting('og_default_image')}`} alt="OG Default" className="max-h-full max-w-full rounded" />
-                                            </div>
-                                        )}
+                                        <ImagePreview settingKey="og_image" label="OG Image" width="w-48" height="h-auto" />
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -537,13 +662,38 @@ export default function Index({ settings }) {
                                             onChange={e => setData('og_default_image', e.target.files[0])}
                                         />
                                     </div>
-                                    <p className="mt-2 text-xs text-gray-500">Gambar yang akan ditampilkan saat link website di-share di sosial media jika halaman tersebut tidak mempunyai thumbnail khusus. Resolusi ideal: 1200x630px.</p>
+                                    <p className="mt-2 text-xs text-gray-500">Gambar yang tampil saat link website di-share di sosial media. Resolusi ideal: <strong>1200×630px</strong>.</p>
                                 </div>
 
                                 <hr className="border-gray-200 dark:border-gray-800" />
 
+                                <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                    <i className="fab fa-twitter text-sky-500"></i> Twitter Card
+                                </h4>
+
+                                {/* Twitter Card Type */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Google Analytics ID (Opsional)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe Twitter Card</label>
+                                    <select
+                                        className={`${inputClass} md:w-1/2`}
+                                        value={data.twitter_card}
+                                        onChange={e => setData('twitter_card', e.target.value)}
+                                    >
+                                        <option value="summary_large_image">Summary Large Image (Rekomendasi)</option>
+                                        <option value="summary">Summary (Kecil)</option>
+                                    </select>
+                                    <p className="mt-1 text-xs text-gray-400">Tipe preview yang muncul saat link di-share ke Twitter/X.</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* =================== Tab 6: Analytics & Script =================== */}
+                        {activeTab === 'analytics' && (
+                            <div className="space-y-6 animate-fade-in">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fab fa-google text-red-500 mr-1.5"></i>Google Analytics Measurement ID
+                                    </label>
                                     <input
                                         type="text"
                                         className={`${inputClass} md:w-1/2 font-mono`}
@@ -551,7 +701,28 @@ export default function Index({ settings }) {
                                         onChange={e => setData('google_analytics_id', e.target.value)}
                                         placeholder="G-XXXXXXXXXX"
                                     />
-                                    <p className="mt-1 text-xs text-gray-500">Masukkan Measurement ID Google Analytics 4 Anda untuk melacak pengunjung.</p>
+                                    <p className="mt-1 text-xs text-gray-500">Masukkan Measurement ID Google Analytics 4 Anda (format: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">G-XXXXXXX</code>).</p>
+                                </div>
+
+                                <hr className="border-gray-200 dark:border-gray-800" />
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <i className="fas fa-code text-purple-500 mr-1.5"></i>Google Analytics / Custom Script (Raw HTML)
+                                    </label>
+                                    <textarea
+                                        rows={8}
+                                        className={`${inputClass} font-mono text-xs`}
+                                        value={data.google_analytics}
+                                        onChange={e => setData('google_analytics', e.target.value)}
+                                        placeholder={'<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag(\'js\', new Date());\n  gtag(\'config\', \'G-XXXXXXXXXX\');\n</script>'}
+                                    ></textarea>
+                                    <p className="mt-1 text-xs text-gray-500">Tempel kode JS/HTML mentah di sini (termasuk tag <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">&lt;script&gt;</code>). Script ini akan di-inject ke bagian <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">&lt;head&gt;</code> di semua halaman.</p>
+                                </div>
+
+                                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 text-sm text-yellow-800 dark:text-yellow-300">
+                                    <i className="fas fa-exclamation-triangle mr-2"></i>
+                                    <strong>Perhatian:</strong> Pastikan kode yang Anda tempel adalah kode resmi dari Google Analytics, Meta Pixel, atau penyedia analytics terpercaya lainnya. Kode berbahaya di sini bisa mempengaruhi seluruh website.
                                 </div>
                             </div>
                         )}

@@ -33,30 +33,39 @@ class FrontSettingController extends Controller
         // Fields that are stored as JSON
         $jsonFields = ['footer_links', 'social_links'];
 
+        // Remap form field names → DB key names
+        // Ini diperlukan karena beberapa field di form menggunakan nama berbeda dari key di DB.
+        $keyMap = [
+            'og_default_image' => 'og_image',
+        ];
+
         foreach ($data as $key => $value) {
             // Skip null values (e.g. file inputs that weren't changed)
             if (is_null($value)) {
                 continue;
             }
 
+            // Remap key jika ada pemetaan
+            $dbKey = $keyMap[$key] ?? $key;
+
             // handle upload file
             if ($request->hasFile($key)) {
                 $path = $request->file($key)->store('uploads/settings', 'public');
                 $value = $path;
                 $type = 'image';
-            } elseif (in_array($key, $jsonFields)) {
+            } elseif (in_array($dbKey, $jsonFields)) {
                 $type = 'json';
             } else {
                 $type = 'text';
             }
 
             FrontSetting::updateOrCreate(
-                ['key' => $key],
+                ['key' => $dbKey],
                 ['value' => $value, 'type' => $type]
             );
 
             // clear cache supaya setting() baca ulang
-            Cache::forget('settings.'.$key);
+            Cache::forget('settings.'.$dbKey);
         }
 
         return back()->with('success', 'Pengaturan berhasil disimpan.');

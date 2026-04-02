@@ -83,7 +83,7 @@ class SearchController extends Controller
                 $events = Event::where('is_active', 1)
                     ->where(function ($query) use ($q) {
                         $query->where('title', 'like', "%{$q}%")
-                            ->orWhere('description', 'like', "%{$q}%")
+                            ->orWhere('content', 'like', "%{$q}%")
                             ->orWhere('location', 'like', "%{$q}%");
                     })
                     ->get()
@@ -93,9 +93,9 @@ class SearchController extends Controller
                             'type' => 'Event',
                             'title' => $item->title,
                             'url' => route('front.event.show', $item->slug),
-                            'snippet' => Str::limit(strip_tags($item->description), 150),
-                            'date' => optional($item->start_date)->format('Y-m-d'),
-                            'image' => $item->thumbnail ? (str_starts_with($item->thumbnail, 'http') ? $item->thumbnail : asset('storage/' . $item->thumbnail)) : null,
+                            'snippet' => Str::limit(strip_tags($item->content), 150),
+                            'date' => $item->start_date,
+                            'image' => $item->image ? (str_starts_with($item->image, 'http') ? $item->image : asset('storage/' . $item->image)) : null,
                         ];
                     });
                 $results = $results->concat($events);
@@ -127,14 +127,14 @@ class SearchController extends Controller
                         $query->where('name', 'like', "%{$q}%")
                             ->orWhere('nip', 'like', "%{$q}%")
                             ->orWhere('prodi', 'like', "%{$q}%")
-                            ->orWhere('jabatan', 'like', "%{$q}%");
+                            ->orWhere('position', 'like', "%{$q}%");
                     })
                     ->get()
                     ->map(function ($item) {
                         return [
                             'id' => 'dosen_' . $item->id,
                             'type' => 'Dosen',
-                            'title' => $item->name . ' (' . implode(', ', array_filter([$item->jabatan, $item->prodi])) . ')',
+                            'title' => $item->name . ' (' . implode(', ', array_filter([$item->position, $item->prodi])) . ')',
                             'url' => route('front.dosen') . '?search=' . urlencode($item->name),
                             'snippet' => 'Dosen program studi ' . $item->prodi,
                             'date' => null,
