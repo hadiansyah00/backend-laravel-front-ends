@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Head, Link } from '@inertiajs/react';
 
 export default function EventDetail({ event, upcomingEvents }) {
+    const [copied, setCopied] = useState(false);
+
     // Format helpers
     const formatDate = (dateString) => {
         if (!dateString) return '';
@@ -18,18 +20,60 @@ export default function EventDetail({ event, upcomingEvents }) {
     const mapURL = event?.map_url || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.023214877771!2d106.77259257499422!3d-6.643997693350419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69cf2cd271ce33%3A0xc6ad10e3dfd3b207!2sSTIKes%20Bogor%20Husada!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid";
     const imageUrl = event?.thumbnail ? `/storage/${event.thumbnail.replace('storage/', '')}` : '/img/placeholder-image-large.png';
 
+    const pageUrl = typeof window !== 'undefined'
+        ? window.location.href
+        : `/event/${event?.slug}`;
+
+    const fullImageUrl = typeof window !== 'undefined'
+        ? (imageUrl.startsWith('http') ? imageUrl : window.location.origin + imageUrl)
+        : imageUrl;
+
+    const shareText = event?.description 
+        ? event.description.substring(0, 150).replace(/<[^>]+>/g, '') + '...' 
+        : 'Event di STIKes Bogor Husada';
+
+    // =========== SHARE HANDLERS ===========
+    const shareToFacebook = () => {
+        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const shareToWhatsApp = () => {
+        const text = `Saksikan Event ini: ${event?.title}\n\n${shareText}\n\nInfo lengkap: ${pageUrl}`;
+        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const shareToTwitter = () => {
+        const text = `${event?.title} - Event STIKes Bogor Husada`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const shareToTelegram = () => {
+        const url = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(event?.title)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(pageUrl).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
+    };
+
     return (
         <MainLayout title={event ? `Event: ${event.title} | STIKes Bogor Husada` : 'Event Tidak Ditemukan'}>
             <Head>
                 <title>{event ? `Event: ${event.title} | STIKes Bogor Husada` : 'Event Tidak Ditemukan'}</title>
                 {event && (
                     <>
-                        <meta head-key="description" name="description" content={event.description ? event.description.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Event di STIKes Bogor Husada'} />
+                        <meta head-key="description" name="description" content={shareText} />
                         <meta head-key="og:title" property="og:title" content={event.title} />
-                        <meta head-key="og:description" property="og:description" content={event.description ? event.description.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Event di STIKes Bogor Husada'} />
-                        <meta head-key="og:image" property="og:image" content={typeof window !== 'undefined' ? window.location.origin + imageUrl : imageUrl} />
+                        <meta head-key="og:description" property="og:description" content={shareText} />
+                        <meta head-key="og:image" property="og:image" content={fullImageUrl} />
                         <meta head-key="og:type" property="og:type" content="article" />
-                        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/'} />
+                        <link rel="canonical" href={pageUrl} />
                     </>
                 )}
             </Head>
@@ -46,6 +90,28 @@ export default function EventDetail({ event, upcomingEvents }) {
                                         <img src={imageUrl} alt={event.title} className="w-full h-auto object-cover aspect-[4/3]" />
                                         <div className="absolute top-4 left-4 bg-orange-600 text-white font-bold px-4 py-1.5 rounded-full text-sm shadow-lg">
                                             Kegiatan
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Kolom Share di Bawah Gambar untuk Desktop, atau inline untuk mobile */}
+                                    <div className="mt-6 flex flex-col sm:flex-row justify-between items-center bg-gray-50 border border-gray-100 rounded-2xl p-4 dark:bg-gray-900 dark:border-gray-800 gap-4 shadow-sm">
+                                        <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 font-medium whitespace-nowrap">Bagikan Event:</span>
+                                        <div className="flex items-center justify-around w-full sm:justify-end gap-3">
+                                            <button onClick={shareToFacebook} title="Share ke Facebook" className="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition-all hover:scale-110">
+                                                <i className="fab fa-facebook-f"></i>
+                                            </button>
+                                            <button onClick={shareToWhatsApp} title="Share ke WhatsApp" className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center transition-all hover:scale-110">
+                                                <i className="fab fa-whatsapp"></i>
+                                            </button>
+                                            <button onClick={shareToTwitter} title="Share ke Twitter/X" className="w-10 h-10 rounded-full bg-black hover:bg-gray-800 text-white flex items-center justify-center transition-all hover:scale-110">
+                                                <i className="fab fa-x-twitter"></i>
+                                            </button>
+                                            <button onClick={shareToTelegram} title="Share ke Telegram" className="w-10 h-10 rounded-full bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center transition-all hover:scale-110">
+                                                <i className="fab fa-telegram-plane"></i>
+                                            </button>
+                                            <button onClick={copyLink} title="Salin Link" className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${copied ? 'bg-green-600 text-white' : 'bg-gray-800 hover:bg-black text-white'}`}>
+                                                <i className={copied ? 'fas fa-check' : 'fas fa-link'}></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

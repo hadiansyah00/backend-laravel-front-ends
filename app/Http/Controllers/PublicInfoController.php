@@ -32,6 +32,10 @@ class PublicInfoController extends Controller
         return Inertia::render('Frontend/Tentang/Profil', [
             'data' => $data,
             'visiMisi' => $visiMisi
+        ])->withViewData('seo', [
+            'title'       => 'Profil - STIKes Bogor Husada',
+            'description' => 'Profil lengkap STIKes Bogor Husada, sekolah tinggi ilmu kesehatan terkemuka di Bogor yang mencetak tenaga medis profesional.',
+            'keywords'    => 'profil STIKes Bogor Husada, tentang kampus kesehatan bogor, sejarah stikes husada',
         ]);
     }
 
@@ -41,7 +45,12 @@ class PublicInfoController extends Controller
     public function sambutanKetua()
     {
         $data = TentangKami::where('type', 'sambutan')->where('is_active', 1)->first();
-        return Inertia::render('Frontend/Tentang/Sambutan', ['data' => $data]);
+        return Inertia::render('Frontend/Tentang/Sambutan', ['data' => $data])
+            ->withViewData('seo', [
+                'title'       => 'Sambutan Ketua - STIKes Bogor Husada',
+                'description' => 'Sambutan Ketua STIKes Bogor Husada mengenai visi, misi, dan komitmen institusi dalam mencetak tenaga kesehatan yang profesional.',
+                'keywords'    => 'sambutan ketua STIKes Bogor Husada, kata sambutan kampus kesehatan',
+            ]);
     }
 
     /**
@@ -50,7 +59,12 @@ class PublicInfoController extends Controller
     public function visiMisi()
     {
         $data = TentangKami::where('type', 'visi_misi')->where('is_active', 1)->first();
-        return Inertia::render('Frontend/Tentang/VisiMisi', ['data' => $data]);
+        return Inertia::render('Frontend/Tentang/VisiMisi', ['data' => $data])
+            ->withViewData('seo', [
+                'title'       => 'Visi & Misi - STIKes Bogor Husada',
+                'description' => 'Visi dan Misi STIKes Bogor Husada sebagai institusi pendidikan tinggi kesehatan unggulan di Bogor.',
+                'keywords'    => 'visi misi STIKes Bogor Husada, tujuan kampus kesehatan bogor',
+            ]);
     }
 
     /**
@@ -59,7 +73,12 @@ class PublicInfoController extends Controller
     public function sejarah()
     {
         $data = TentangKami::where('type', 'sejarah')->where('is_active', 1)->first();
-        return Inertia::render('Frontend/Tentang/Sejarah', ['data' => $data]);
+        return Inertia::render('Frontend/Tentang/Sejarah', ['data' => $data])
+            ->withViewData('seo', [
+                'title'       => 'Sejarah - STIKes Bogor Husada',
+                'description' => 'Sejarah pendirian dan perkembangan STIKes Bogor Husada dari awal hingga saat ini.',
+                'keywords'    => 'sejarah STIKes Bogor Husada, asal usul kampus kesehatan bogor',
+            ]);
     }
 
     /**
@@ -68,32 +87,56 @@ class PublicInfoController extends Controller
     public function strukturOrganisasi()
     {
         $data = TentangKami::where('type', 'struktur')->where('is_active', 1)->first();
-        return Inertia::render('Frontend/Tentang/Struktur', ['data' => $data]);
+        return Inertia::render('Frontend/Tentang/Struktur', ['data' => $data])
+            ->withViewData('seo', [
+                'title'       => 'Struktur Organisasi - STIKes Bogor Husada',
+                'description' => 'Struktur organisasi dan tata kelola STIKes Bogor Husada.',
+                'keywords'    => 'struktur organisasi STIKes Bogor Husada, pimpinan kampus kesehatan bogor',
+            ]);
     }
 
     // ================== AKADEMIK ==================
     public function farmasi()
     {
         $programData = \App\Models\ProgramStudi::where('slug', 's1-farmasi')->firstOrFail();
-        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData])
+            ->withViewData('seo', [
+                'title'       => 'S1 Farmasi - STIKes Bogor Husada',
+                'description' => 'Program Studi S1 Farmasi STIKes Bogor Husada. Terakreditasi dan siap mencetak tenaga apoteker profesional.',
+                'keywords'    => 'S1 Farmasi, program studi farmasi bogor, STIKes Bogor Husada, kuliah farmasi',
+            ]);
     }
     public function gizi()
     {
         $programData = \App\Models\ProgramStudi::where('slug', 's1-gizi')->firstOrFail();
-        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData])
+            ->withViewData('seo', [
+                'title'       => 'S1 Gizi - STIKes Bogor Husada',
+                'description' => 'Program Studi S1 Gizi STIKes Bogor Husada. Mencetak ahli gizi profesional dengan kurikulum berbasis kompetensi.',
+                'keywords'    => 'S1 Gizi, program studi gizi bogor, STIKes Bogor Husada, kuliah gizi',
+            ]);
     }
     public function kebidanan()
     {
         $programData = \App\Models\ProgramStudi::where('slug', 'd3-kebidanan')->firstOrFail();
-        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData]);
+        return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData])
+            ->withViewData('seo', [
+                'title'       => 'D3 Kebidanan - STIKes Bogor Husada',
+                'description' => 'Program Studi D3 Kebidanan STIKes Bogor Husada. Pendidikan bidan profesional dengan fasilitas praktik lengkap.',
+                'keywords'    => 'D3 Kebidanan, program studi kebidanan bogor, STIKes Bogor Husada, kuliah kebidanan',
+            ]);
     }
     public function showProgramStudi($slug)
     {
-        // Cari prodi berdasarkan slug yang ada di URL
         $programData = \App\Models\ProgramStudi::where('slug', $slug)->firstOrFail();
 
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', [
             'programData' => $programData
+        ])->withViewData('seo', [
+            'title'       => $programData->name . ' - STIKes Bogor Husada',
+            'description' => $programData->description ? \Illuminate\Support\Str::limit(strip_tags($programData->description), 160) : 'Program Studi ' . $programData->name . ' di STIKes Bogor Husada. Terakreditasi dan siap mencetak tenaga kesehatan profesional.',
+            'keywords'    => $programData->name . ', program studi kesehatan, STIKes Bogor Husada, ' . ($programData->gelar ?? ''),
+            'image'       => $programData->image ? (str_starts_with($programData->image, 'http') ? $programData->image : asset('storage/' . $programData->image)) : null,
         ]);
     }
     public function kalenderAkademik()
@@ -105,6 +148,10 @@ class PublicInfoController extends Controller
 
         return Inertia::render('Frontend/Akademik/Kalender', [
             'kalenders' => $kalenders
+        ])->withViewData('seo', [
+            'title'       => 'Kalender Akademik - STIKes Bogor Husada',
+            'description' => 'Kalender akademik STIKes Bogor Husada. Jadwal perkuliahan, UTS, UAS, dan kegiatan akademik lainnya.',
+            'keywords'    => 'kalender akademik STIKes Bogor Husada, jadwal kuliah, jadwal ujian',
         ]);
     }
 
@@ -112,22 +159,42 @@ class PublicInfoController extends Controller
     public function laboratorium()
     {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'Laboratorium')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/Akademik/Laboratorium', ['fasilitasData' => $fasilitasData]);
+        return Inertia::render('Frontend/Akademik/Laboratorium', ['fasilitasData' => $fasilitasData])
+            ->withViewData('seo', [
+                'title'       => 'Laboratorium - STIKes Bogor Husada',
+                'description' => 'Fasilitas laboratorium modern STIKes Bogor Husada untuk mendukung praktikum mahasiswa kesehatan.',
+                'keywords'    => 'laboratorium STIKes Bogor Husada, fasilitas kampus kesehatan, lab praktikum',
+            ]);
     }
     public function perpustakaan()
     {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'Perpustakaan')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/Akademik/Perpustakaan', ['fasilitasData' => $fasilitasData]);
+        return Inertia::render('Frontend/Akademik/Perpustakaan', ['fasilitasData' => $fasilitasData])
+            ->withViewData('seo', [
+                'title'       => 'Perpustakaan - STIKes Bogor Husada',
+                'description' => 'Perpustakaan STIKes Bogor Husada dengan koleksi buku dan jurnal kesehatan yang lengkap.',
+                'keywords'    => 'perpustakaan STIKes Bogor Husada, koleksi buku kesehatan, jurnal ilmiah',
+            ]);
     }
     public function uppm()
     {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'UPPM')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/UnitFasilitas/Uppm', ['fasilitasData' => $fasilitasData]);
+        return Inertia::render('Frontend/UnitFasilitas/Uppm', ['fasilitasData' => $fasilitasData])
+            ->withViewData('seo', [
+                'title'       => 'UPPM - STIKes Bogor Husada',
+                'description' => 'Unit Penelitian dan Pengabdian Masyarakat (UPPM) STIKes Bogor Husada.',
+                'keywords'    => 'UPPM STIKes Bogor Husada, penelitian kesehatan, pengabdian masyarakat',
+            ]);
     }
     public function upmi()
     {
         $fasilitasData = \App\Models\Fasilitas::where('type', 'UPMI')->where('is_active', 1)->orderBy('order')->first();
-        return Inertia::render('Frontend/UnitFasilitas/Upmi', ['fasilitasData' => $fasilitasData]);
+        return Inertia::render('Frontend/UnitFasilitas/Upmi', ['fasilitasData' => $fasilitasData])
+            ->withViewData('seo', [
+                'title'       => 'UPMI - STIKes Bogor Husada',
+                'description' => 'Unit Penjaminan Mutu Internal (UPMI) STIKes Bogor Husada.',
+                'keywords'    => 'UPMI STIKes Bogor Husada, penjaminan mutu, akreditasi kampus',
+            ]);
     }
 
     /**
@@ -141,6 +208,10 @@ class PublicInfoController extends Controller
 
         return Inertia::render('Frontend/Pengumuman', [
             'pengumumans' => $pengumumans,
+        ])->withViewData('seo', [
+            'title'       => 'Pengumuman - STIKes Bogor Husada',
+            'description' => 'Daftar pengumuman resmi terbaru dari STIKes Bogor Husada. Informasi akademik, penerimaan mahasiswa baru, dan kegiatan kampus.',
+            'keywords'    => 'pengumuman STIKes Bogor Husada, informasi kampus kesehatan, berita akademik',
         ]);
     }
 
@@ -162,6 +233,11 @@ class PublicInfoController extends Controller
         return Inertia::render('Frontend/PengumumanDetail', [
             'pengumuman' => $pengumuman,
             'recentPengumumans' => $recentPengumumans,
+        ])->withViewData('seo', [
+            'title'       => $pengumuman->title . ' - Pengumuman STIKes Bogor Husada',
+            'description' => \Illuminate\Support\Str::limit(strip_tags($pengumuman->content ?? $pengumuman->title), 160),
+            'keywords'    => 'pengumuman ' . $pengumuman->title . ', STIKes Bogor Husada',
+            'url'         => url('/pengumuman/' . $pengumuman->slug),
         ]);
     }
 
@@ -180,6 +256,10 @@ class PublicInfoController extends Controller
 
         return Inertia::render('Frontend/Event', [
             'events' => $events,
+        ])->withViewData('seo', [
+            'title'       => 'Agenda & Kegiatan - STIKes Bogor Husada',
+            'description' => 'Jadwal kegiatan, seminar, workshop, dan acara akademik dari STIKes Bogor Husada.',
+            'keywords'    => 'agenda kampus, kegiatan STIKes Bogor Husada, seminar kesehatan, workshop kampus',
         ]);
     }
 
@@ -203,6 +283,13 @@ class PublicInfoController extends Controller
         return Inertia::render('Frontend/EventDetail', [
             'event' => $event,
             'upcomingEvents' => $upcomingEvents,
+        ])->withViewData('seo', [
+            'title'       => $event->title . ' - Event STIKes Bogor Husada',
+            'description' => \Illuminate\Support\Str::limit(strip_tags($event->description ?? $event->title), 160),
+            'keywords'    => 'event ' . $event->title . ', kegiatan STIKes Bogor Husada',
+            'url'         => url('/event/' . $event->slug),
+            'image'       => $event->image ? (str_starts_with($event->image, 'http') ? $event->image : asset('storage/' . $event->image)) : null,
+            'type'        => 'article',
         ]);
     }
 
@@ -234,6 +321,10 @@ class PublicInfoController extends Controller
             'documents' => $documents,
             'categories' => $categories,
             'filters' => $request->only(['category', 'search']),
+        ])->withViewData('seo', [
+            'title'       => 'Dokumen & Unduhan - STIKes Bogor Husada',
+            'description' => 'Download dokumen resmi, formulir, dan berkas penting dari STIKes Bogor Husada.',
+            'keywords'    => 'dokumen STIKes Bogor Husada, unduhan formulir, berkas kampus kesehatan',
         ]);
     }
 
@@ -261,6 +352,10 @@ class PublicInfoController extends Controller
             'galleries' => $galleries,
             'categories' => $categories,
             'filters' => $request->only(['category']),
+        ])->withViewData('seo', [
+            'title'       => 'Galeri Foto - STIKes Bogor Husada',
+            'description' => 'Galeri foto kegiatan, fasilitas, dan suasana kampus STIKes Bogor Husada.',
+            'keywords'    => 'galeri foto STIKes Bogor Husada, foto kampus kesehatan bogor, dokumentasi kegiatan',
         ]);
     }
 
@@ -285,6 +380,10 @@ class PublicInfoController extends Controller
             'dosens' => $dosens,
             'prodiList' => $prodiList,
             'filters' => $request->only(['prodi', 'search']),
+        ])->withViewData('seo', [
+            'title'       => 'Dosen & Tenaga Pengajar - STIKes Bogor Husada',
+            'description' => 'Daftar dosen dan tenaga pengajar profesional di STIKes Bogor Husada, Bogor.',
+            'keywords'    => 'dosen STIKes Bogor Husada, pengajar kampus kesehatan, tenaga pendidik',
         ]);
     }
 
@@ -320,6 +419,10 @@ class PublicInfoController extends Controller
             'tahunList' => $tahunList,
             'prodiList' => $prodiList,
             'filters' => $request->only(['tahun_lulus', 'prodi', 'search']),
+        ])->withViewData('seo', [
+            'title'       => 'Alumni - STIKes Bogor Husada',
+            'description' => 'Direktori alumni STIKes Bogor Husada. Lihat lulusan terbaik kami yang berkarya di dunia kesehatan.',
+            'keywords'    => 'alumni STIKes Bogor Husada, lulusan kampus kesehatan bogor, tracer study',
         ]);
     }
 
@@ -339,6 +442,10 @@ class PublicInfoController extends Controller
         return Inertia::render('Frontend/Lowongan', [
             'lowongans' => $lowongans,
             'filters' => $request->only(['search']),
+        ])->withViewData('seo', [
+            'title'       => 'Lowongan Kerja - STIKes Bogor Husada',
+            'description' => 'Informasi lowongan kerja dan karir di STIKes Bogor Husada dan mitra kerjasama.',
+            'keywords'    => 'lowongan kerja kesehatan, karir STIKes Bogor Husada, rekrutmen tenaga medis',
         ]);
     }
 
@@ -353,6 +460,10 @@ class PublicInfoController extends Controller
 
         return Inertia::render('Frontend/Kerjasama', [
             'kerjasamas' => $kerjasamas,
+        ])->withViewData('seo', [
+            'title'       => 'Kerjasama & Mitra - STIKes Bogor Husada',
+            'description' => 'Daftar mitra kerjasama STIKes Bogor Husada dalam bidang pendidikan, riset, dan pengabdian masyarakat.',
+            'keywords'    => 'kerjasama STIKes Bogor Husada, mitra kampus kesehatan, MoU institusi',
         ]);
     }
     // ================== BERITA & ARTIKEL ==================
@@ -396,6 +507,10 @@ class PublicInfoController extends Controller
             'articles' => $articles,
             'categories' => $categories,
             'filters' => $request->only(['search', 'category']),
+        ])->withViewData('seo', [
+            'title'       => 'Berita & Artikel - STIKes Bogor Husada',
+            'description' => 'Berita terbaru, artikel ilmiah, dan informasi akademik dari STIKes Bogor Husada.',
+            'keywords'    => 'berita STIKes Bogor Husada, artikel kampus kesehatan, informasi akademik bogor',
         ]);
     }
 
@@ -420,10 +535,42 @@ class PublicInfoController extends Controller
             ->take(5)
             ->get();
 
+        // SEO dinamis dari data artikel
+        $seoDesc = $article->meta?->meta_description
+            ?: ($article->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($article->content), 160));
+        $seoKeywords = $article->meta?->meta_keywords
+            ?: ($article->tags->pluck('name')->implode(', ') . ', STIKes Bogor Husada');
+
         return Inertia::render('Frontend/BeritaDetail', [
             'article' => $article,
             'categories' => $categories,
             'latestArticles' => $latestArticles,
+        ])->withViewData('seo', [
+            'title'       => $article->title . ' - STIKes Bogor Husada',
+            'description' => $seoDesc,
+            'keywords'    => $seoKeywords,
+            'url'         => url('/artikel/' . $article->slug),
+            'image'       => $article->thumbnail ? (str_starts_with($article->thumbnail, 'http') ? $article->thumbnail : asset('storage/' . $article->thumbnail)) : null,
+            'type'        => 'article',
+            'schema'      => [
+                '@context'      => 'https://schema.org',
+                '@type'         => 'Article',
+                'headline'      => $article->title,
+                'description'   => $seoDesc,
+                'datePublished' => $article->published_at?->toIso8601String(),
+                'author'        => [
+                    '@type' => 'Organization',
+                    'name'  => 'STIKes Bogor Husada',
+                ],
+                'publisher'     => [
+                    '@type' => 'Organization',
+                    'name'  => 'STIKes Bogor Husada',
+                    'logo'  => [
+                        '@type' => 'ImageObject',
+                        'url'   => asset('assets/img/icon/logo_sbh_persegi.png'),
+                    ],
+                ],
+            ],
         ]);
     }
 }

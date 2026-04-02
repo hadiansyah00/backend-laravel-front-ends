@@ -143,7 +143,11 @@ Route::get('/event/{slug}', [PublicInfoController::class, 'eventShow'])->name('f
 
 Route::get('/dokumen', [PublicInfoController::class, 'dokumen'])->name('front.dokumen');
 Route::get('/galeri', [PublicInfoController::class, 'galeri'])->name('front.galeri');
-Route::get('/kontak', fn() => \Inertia\Inertia::render('Templates/Kontak'))->name('front.kontak');
+Route::get('/kontak', fn() => \Inertia\Inertia::render('Templates/Kontak')->withViewData('seo', [
+    'title'       => 'Kontak Kami - STIKes Bogor Husada',
+    'description' => 'Hubungi STIKes Bogor Husada. Alamat, nomor telepon, email, dan formulir kontak untuk informasi pendaftaran dan akademik.',
+    'keywords'    => 'kontak STIKes Bogor Husada, alamat kampus kesehatan bogor, telepon stikes husada, hubungi kami',
+]))->name('front.kontak');
 
 // TENTANG KAMI ROUTES
 Route::name('front.tentang.')->prefix('tentang')->group(function () {

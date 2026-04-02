@@ -103,7 +103,31 @@ class FrontPagesController extends Controller
         $kerjasamas = Cache::remember('kerjasamas_home', 3600, function () {
             return Kerjasama::where('is_active', true)->get();
         });
-        // Lempar data ke React Frontend
+        // SEO Data — akan di-render server-side di blade template
+        $seo = [
+            'title'       => 'Beranda - STIKes Bogor Husada',
+            'description' => setting('meta_description', 'Selamat datang di website resmi STIKes Bogor Husada. Kampus kesehatan terbaik yang mencetak tenaga medis profesional di Bogor. Pendaftaran mahasiswa baru dibuka!'),
+            'keywords'    => setting('meta_keywords', 'STIKes Bogor Husada, kampus kesehatan bogor, sekolah tinggi ilmu kesehatan, pendaftaran mahasiswa baru, SNBT, PMB, kuliah kesehatan'),
+            'url'         => url('/'),
+            'image'       => asset('assets/img/icon/logo_sbh_persegi.png'),
+            'type'        => 'website',
+            'schema'      => [
+                '@context'    => 'https://schema.org',
+                '@type'       => 'EducationalOrganization',
+                'name'        => 'STIKes Bogor Husada',
+                'url'         => url('/'),
+                'logo'        => asset('assets/img/icon/logo_sbh_persegi.png'),
+                'description' => 'Kampus kesehatan terbaik yang mencetak tenaga medis profesional.',
+                'address'     => [
+                    '@type'           => 'PostalAddress',
+                    'addressLocality' => 'Bogor',
+                    'addressRegion'   => 'Jawa Barat',
+                    'addressCountry'  => 'ID',
+                ],
+            ],
+        ];
+
+        // Lempar data ke React Frontend + SEO ke Blade
         return Inertia::render('Home', compact(
             'berita',
             'menus',
@@ -112,8 +136,8 @@ class FrontPagesController extends Controller
             'pengumuman',
             'events',
             'galleries',
-            'alumnis',     // Lempar ke React
+            'alumnis',
             'kerjasamas'
-        ));
+        ))->withViewData('seo', $seo);
     }
 }

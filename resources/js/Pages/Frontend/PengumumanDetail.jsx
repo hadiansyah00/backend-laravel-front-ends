@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Head, Link } from '@inertiajs/react';
 
 export default function PengumumanDetail({ pengumuman, recentPengumumans }) {
+    const [copied, setCopied] = useState(false);
+
     // Formatting Helper
     const formatDate = (dateString) => {
         if (!dateString) return '';
@@ -13,17 +15,55 @@ export default function PengumumanDetail({ pengumuman, recentPengumumans }) {
     const fileUrl = pengumuman?.attachment ? `/${pengumuman.attachment}` : null;
     const fileName = pengumuman?.attachment ? pengumuman.attachment.split('/').pop() : '';
 
+    const pageUrl = typeof window !== 'undefined'
+        ? window.location.href
+        : `/pengumuman/${pengumuman?.slug}`;
+
+    const shareText = pengumuman?.content 
+        ? pengumuman.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...' 
+        : 'Pengumuman STIKes Bogor Husada';
+
+    // =========== SHARE HANDLERS ===========
+    const shareToFacebook = () => {
+        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const shareToWhatsApp = () => {
+        const text = `${pengumuman?.title}\n\n${shareText}\n\nBaca selengkapnya: ${pageUrl}`;
+        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const shareToTwitter = () => {
+        const text = `${pengumuman?.title} - STIKes Bogor Husada`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const shareToTelegram = () => {
+        const url = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pengumuman?.title)}`;
+        window.open(url, '_blank', 'width=600,height=400');
+    };
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(pageUrl).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
+    };
+
     return (
         <MainLayout title={pengumuman ? `${pengumuman.title} | STIKes Bogor Husada` : 'Pengumuman Tidak Ditemukan'}>
             <Head>
                 <title>{pengumuman ? `${pengumuman.title} | STIKes Bogor Husada` : 'Pengumuman Tidak Ditemukan'}</title>
                 {pengumuman && (
                     <>
-                        <meta head-key="description" name="description" content={pengumuman.content ? pengumuman.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Pengumuman STIKes Bogor Husada'} />
+                        <meta head-key="description" name="description" content={shareText} />
                         <meta head-key="og:title" property="og:title" content={pengumuman.title} />
-                        <meta head-key="og:description" property="og:description" content={pengumuman.content ? pengumuman.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : 'Pengumuman STIKes Bogor Husada'} />
+                        <meta head-key="og:description" property="og:description" content={shareText} />
                         <meta head-key="og:type" property="og:type" content="article" />
-                        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/'} />
+                        <meta head-key="og:url" property="og:url" content={pageUrl} />
                     </>
                 )}
             </Head>
@@ -75,10 +115,29 @@ export default function PengumumanDetail({ pengumuman, recentPengumumans }) {
                                 )}
                             </div>
 
-                            <div className="mt-8 text-center flex justify-between items-center bg-gray-50 border border-gray-100 rounded-2xl p-6 dark:bg-gray-900 dark:border-gray-800">
+                            {/* SHARE & BACK */}
+                            <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 border border-gray-100 rounded-2xl p-6 dark:bg-gray-900 dark:border-gray-800 gap-4">
                                 <Link href="/pengumuman" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-bold transition-colors">
-                                    <i className="fas fa-arrow-left"></i> Kembali
+                                    <i className="fas fa-arrow-left"></i> Kembali ke Daftar
                                 </Link>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-semibold text-gray-500 mr-1">Bagikan:</span>
+                                    <button onClick={shareToFacebook} title="Share ke Facebook" className="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition-all hover:scale-110">
+                                        <i className="fab fa-facebook-f"></i>
+                                    </button>
+                                    <button onClick={shareToWhatsApp} title="Share ke WhatsApp" className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center transition-all hover:scale-110">
+                                        <i className="fab fa-whatsapp"></i>
+                                    </button>
+                                    <button onClick={shareToTwitter} title="Share ke Twitter/X" className="w-10 h-10 rounded-full bg-black hover:bg-gray-800 text-white flex items-center justify-center transition-all hover:scale-110">
+                                        <i className="fab fa-x-twitter"></i>
+                                    </button>
+                                    <button onClick={shareToTelegram} title="Share ke Telegram" className="w-10 h-10 rounded-full bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center transition-all hover:scale-110">
+                                        <i className="fab fa-telegram-plane"></i>
+                                    </button>
+                                    <button onClick={copyLink} title="Salin Link" className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${copied ? 'bg-green-600 text-white' : 'bg-gray-800 hover:bg-black text-white'}`}>
+                                        <i className={copied ? 'fas fa-check' : 'fas fa-link'}></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </section>
