@@ -60,10 +60,18 @@
     <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
     <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
-    {{-- Fonts --}}
+    {{-- Preload Critical Assets --}}
+    <link rel="preload" href="/assets/img/icon/logo-bulet-sbh.png" as="image" />
+    <link rel="dns-prefetch" href="https://fonts.bunny.net" />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+
+    {{-- Fonts (non-blocking with display=swap) --}}
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    {{-- Font Awesome — deferred so it doesn't block rendering --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /></noscript>
 
     {{-- JSON-LD Structured Data (tampil di View Page Source) --}}
     @if(!empty($seo['schema']))

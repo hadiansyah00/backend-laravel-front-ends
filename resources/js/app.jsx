@@ -9,14 +9,20 @@ const appName = window.document.getElementsByTagName('title')[0]?.innerText || '
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-        return pages[`./Pages/${name}.jsx`]
+        // Lazy-load pages for code-splitting — each page becomes its own chunk
+        const pages = import.meta.glob('./Pages/**/*.jsx');
+        const importPage = pages[`./Pages/${name}.jsx`];
+        if (!importPage) {
+            throw new Error(`Page not found: ./Pages/${name}.jsx`);
+        }
+        return importPage().then(module => module.default ? module : { default: module });
     },
     setup({ el, App, props }) {
         const root = createRoot(el);
         root.render(<App {...props} />);
     },
     progress: {
-        color: '#f97316', // tailwind orange-500
+        color: '#f97316',
+        showSpinner: true,
     },
 });

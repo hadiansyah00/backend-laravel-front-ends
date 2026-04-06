@@ -45,7 +45,8 @@ class DatabaseSeeder extends Seeder
                 // KerjasamaSeeder::class,
                 // EventSeeder::class,
                 // PengumumanSeeder::class,
-            LowonganSeeder::class,
+                // LowonganSeeder::class,
+            GallerySeeder::class,
 
 
 

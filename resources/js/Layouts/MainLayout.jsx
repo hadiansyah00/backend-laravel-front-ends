@@ -1,48 +1,75 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import AccessibilityWidget from "../Components/AccessibilityWidget";
-import FloatingWhatsApp from "../Components/FloatingWhatsApp";
+import SplashScreen from "../Components/SplashScreen";
 import { Head, usePage } from "@inertiajs/react";
+
+// Lazy-load non-critical widgets — they don't need to block first paint
+const AccessibilityWidget = lazy(() => import("../Components/AccessibilityWidget"));
+const FloatingWhatsApp = lazy(() => import("../Components/FloatingWhatsApp"));
+
+// Module-level variable: resets on full page reload, persists on Inertia SPA navigations
+let hasShownSplash = false;
 
 export default function MainLayout({ children, title }) {
     const { settings } = usePage().props;
-    const [loading, setLoading] = useState(true);
+
+    // Show splash if it hasn't been shown in this page load instance
+    const [showSplash, setShowSplash] = useState(!hasShownSplash);
+    const [contentReady, setContentReady] = useState(hasShownSplash);
 
     const siteName = settings?.site_name || "STIKes Bogor Husada";
-    const pageTitle = title ? `${title} | ${siteName}` : (settings?.seo_title || siteName);
+    const pageTitle = title ? `${title}` : (settings?.seo_title || siteName);
     const metaDesc = settings?.seo_description || "Website Resmi STIKes Bogor Husada";
     const metaKeywords = settings?.seo_keywords || "STIKes, Kesehatan, Bogor, Husada";
 
-    useEffect(() => {
-        // Simple loading simulation matching the original Alpine.js vibe
-        const timer = setTimeout(() => setLoading(false), 500);
-        return () => clearTimeout(timer);
+    const handleSplashFinish = useCallback(() => {
+        hasShownSplash = true; // Mark as shown for subsequent Inertia navigations
+        setShowSplash(false);
+        setContentReady(true);
     }, []);
 
+    // If splash is not shown, content is immediately ready
+    useEffect(() => {
+        if (!showSplash) {
+            setContentReady(true);
+            hasShownSplash = true;
+        }
+    }, [showSplash]);
+
     return (
-        <div className="pt-[104px] font-sans antialiased text-gray-900 bg-gray-50 min-h-screen flex flex-col">
-            {" "}
-            <Head>
-                <title>{pageTitle}</title>
-                <meta name="description" content={metaDesc} />
-                <meta name="keywords" content={metaKeywords} />
-                <meta property="og:title" content={pageTitle} />
-                <meta property="og:description" content={metaDesc} />
-                {settings?.site_logo && <meta property="og:image" content={`/storage/${settings.site_logo}`} />}
-            </Head>
-            {/* Loading Spinner */}
-            {loading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 bg-white/80 backdrop-blur-sm">
-                    <div className="w-12 h-12 border-4 border-orange-600 rounded-full border-t-transparent animate-spin"></div>
-                </div>
+        <>
+            {/* Splash Screen — only on first visit */}
+            {showSplash && (
+                <SplashScreen
+                    onFinish={handleSplashFinish}
+                    minimumDuration={2500}
+                />
             )}
-            {/* Main Content */}
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-            <AccessibilityWidget />
-            <FloatingWhatsApp />
-        </div>
+
+            <div
+                className={`pt-[104px] font-sans antialiased text-gray-900 bg-gray-50 min-h-screen flex flex-col transition-opacity duration-500 ${contentReady ? 'opacity-100' : 'opacity-0'}`}
+            >
+                <Head>
+                    <title>{pageTitle}</title>
+                    <meta name="description" content={metaDesc} />
+                    <meta name="keywords" content={metaKeywords} />
+                    <meta property="og:title" content={pageTitle} />
+                    <meta property="og:description" content={metaDesc} />
+                    {settings?.site_logo && <meta property="og:image" content={`/storage/${settings.site_logo}`} />}
+                </Head>
+
+                {/* Main Content */}
+                <Navbar />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+
+                {/* Lazy-loaded widgets — render after main content */}
+                <Suspense fallback={null}>
+                    <AccessibilityWidget />
+                    <FloatingWhatsApp />
+                </Suspense>
+            </div>
+        </>
     );
 }
