@@ -17,17 +17,7 @@ export default defineConfig({
         react(),
     ],
     build: {
-        // Code-splitting: separate vendor chunks for better caching
-        rollupOptions: {
-            output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules/react')) return 'react-vendor';
-                    if (id.includes('node_modules/@inertiajs')) return 'inertia-vendor';
-                    if (id.includes('node_modules')) return 'vendor';
-                },
-            },
-        },
         // Increase chunk size warning limit (Tailwind can produce larger CSS)
-        chunkSizeWarningLimit: 500,
+        chunkSizeWarningLimit: 1500,
     },
 });
