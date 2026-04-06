@@ -57,6 +57,8 @@ export default function Index({ galleries }) {
                                             src={typeof item.image === 'string' ? (item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `/storage/${item.image}`) : ''}
                                             alt={item.title}
                                             className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
 
                                         {/* Overlay & Actions */}

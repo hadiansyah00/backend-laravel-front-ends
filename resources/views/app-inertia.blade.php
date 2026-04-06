@@ -111,6 +111,13 @@
 </head>
 
 <body class="font-sans antialiased text-gray-900 bg-gray-50">
+    {{-- Instant / Flash Preloader untuk mencegah Blank Screen sebelum JS selesai dunduh --}}
+    <div id="server-preloader" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0c1220 100%);">
+        <div style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 3px rgba(249,115,22,0.2);">
+            <img src="/assets/img/icon/logo-bulet-sbh.png" alt="Loading..." style="width:100%;height:100%;object-fit:contain;padding:8px;" />
+        </div>
+    </div>
+
     {{-- Inertia App Entry Point --}}
     @inertia
 </body>
