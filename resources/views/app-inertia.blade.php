@@ -112,9 +112,15 @@
 
 <body class="font-sans antialiased text-gray-900 bg-gray-50">
     {{-- Instant / Flash Preloader untuk mencegah Blank Screen sebelum JS selesai dunduh --}}
+    <style>
+        @keyframes pulse-logo {
+            0%, 100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 10px rgba(249,115,22,0.6)); }
+            50% { transform: scale(0.95); opacity: 0.8; filter: drop-shadow(0 0 20px rgba(249,115,22,0.2)); }
+        }
+    </style>
     <div id="server-preloader" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0c1220 100%);">
-        <div style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 3px rgba(249,115,22,0.2);">
-            <img src="/assets/img/icon/logo-bulet-sbh.png" alt="Loading..." style="width:100%;height:100%;object-fit:contain;padding:8px;" />
+        <div style="width:160px;height:auto;display:flex;justify-content:center;align-items:center; animation: pulse-logo 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;">
+            <img src="/assets/img/icon/logo_putih_sbh.png" alt="Loading..." style="width:100%;height:auto;object-fit:contain;filter: drop-shadow(0 0 10px rgba(249,115,22,0.3));" />
         </div>
     </div>
 

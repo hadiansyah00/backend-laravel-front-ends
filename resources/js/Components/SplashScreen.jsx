@@ -5,12 +5,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
  * 
  * Sequence:
  * 1. Dark backdrop fades in
- * 2. Glowing ring appears behind the logo
- * 3. Logo scales in with spring animation
- * 4. "s | b | h" letters animate one-by-one
- * 5. Full institution name types in
- * 6. Progress bar fills
- * 7. Everything fades out gracefully
+ * 2. Background glowing particles float
+ * 3. White corporate logo elegantly scales in with orange drop-shadow
+ * 4. A cinematic orange light sweeps across the logo
+ * 5. Full institution name fades in smoothly
+ * 6. Progress bar fills up
+ * 7. Everything scales out and fades gracefully
  */
 export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
     const [phase, setPhase] = useState(0); // 0=mount, 1=logo, 2=text, 3=bar, 4=exit, 5=done
@@ -33,8 +33,8 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
         // Sequence timing
         const timers = [
             setTimeout(() => setPhase(1), 100),    // Logo appear
-            setTimeout(() => setPhase(2), 600),     // Text appear
-            setTimeout(() => setPhase(3), 1100),    // Progress bar
+            setTimeout(() => setPhase(2), 600),    // Text appear
+            setTimeout(() => setPhase(3), 1000),   // Progress bar
         ];
 
         // Start progress animation
@@ -86,23 +86,15 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     <div className="splash-ring__inner"></div>
                 </div>
 
-                {/* Logo */}
+                {/* Corporate White Logo with Sweep Animation */}
                 <div className={`splash-logo ${phase >= 1 ? 'splash-logo--visible' : ''}`}>
                     <img
-                        src="/assets/img/icon/logo-bulet-sbh.png"
+                        src="/assets/img/icon/logo_putih_sbh.png"
                         alt="STIKes Bogor Husada"
                         className="splash-logo__img"
                         draggable="false"
                     />
-                </div>
-
-                {/* Animated S | B | H Letters */}
-                <div className={`splash-letters ${phase >= 2 ? 'splash-letters--visible' : ''}`}>
-                    <span className="splash-letter" style={{ animationDelay: '0s' }}>s</span>
-                    <span className="splash-letter-divider" style={{ animationDelay: '0.15s' }}>|</span>
-                    <span className="splash-letter" style={{ animationDelay: '0.3s' }}>b</span>
-                    <span className="splash-letter-divider" style={{ animationDelay: '0.45s' }}>|</span>
-                    <span className="splash-letter" style={{ animationDelay: '0.6s' }}>h</span>
+                    <div className="splash-logo__sweep"></div>
                 </div>
 
                 {/* Institution Name */}
@@ -172,13 +164,14 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    width: 180px;
-                    height: 180px;
-                    margin-left: -90px;
-                    margin-top: -130px;
+                    width: 240px;
+                    height: 240px;
+                    margin-left: -120px;
+                    margin-top: -150px;
                     opacity: 0;
                     transform: scale(0.5);
-                    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+                    pointer-events: none;
                 }
                 .splash-ring--visible {
                     opacity: 1;
@@ -188,86 +181,60 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     width: 100%;
                     height: 100%;
                     border-radius: 50%;
-                    border: 2px solid rgba(249,115,22,0.15);
+                    border: 2px solid rgba(249,115,22,0.08);
                     box-shadow:
-                        0 0 40px rgba(249,115,22,0.1),
-                        0 0 80px rgba(249,115,22,0.05),
-                        inset 0 0 30px rgba(249,115,22,0.05);
-                    animation: splash-ringPulse 2.5s ease-in-out infinite;
+                        0 0 60px rgba(249,115,22,0.08),
+                        inset 0 0 40px rgba(249,115,22,0.05);
+                    animation: splash-ringPulse 3s ease-in-out infinite;
                 }
                 @keyframes splash-ringPulse {
                     0%, 100% { transform: scale(1); opacity: 0.6; }
-                    50% { transform: scale(1.12); opacity: 1; }
+                    50% { transform: scale(1.15); opacity: 1; }
                 }
 
                 /* ===== LOGO ===== */
                 .splash-logo {
-                    width: 120px;
-                    height: 120px;
-                    border-radius: 50%;
-                    overflow: hidden;
+                    position: relative;
+                    width: 220px;
+                    height: auto;
+                    margin-bottom: 2.5rem;
                     opacity: 0;
-                    transform: scale(0.3) rotate(-10deg);
-                    transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-                    box-shadow:
-                        0 8px 32px rgba(0,0,0,0.3),
-                        0 0 0 3px rgba(249,115,22,0.2);
-                    margin-bottom: 2rem;
-                    background: #fff;
+                    transform: scale(0.85);
+                    filter: drop-shadow(0 0 15px rgba(249,115,22,0.3));
+                    transition: opacity 0.8s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+                    overflow: hidden; /* For sweep effect */
                 }
                 .splash-logo--visible {
                     opacity: 1;
-                    transform: scale(1) rotate(0deg);
+                    transform: scale(1);
                 }
                 .splash-logo__img {
                     width: 100%;
-                    height: 100%;
+                    height: auto;
+                    display: block;
                     object-fit: contain;
-                    padding: 8px;
                 }
-
-                /* ===== LETTERS s | b | h ===== */
-                .splash-letters {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.15rem;
-                    margin-bottom: 0.75rem;
-                    height: 52px;
+                
+                /* Cinematic Orange Sweep */
+                .splash-logo__sweep {
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 50%;
+                    height: 100%;
+                    background: linear-gradient(
+                        to right,
+                        transparent,
+                        rgba(249, 115, 22, 0.4),
+                        transparent
+                    );
+                    transform: skewX(-25deg);
+                    animation: splash-sweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                    pointer-events: none;
                 }
-                .splash-letter {
-                    font-family: 'Georgia', 'Times New Roman', serif;
-                    font-size: 2.8rem;
-                    font-weight: 400;
-                    color: #f97316;
-                    opacity: 0;
-                    transform: translateY(20px) scale(0.5);
-                    display: inline-block;
-                    letter-spacing: -1px;
-                }
-                .splash-letters--visible .splash-letter {
-                    animation: splash-letterIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-                }
-                .splash-letter-divider {
-                    font-family: 'Georgia', serif;
-                    font-size: 2.8rem;
-                    font-weight: 100;
-                    color: rgba(249,115,22,0.4);
-                    opacity: 0;
-                    transform: scaleY(0);
-                    display: inline-block;
-                    margin: 0 2px;
-                }
-                .splash-letters--visible .splash-letter-divider {
-                    animation: splash-dividerIn 0.4s ease forwards;
-                }
-                @keyframes splash-letterIn {
-                    0% { opacity: 0; transform: translateY(20px) scale(0.5); }
-                    60% { opacity: 1; transform: translateY(-4px) scale(1.1); }
-                    100% { opacity: 1; transform: translateY(0) scale(1); }
-                }
-                @keyframes splash-dividerIn {
-                    0% { opacity: 0; transform: scaleY(0); }
-                    100% { opacity: 1; transform: scaleY(1); }
+                @keyframes splash-sweep {
+                    0% { left: -100%; }
+                    50%, 100% { left: 200%; }
                 }
 
                 /* ===== INSTITUTION NAME ===== */
@@ -276,7 +243,7 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     margin-bottom: 2.5rem;
                     opacity: 0;
                     transform: translateY(10px);
-                    transition: opacity 0.5s ease 0.6s, transform 0.5s ease 0.6s;
+                    transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
                 }
                 .splash-name--visible {
                     opacity: 1;
@@ -285,17 +252,17 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                 .splash-name__line1 {
                     display: block;
                     font-family: 'Georgia', serif;
-                    font-size: 0.8rem;
-                    color: rgba(255,255,255,0.5);
+                    font-size: 0.85rem;
+                    color: rgba(255,255,255,0.6);
                     letter-spacing: 0.2em;
                     text-transform: uppercase;
-                    margin-bottom: 0.2rem;
+                    margin-bottom: 0.25rem;
                 }
                 .splash-name__line2 {
                     display: block;
                     font-family: 'Georgia', serif;
-                    font-size: 1.05rem;
-                    color: rgba(255,255,255,0.85);
+                    font-size: 1.15rem;
+                    color: rgba(255,255,255,0.95);
                     font-weight: 700;
                     letter-spacing: 0.35em;
                     text-transform: uppercase;
@@ -307,7 +274,7 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     flex-direction: column;
                     align-items: center;
                     gap: 0.75rem;
-                    width: 200px;
+                    width: 220px;
                     opacity: 0;
                     transform: translateY(8px);
                     transition: opacity 0.4s ease, transform 0.4s ease;
@@ -319,7 +286,7 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                 .splash-progress__track {
                     width: 100%;
                     height: 3px;
-                    background: rgba(255,255,255,0.08);
+                    background: rgba(255,255,255,0.1);
                     border-radius: 10px;
                     overflow: hidden;
                 }
@@ -328,7 +295,7 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     background: linear-gradient(90deg, #f97316, #fb923c, #f97316);
                     border-radius: 10px;
                     transition: width 0.15s linear;
-                    box-shadow: 0 0 8px rgba(249,115,22,0.5);
+                    box-shadow: 0 0 10px rgba(249,115,22,0.6);
                     background-size: 200% 100%;
                     animation: splash-progressShimmer 1.5s linear infinite;
                 }
@@ -337,9 +304,9 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                     100% { background-position: -200% 0; }
                 }
                 .splash-progress__text {
-                    font-size: 0.7rem;
-                    color: rgba(255,255,255,0.35);
-                    letter-spacing: 0.15em;
+                    font-size: 0.75rem;
+                    color: rgba(255,255,255,0.4);
+                    letter-spacing: 0.2em;
                     text-transform: uppercase;
                     font-weight: 600;
                 }
@@ -347,21 +314,17 @@ export default function SplashScreen({ onFinish, minimumDuration = 2200 }) {
                 /* ===== RESPONSIVE ===== */
                 @media (max-width: 480px) {
                     .splash-logo {
-                        width: 90px;
-                        height: 90px;
+                        width: 160px;
                     }
                     .splash-ring {
-                        width: 140px;
-                        height: 140px;
-                        margin-left: -70px;
+                        width: 180px;
+                        height: 180px;
+                        margin-left: -90px;
                         margin-top: -110px;
                     }
-                    .splash-letter, .splash-letter-divider {
-                        font-size: 2.2rem;
-                    }
-                    .splash-name__line1 { font-size: 0.65rem; }
-                    .splash-name__line2 { font-size: 0.85rem; }
-                    .splash-progress { width: 160px; }
+                    .splash-name__line1 { font-size: 0.7rem; }
+                    .splash-name__line2 { font-size: 0.95rem; }
+                    .splash-progress { width: 180px; }
                 }
             `}</style>
         </div>
