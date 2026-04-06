@@ -7,6 +7,8 @@ import { Head, usePage } from "@inertiajs/react";
 // Lazy-load non-critical widgets — they don't need to block first paint
 const AccessibilityWidget = lazy(() => import("../Components/AccessibilityWidget"));
 const FloatingWhatsApp = lazy(() => import("../Components/FloatingWhatsApp"));
+const CookieConsent = lazy(() => import("../Components/CookieConsent"));
+const BackToTop = lazy(() => import("../Components/BackToTop"));
 
 // Module-level variable: resets on full page reload, persists on Inertia SPA navigations
 let hasShownSplash = false;
@@ -48,7 +50,7 @@ export default function MainLayout({ children, title }) {
             )}
 
             <div
-                className={`pt-[104px] font-sans antialiased text-gray-900 bg-gray-50 min-h-screen flex flex-col transition-opacity duration-500 ${contentReady ? 'opacity-100' : 'opacity-0'}`}
+                className={`pt-[136px] font-sans antialiased text-gray-900 bg-gray-50 min-h-screen flex flex-col transition-opacity duration-500 ${contentReady ? 'opacity-100' : 'opacity-0'}`}
             >
                 <Head>
                     <title>{pageTitle}</title>
@@ -68,6 +70,8 @@ export default function MainLayout({ children, title }) {
                 <Suspense fallback={null}>
                     <AccessibilityWidget />
                     <FloatingWhatsApp />
+                    <CookieConsent />
+                    <BackToTop />
                 </Suspense>
             </div>
         </>

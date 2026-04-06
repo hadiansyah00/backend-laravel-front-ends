@@ -39,7 +39,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
             </Head>
 
             {/* --- HERO SECTION (Konsisten dengan Alumni) --- */}
-            <section className="relative w-full pt-32 pb-24 overflow-hidden bg-gray-900 md:pt-40 md:pb-32">
+            <section className="relative w-full pt-40 pb-24 overflow-hidden bg-gray-900 md:pt-48 md:pb-32">
                 {/* Background Image & Overlay */}
                 <div className="absolute inset-0 z-0">
                     <img
@@ -51,7 +51,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                 "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80";
                         }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/80 to-indigo-900/60"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/80 to-orange-900/60"></div>
                 </div>
 
                 {/* Hero Content */}
@@ -84,7 +84,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                         <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
                                         </svg>
-                                        <span className="ml-1 text-sm font-bold text-indigo-400 md:ml-2">Direktori Dosen</span>
+                                        <span className="ml-1 text-sm font-bold text-orange-400 md:ml-2">Direktori Dosen</span>
                                     </div>
                                 </li>
                             </ol>
@@ -132,7 +132,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                 </span>
                                 <input
                                     type="text"
-                                    className="w-full pl-10 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                                    className="w-full pl-10 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-sm focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-700 dark:text-white"
                                     placeholder="Cari nama dosen..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
@@ -151,7 +151,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                             </select>
                             <button
                                 type="submit"
-                                className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                                className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white transition-colors bg-orange-600 rounded-lg hover:bg-orange-700"
                             >
                                 <i className="fas fa-search"></i> Cari
                             </button>
@@ -209,7 +209,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                             </div>
                                             {dosen.prodi && (
                                                 <div className="absolute top-4 right-4">
-                                                    <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-indigo-700 dark:text-indigo-400 text-xs font-bold rounded-lg shadow-sm border border-white/20">
+                                                    <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-orange-700 dark:text-orange-400 text-xs font-bold rounded-lg shadow-sm border border-white/20">
                                                         {dosen.prodi}
                                                     </span>
                                                 </div>
@@ -220,7 +220,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                                 {dosen.name}
                                             </h3>
                                             {dosen.position && (
-                                                <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mb-4">{dosen.position}</p>
+                                                <p className="text-sm font-semibold text-orange-600 dark:text-orange-400 mb-4">{dosen.position}</p>
                                             )}
                                             {dosen.nidn && (
                                                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
@@ -228,7 +228,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                                 </div>
                                             )}
                                             {dosen.email && (
-                                                <a href={`mailto:${dosen.email}`} className="flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 transition-colors mb-2">
+                                                <a href={`mailto:${dosen.email}`} className="flex items-center gap-2 text-sm text-gray-500 hover:text-orange-600 transition-colors mb-2">
                                                     <i className="fas fa-envelope w-4 text-center"></i> {dosen.email}
                                                 </a>
                                             )}
@@ -256,7 +256,7 @@ export default function Dosen({ dosens, prodiList, filters }) {
                                         setProdi('');
                                         router.get(route('front.dosen'));
                                     }}
-                                    className="mt-6 px-6 py-2 bg-indigo-50 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-100 transition-colors"
+                                    className="mt-6 px-6 py-2 bg-orange-50 text-orange-600 font-semibold rounded-xl hover:bg-orange-100 transition-colors"
                                 >
                                     Tampilkan Semua Dosen
                                 </button>

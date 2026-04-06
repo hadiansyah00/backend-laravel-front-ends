@@ -122,7 +122,7 @@ export default function AccessibilityWidget() {
             {/* MAIN FLOATING BUTTON */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed z-[9999] bottom-6 left-6 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group ${isOpen ? 'bg-white text-blue-600' : 'bg-[#2152ff] text-white'}`}
+                className={`fixed z-[9999] bottom-24 md:bottom-6 left-4 md:left-6 w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group ${isOpen ? 'bg-white text-blue-600' : 'bg-[#2152ff] text-white'}`}
                 aria-label="Accessibility Menu"
             >
                 <i className={`fas ${isOpen ? 'fa-times' : 'fa-universal-access'} text-2xl`}></i>
@@ -136,7 +136,7 @@ export default function AccessibilityWidget() {
 
             {/* ACCESSIBILITY PANEL */}
             {isOpen && (
-                <div className="fixed z-[9999] bottom-28 left-6 w-[400px] max-w-[calc(100vw-48px)] bg-[#1a1d23]/95 backdrop-blur-xl rounded-[2rem] text-white shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                <div className="fixed z-[9999] bottom-[8.5rem] md:bottom-28 left-4 md:left-6 w-[400px] max-w-[calc(100vw-32px)] md:max-w-[calc(100vw-48px)] bg-[#1a1d23]/95 backdrop-blur-xl rounded-[2rem] text-white shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
 
                     {/* Header */}
                     <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8">

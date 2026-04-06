@@ -22,7 +22,7 @@ export default function FloatingWhatsApp() {
     ];
 
     return (
-        <div className="fixed z-[9999] bottom-6 right-6 font-sans">
+        <div className="fixed z-[9999] bottom-24 md:bottom-6 right-4 md:right-6 font-sans">
             {/* Popup Menu */}
             {isOpen && (
                 <div className="absolute overflow-hidden text-gray-800 transition-all duration-300 origin-bottom-right bg-white shadow-2xl bottom-20 right-0 w-[320px] sm:w-[350px] rounded-2xl border border-gray-100 flex flex-col">

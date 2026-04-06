@@ -13,6 +13,7 @@ use App\Models\Lowongan;
 use App\Models\Pengumuman;
 use App\Models\TentangKami;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class PublicInfoController extends Controller
@@ -27,8 +28,12 @@ class PublicInfoController extends Controller
      */
     public function profilStikes()
     {
-        $data = TentangKami::where('type', 'profil')->where('is_active', 1)->first();
-        $visiMisi = TentangKami::where('type', 'visi_misi')->where('is_active', 1)->first();
+        $data = Cache::remember('tentang_profil', 3600, function() {
+            return TentangKami::where('type', 'profil')->where('is_active', 1)->first();
+        });
+        $visiMisi = Cache::remember('tentang_visi_misi', 3600, function() {
+            return TentangKami::where('type', 'visi_misi')->where('is_active', 1)->first();
+        });
         return Inertia::render('Frontend/Tentang/Profil', [
             'data' => $data,
             'visiMisi' => $visiMisi
@@ -44,7 +49,9 @@ class PublicInfoController extends Controller
      */
     public function sambutanKetua()
     {
-        $data = TentangKami::where('type', 'sambutan')->where('is_active', 1)->first();
+        $data = Cache::remember('tentang_sambutan', 3600, function() {
+            return TentangKami::where('type', 'sambutan')->where('is_active', 1)->first();
+        });
         return Inertia::render('Frontend/Tentang/Sambutan', ['data' => $data])
             ->withViewData('seo', [
                 'title'       => 'Sambutan Ketua - STIKes Bogor Husada',
@@ -58,7 +65,9 @@ class PublicInfoController extends Controller
      */
     public function visiMisi()
     {
-        $data = TentangKami::where('type', 'visi_misi')->where('is_active', 1)->first();
+        $data = Cache::remember('tentang_visi_misi', 3600, function() {
+            return TentangKami::where('type', 'visi_misi')->where('is_active', 1)->first();
+        });
         return Inertia::render('Frontend/Tentang/VisiMisi', ['data' => $data])
             ->withViewData('seo', [
                 'title'       => 'Visi & Misi - STIKes Bogor Husada',
@@ -72,7 +81,9 @@ class PublicInfoController extends Controller
      */
     public function sejarah()
     {
-        $data = TentangKami::where('type', 'sejarah')->where('is_active', 1)->first();
+        $data = Cache::remember('tentang_sejarah', 3600, function() {
+            return TentangKami::where('type', 'sejarah')->where('is_active', 1)->first();
+        });
         return Inertia::render('Frontend/Tentang/Sejarah', ['data' => $data])
             ->withViewData('seo', [
                 'title'       => 'Sejarah - STIKes Bogor Husada',
@@ -86,7 +97,9 @@ class PublicInfoController extends Controller
      */
     public function strukturOrganisasi()
     {
-        $data = TentangKami::where('type', 'struktur')->where('is_active', 1)->first();
+        $data = Cache::remember('tentang_struktur', 3600, function() {
+            return TentangKami::where('type', 'struktur')->where('is_active', 1)->first();
+        });
         return Inertia::render('Frontend/Tentang/Struktur', ['data' => $data])
             ->withViewData('seo', [
                 'title'       => 'Struktur Organisasi - STIKes Bogor Husada',
@@ -98,7 +111,9 @@ class PublicInfoController extends Controller
     // ================== AKADEMIK ==================
     public function farmasi()
     {
-        $programData = \App\Models\ProgramStudi::where('slug', 's1-farmasi')->firstOrFail();
+        $programData = Cache::remember('prodi_s1_farmasi', 3600, function() {
+            return \App\Models\ProgramStudi::where('slug', 's1-farmasi')->firstOrFail();
+        });
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData])
             ->withViewData('seo', [
                 'title'       => 'S1 Farmasi - STIKes Bogor Husada',
@@ -108,7 +123,9 @@ class PublicInfoController extends Controller
     }
     public function gizi()
     {
-        $programData = \App\Models\ProgramStudi::where('slug', 's1-gizi')->firstOrFail();
+        $programData = Cache::remember('prodi_s1_gizi', 3600, function() {
+            return \App\Models\ProgramStudi::where('slug', 's1-gizi')->firstOrFail();
+        });
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData])
             ->withViewData('seo', [
                 'title'       => 'S1 Gizi - STIKes Bogor Husada',
@@ -118,7 +135,9 @@ class PublicInfoController extends Controller
     }
     public function kebidanan()
     {
-        $programData = \App\Models\ProgramStudi::where('slug', 'd3-kebidanan')->firstOrFail();
+        $programData = Cache::remember('prodi_d3_kebidanan', 3600, function() {
+            return \App\Models\ProgramStudi::where('slug', 'd3-kebidanan')->firstOrFail();
+        });
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', ['programData' => $programData])
             ->withViewData('seo', [
                 'title'       => 'D3 Kebidanan - STIKes Bogor Husada',
@@ -128,7 +147,9 @@ class PublicInfoController extends Controller
     }
     public function showProgramStudi($slug)
     {
-        $programData = \App\Models\ProgramStudi::where('slug', $slug)->firstOrFail();
+        $programData = Cache::remember('prodi_' . $slug, 3600, function() use ($slug) {
+            return \App\Models\ProgramStudi::where('slug', $slug)->firstOrFail();
+        });
 
         return Inertia::render('Frontend/Akademik/ProgramStudiDetail', [
             'programData' => $programData
@@ -141,10 +162,12 @@ class PublicInfoController extends Controller
     }
     public function kalenderAkademik()
     {
-        $kalenders = \App\Models\KalenderAkademik::where('is_active', 1)
-            ->orderBy('order')
-            ->get()
-            ->groupBy('semester');
+        $kalenders = Cache::remember('kalender_akademik', 3600, function() {
+            return \App\Models\KalenderAkademik::where('is_active', 1)
+                ->orderBy('order')
+                ->get()
+                ->groupBy('semester');
+        });
 
         return Inertia::render('Frontend/Akademik/Kalender', [
             'kalenders' => $kalenders
@@ -158,7 +181,9 @@ class PublicInfoController extends Controller
     // ================== UNIT LEMBAGA ==================
     public function laboratorium()
     {
-        $fasilitasData = \App\Models\Fasilitas::where('type', 'Laboratorium')->where('is_active', 1)->orderBy('order')->first();
+        $fasilitasData = Cache::remember('fasilitas_laboratorium', 3600, function() {
+            return \App\Models\Fasilitas::where('type', 'Laboratorium')->where('is_active', 1)->orderBy('order')->first();
+        });
         return Inertia::render('Frontend/Akademik/Laboratorium', ['fasilitasData' => $fasilitasData])
             ->withViewData('seo', [
                 'title'       => 'Laboratorium - STIKes Bogor Husada',
@@ -168,7 +193,9 @@ class PublicInfoController extends Controller
     }
     public function perpustakaan()
     {
-        $fasilitasData = \App\Models\Fasilitas::where('type', 'Perpustakaan')->where('is_active', 1)->orderBy('order')->first();
+        $fasilitasData = Cache::remember('fasilitas_perpustakaan', 3600, function() {
+            return \App\Models\Fasilitas::where('type', 'Perpustakaan')->where('is_active', 1)->orderBy('order')->first();
+        });
         return Inertia::render('Frontend/Akademik/Perpustakaan', ['fasilitasData' => $fasilitasData])
             ->withViewData('seo', [
                 'title'       => 'Perpustakaan - STIKes Bogor Husada',
@@ -178,7 +205,9 @@ class PublicInfoController extends Controller
     }
     public function uppm()
     {
-        $fasilitasData = \App\Models\Fasilitas::where('type', 'UPPM')->where('is_active', 1)->orderBy('order')->first();
+        $fasilitasData = Cache::remember('fasilitas_uppm', 3600, function() {
+            return \App\Models\Fasilitas::where('type', 'UPPM')->where('is_active', 1)->orderBy('order')->first();
+        });
         return Inertia::render('Frontend/UnitFasilitas/Uppm', ['fasilitasData' => $fasilitasData])
             ->withViewData('seo', [
                 'title'       => 'UPPM - STIKes Bogor Husada',
@@ -188,7 +217,9 @@ class PublicInfoController extends Controller
     }
     public function upmi()
     {
-        $fasilitasData = \App\Models\Fasilitas::where('type', 'UPMI')->where('is_active', 1)->orderBy('order')->first();
+        $fasilitasData = Cache::remember('fasilitas_upmi', 3600, function() {
+            return \App\Models\Fasilitas::where('type', 'UPMI')->where('is_active', 1)->orderBy('order')->first();
+        });
         return Inertia::render('Frontend/UnitFasilitas/Upmi', ['fasilitasData' => $fasilitasData])
             ->withViewData('seo', [
                 'title'       => 'UPMI - STIKes Bogor Husada',
