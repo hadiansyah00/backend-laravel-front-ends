@@ -11,10 +11,6 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
     setup({ el, App, props }) {
-        // Hilangkan preloader instan bawaan server setelah React siap
-        const preloader = document.getElementById('server-preloader');
-        if (preloader) preloader.remove();
-
         const root = createRoot(el);
         root.render(<App {...props} />);
     },

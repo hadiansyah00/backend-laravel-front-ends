@@ -37,11 +37,11 @@ export default function Footer() {
                         {partners.map((partner, index) => (
                             partner.url ? (
                                 <a key={index} href={partner.url} target="_blank" rel="noopener noreferrer" className="block">
-                                    <img src={partner.logo} alt={partner.alt} className="h-10 transition duration-300 md:h-12 opacity-80 hover:opacity-100" />
+                                    <img src={partner.logo} alt={partner.alt} className="h-10 transition duration-300 md:h-12 opacity-80 hover:opacity-100" loading="lazy" decoding="async" />
                                 </a>
                             ) : (
                                 <div key={index} className="block">
-                                    <img src={partner.logo} alt={partner.alt} className="h-10 transition duration-300 md:h-12 opacity-80 hover:opacity-100" />
+                                    <img src={partner.logo} alt={partner.alt} className="h-10 transition duration-300 md:h-12 opacity-80 hover:opacity-100" loading="lazy" decoding="async" />
                                 </div>
                             )
                         ))}

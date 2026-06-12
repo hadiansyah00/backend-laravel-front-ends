@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -35,16 +36,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        // Ambil pengaturan yang sering dipakai
-        $settings = \App\Models\FrontSetting::pluck('value', 'key')->toArray();
-
-        // Ambil menu hierarkis
-        $menus = \App\Models\Menu::with('children')->where('is_active', 1)->whereNull('parent_id')->orderBy('order')->get();
-
-        return array_merge(parent::share($request), [
-            'settings' => $settings,
-            'menus' => $menus,
-            'csrf_token' => csrf_token(),
+        $shared = array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
             ],
@@ -55,5 +47,23 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
         ]);
+
+        if (! $request->routeIs('admin.*', 'dashboard')) {
+            $shared['settings'] = fn () => Cache::remember('front_settings.all', 3600, fn () =>
+                \App\Models\FrontSetting::pluck('value', 'key')->toArray()
+            );
+
+            $shared['menus'] = fn () => Cache::remember('menus.active_tree', 3600, fn () =>
+                \App\Models\Menu::query()
+                    ->select(['id', 'name', 'slug', 'url', 'type', 'parent_id', 'order', 'is_active'])
+                    ->with(['children:id,name,slug,url,type,parent_id,order,is_active'])
+                    ->where('is_active', true)
+                    ->whereNull('parent_id')
+                    ->orderBy('order')
+                    ->get()
+            );
+        }
+
+        return $shared;
     }
 }

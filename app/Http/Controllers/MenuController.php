@@ -7,6 +7,7 @@ use App\Models\Menu;
 // Remove Illuminate\View\View and add Inertia
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -59,6 +60,7 @@ class MenuController extends Controller
         // $validated['slug'] = Str::slug($request->name);
 
         Menu::create($validated);
+        $this->clearMenuCache();
 
         // Menggunakan nama route yang benar
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil dibuat.');
@@ -99,6 +101,7 @@ class MenuController extends Controller
         // $validated['slug'] = Str::slug($request->name);
 
         $menu->update($validated);
+        $this->clearMenuCache();
 
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
@@ -109,7 +112,14 @@ class MenuController extends Controller
     public function destroy(Menu $menu): RedirectResponse
     {
         $menu->delete();
+        $this->clearMenuCache();
 
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil dihapus.');
+    }
+
+    private function clearMenuCache(): void
+    {
+        Cache::forget('menus.active_tree');
+        Cache::forget('menus_active');
     }
 }

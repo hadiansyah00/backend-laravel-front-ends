@@ -49,8 +49,4 @@ class Article extends Model
         return $this->morphOne(MetaSettings::class, 'seoable');
     }
 
-    public function getRouteKeyName()
-    {
-        return 'slug'; // Beritahu Laravel untuk menggunakan kolom 'slug' untuk binding
-    }
 }

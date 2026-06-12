@@ -111,6 +111,9 @@ export default function Home({
                                         }
                                         alt={slider.title}
                                         className="object-cover w-full h-full"
+                                        loading={idx === 0 ? "eager" : "lazy"}
+                                        fetchPriority={idx === 0 ? "high" : "auto"}
+                                        decoding="async"
                                         onError={(e) => {
                                             e.target.src =
                                                 "/assets/img/hero-fallback.png";
@@ -169,6 +172,8 @@ export default function Home({
                                 src="/assets/img/hero-fallback.png"
                                 alt="STIKes Bogor Husada Hero"
                                 className="object-cover w-full h-full"
+                                fetchPriority="high"
+                                decoding="async"
                             />
                             <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40"></div>
                         </div>
@@ -306,6 +311,8 @@ export default function Home({
                                                 src={typeof prodi.image === 'string' ? (prodi.image.startsWith("http") || prodi.image.startsWith("/") ? prodi.image : `/storage/${prodi.image}`) : ''}
                                                 alt={prodi.name}
                                                 className="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                                                loading="lazy"
+                                                decoding="async"
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-50">
@@ -497,6 +504,7 @@ export default function Home({
                                                             alt={item.title}
                                                             className="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                                                             loading="lazy"
+                                                            decoding="async"
                                                         />
                                                     </div>
                                                     <div className="flex flex-col flex-1 p-5 lg:p-6">
@@ -837,6 +845,8 @@ export default function Home({
                                             alt={mitra.name}
                                             className="object-contain max-w-full max-h-full transition-all duration-500 filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
                                             title={mitra.name}
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     </div>
                                 </a>
@@ -941,6 +951,8 @@ export default function Home({
                                                                     alumni.name
                                                                 }
                                                                 className="object-cover mr-4 transition-transform border-2 border-orange-100 rounded-full shadow-sm w-14 h-14 group-hover:scale-110"
+                                                                loading="lazy"
+                                                                decoding="async"
                                                                 onError={(
                                                                     e,
                                                                 ) => {

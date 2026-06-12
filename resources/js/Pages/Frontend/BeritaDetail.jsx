@@ -1,6 +1,45 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+
+const resolveImageUrl = (path) => {
+    if (!path) return '/assets/img/placeholder.jpg';
+    return path.startsWith('http') || path.startsWith('/') ? path : `/storage/${path}`;
+};
+
+const normalizeImagePath = (path) => {
+    if (!path) return '';
+
+    try {
+        const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://example.test';
+        return decodeURIComponent(new URL(resolveImageUrl(path), baseUrl).pathname)
+            .replace(/^\/storage\//, '')
+            .replace(/^\//, '');
+    } catch {
+        return path.replace(/^\/storage\//, '').replace(/^\//, '');
+    }
+};
+
+const removeDuplicateThumbnail = (content, thumbnail) => {
+    if (!content || !thumbnail || typeof DOMParser === 'undefined') return content || '';
+
+    const document = new DOMParser().parseFromString(content, 'text/html');
+    const firstImage = document.body.querySelector('img');
+
+    if (!firstImage || normalizeImagePath(firstImage.getAttribute('src')) !== normalizeImagePath(thumbnail)) {
+        return content;
+    }
+
+    const imageContainer = firstImage.closest('figure') || firstImage;
+    const parent = imageContainer.parentElement;
+    imageContainer.remove();
+
+    if (parent && ['P', 'DIV'].includes(parent.tagName) && !parent.textContent.trim() && !parent.querySelector('img, video, iframe')) {
+        parent.remove();
+    }
+
+    return document.body.innerHTML;
+};
 
 export default function BeritaDetail({ article, categories, latestArticles }) {
     const [copied, setCopied] = useState(false);
@@ -13,11 +52,12 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
     };
 
     // Bangun URL gambar
-    const imageUrl = article?.thumbnail
-        ? (article.thumbnail.startsWith('http') || article.thumbnail.startsWith('/')
-            ? article.thumbnail
-            : `/storage/${article.thumbnail}`)
-        : '/assets/img/placeholder.jpg';
+    const imageUrl = resolveImageUrl(article?.thumbnail);
+    const articleContent = useMemo(
+        () => removeDuplicateThumbnail(article?.content, article?.thumbnail),
+        [article?.content, article?.thumbnail],
+    );
+    const readingTime = Math.max(1, Math.ceil((article?.content || '').replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length / 200));
 
     // Bangun URL halaman untuk share (absolute)
     const pageUrl = typeof window !== 'undefined'
@@ -85,16 +125,26 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
             {article ? (
                 <>
                     {/* ===== HEADER ===== */}
-                    <section className="pt-32 pb-12 bg-gray-50 border-b border-gray-100">
-                        <div className="container px-4 mx-auto sm:px-6 lg:px-8 max-w-4xl">
-                            <div className="mb-6 animate-fade-in-up">
+                    <section className="pt-28 pb-12 bg-gradient-to-b from-orange-50/70 via-white to-white border-b border-orange-100/70">
+                        <div className="container px-4 mx-auto sm:px-6 lg:px-8 max-w-5xl">
+                            <nav className="flex items-center gap-2 mb-8 text-sm text-gray-500" aria-label="Breadcrumb">
+                                <Link href="/" className="hover:text-orange-600 transition-colors">Beranda</Link>
+                                <i className="fas fa-chevron-right text-[10px] text-gray-300"></i>
+                                <Link href="/artikel" className="hover:text-orange-600 transition-colors">Berita</Link>
+                            </nav>
+                            <div className="mb-5 animate-fade-in-up">
                                 <span className="bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full text-sm">
                                     {article.category?.name || 'Uncategorized'}
                                 </span>
                             </div>
-                            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-6 animate-fade-in-up">
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.12] tracking-tight mb-6 animate-fade-in-up">
                                 {article.title}
                             </h1>
+                            {article.excerpt && (
+                                <p className="max-w-3xl mb-7 text-lg md:text-xl leading-relaxed text-gray-600">
+                                    {article.excerpt}
+                                </p>
+                            )}
                             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 font-medium animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                                 <div className="flex items-center gap-2">
                                     <i className="far fa-user text-orange-500"></i> Admin
@@ -102,6 +152,10 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
                                 <div className="hidden sm:block text-gray-300">•</div>
                                 <div className="flex items-center gap-2">
                                     <i className="far fa-calendar-alt text-orange-500"></i> {formatDate(article.published_at)}
+                                </div>
+                                <div className="hidden sm:block text-gray-300">&bull;</div>
+                                <div className="flex items-center gap-2">
+                                    <i className="far fa-clock text-orange-500"></i> {readingTime} menit baca
                                 </div>
                                 {article.views > 0 && (
                                     <>
@@ -116,27 +170,28 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
                     </section>
 
                     {/* ===== CONTENT ===== */}
-                    <section className="py-12 bg-white">
-                        <div className="container px-4 mx-auto max-w-4xl">
+                    <section className="pb-16 bg-white">
+                        <div className="container px-4 mx-auto max-w-5xl">
                             {/* Featured Image */}
-                            <div className="mb-12 rounded-2xl overflow-hidden shadow-lg border border-gray-100 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                            <div className="relative -mt-1 mb-12 aspect-[16/9] rounded-3xl overflow-hidden shadow-xl shadow-gray-200/70 border border-white animate-fade-in-up bg-gray-100" style={{ animationDelay: '0.2s' }}>
                                 <img
                                     src={imageUrl}
                                     alt={article.title}
-                                    className="w-full h-auto object-cover max-h-[500px]"
+                                    className="w-full h-full object-cover"
                                     onError={(e) => { e.target.src = '/assets/img/placeholder.jpg'; }}
                                 />
                             </div>
 
                             {/* Article Content */}
-                            <div
-                                className="prose prose-lg prose-orange max-w-none prose-img:rounded-xl prose-a:text-orange-600 hover:prose-a:text-orange-700 font-medium text-gray-700 mb-12 animate-fade-in-up"
-                                style={{ animationDelay: '0.3s' }}
-                                dangerouslySetInnerHTML={{ __html: article.content }}
-                            />
+                            <article className="max-w-3xl mx-auto">
+                                <div
+                                    className="prose prose-lg md:prose-xl prose-orange max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-8 prose-img:rounded-2xl prose-img:shadow-sm prose-a:text-orange-600 hover:prose-a:text-orange-700 text-gray-700 mb-12 animate-fade-in-up"
+                                    style={{ animationDelay: '0.3s' }}
+                                    dangerouslySetInnerHTML={{ __html: articleContent }}
+                                />
 
                             {/* Tags */}
-                            {article.tags && article.tags.length > 0 && (
+                                {article.tags && article.tags.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-10 pt-8 border-t border-gray-100">
                                     <span className="text-sm font-semibold text-gray-500 mr-2 self-center">Tags:</span>
                                     {article.tags.map(tag => (
@@ -149,10 +204,10 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
                                         </Link>
                                     ))}
                                 </div>
-                            )}
+                                )}
 
                             {/* ===== SHARE & BACK ===== */}
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 bg-orange-50/60 p-6 rounded-2xl border border-orange-100">
                                 <Link href="/artikel" className="flex items-center gap-2 text-gray-600 hover:text-orange-600 font-semibold transition-colors">
                                     <i className="fas fa-arrow-left"></i> Kembali ke Daftar Berita
                                 </Link>
@@ -203,7 +258,8 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
                                         <i className={copied ? 'fas fa-check' : 'fas fa-link'}></i>
                                     </button>
                                 </div>
-                            </div>
+                                </div>
+                            </article>
                         </div>
                     </section>
 
@@ -214,11 +270,7 @@ export default function BeritaDetail({ article, categories, latestArticles }) {
                                 <h3 className="text-2xl font-bold text-gray-900 mb-8">Berita Terbaru Lainnya</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {latestArticles.map((post) => {
-                                        const postImage = post.thumbnail
-                                            ? (post.thumbnail.startsWith('http') || post.thumbnail.startsWith('/')
-                                                ? post.thumbnail
-                                                : `/storage/${post.thumbnail}`)
-                                            : '/assets/img/placeholder.jpg';
+                                        const postImage = resolveImageUrl(post.thumbnail);
                                         return (
                                             <Link
                                                 href={post.slug ? `/artikel/${post.slug}` : '/artikel'}

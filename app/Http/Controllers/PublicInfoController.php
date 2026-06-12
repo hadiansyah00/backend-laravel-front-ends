@@ -511,7 +511,9 @@ class PublicInfoController extends Controller
     {
         // Gunakan 'status' = 'published' sesuai model (ubah jika valuenya beda, misal 'tayang' atau '1')
         // Eager load category dan tags agar query lebih ringan
-        $query = Article::with(['category', 'tags'])->where('status', 'published');
+        $query = Article::with('category')
+            ->select(['id', 'category_id', 'title', 'slug', 'excerpt', 'content', 'thumbnail', 'published_at'])
+            ->where('status', 'published');
 
         // Filter pencarian dengan Grouping agar kondisi 'status' tidak bocor
         if ($request->filled('search')) {
@@ -529,6 +531,15 @@ class PublicInfoController extends Controller
 
         // Paginate menggunakan published_at dari model
         $articles = $query->latest('published_at')->paginate(6)->withQueryString();
+        $articles->through(function (Article $article) {
+            if (! $article->excerpt) {
+                $article->excerpt = \Illuminate\Support\Str::limit(strip_tags($article->content), 150);
+            }
+
+            unset($article->content);
+
+            return $article;
+        });
 
         // Ambil kategori untuk sidebar
         // (Asumsi kamu punya model Category, ganti pemanggilannya jika beda)
@@ -560,6 +571,7 @@ class PublicInfoController extends Controller
 
         // Ambil artikel terbaru untuk ditaruh di sidebar
         $latestArticles = Article::with('category')
+            ->select(['id', 'category_id', 'title', 'slug', 'thumbnail', 'published_at'])
             ->where('status', 'published')
             ->where('id', '!=', $article->id)
             ->latest('published_at')

@@ -34,6 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
             // Render custom 404 page locally too, but only 500/etc in Prod to preserve debug screen locally
             if (in_array($status, [500, 503, 404, 403])) {
                 if ($status === 404 || !app()->environment(['local', 'testing'])) {
+                    \Inertia\Inertia::setRootView('app-inertia');
+
                     return \Inertia\Inertia::render('Frontend/Error', ['status' => $status])
                         ->toResponse($request)
                         ->setStatusCode($status);

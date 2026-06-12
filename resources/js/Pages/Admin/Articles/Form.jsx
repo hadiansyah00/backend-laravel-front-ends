@@ -152,7 +152,7 @@ export default function Form({
                                         </label>
                                         <div className="flex items-center overflow-hidden border border-gray-300 rounded-xl dark:border-gray-700 focus-within:border-indigo-500">
                                             <span className="px-3 py-2 text-sm text-gray-500 border-r border-gray-300 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700">
-                                                /berita/
+                                                /artikel/
                                             </span>
                                             <input
                                                 type="text"
@@ -236,8 +236,8 @@ export default function Form({
                                             placeholder="Ringkasan singkat untuk ditampilkan di daftar artikel..."
                                         ></textarea>
                                         <p className="mt-1 text-xs text-gray-500">
-                                            Jika kosong, sistem akan mengambil
-                                            sebagian karakter pertama dari isi.
+                                            Ringkasan ini tampil di daftar berita
+                                            dan bagian pembuka halaman detail.
                                         </p>
                                     </div>
                                 </div>
@@ -407,6 +407,9 @@ export default function Form({
                                             <i className="text-indigo-500 fas fa-image"></i>{" "}
                                             Gambar Utama
                                         </h4>
+                                        <p className="mb-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                                            Gambar ini otomatis tampil satu kali di halaman detail. Tidak perlu memasukkan gambar yang sama di awal isi artikel.
+                                        </p>
                                         {data.thumbnail && (
                                             <div className="relative mb-4 overflow-hidden border border-gray-200 aspect-video rounded-xl dark:border-gray-700">
                                                 <img

@@ -64,9 +64,9 @@ class FrontSettingController extends Controller
                 ['value' => $value, 'type' => $type]
             );
 
-            // clear cache supaya setting() baca ulang
-            Cache::forget('settings.'.$dbKey);
         }
+
+        Cache::forget('front_settings.all');
 
         return back()->with('success', 'Pengaturan berhasil disimpan.');
     }

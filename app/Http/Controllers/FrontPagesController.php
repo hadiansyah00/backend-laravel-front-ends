@@ -6,7 +6,6 @@ use App\Models\Article;
 use App\Models\Beranda;
 use App\Models\Event;
 use App\Models\Gallery;
-use App\Models\Menu;
 use App\Models\Pengumuman;
 use App\Models\ProgramStudi;
 use App\Models\Alumni;
@@ -25,24 +24,14 @@ class FrontPagesController extends Controller
         // 1. Ambil Berita (Cache 10 Menit)
         $berita = Cache::remember('berita_terbaru_home', 600, function () {
             return Article::with('category')
+                ->select(['id', 'category_id', 'title', 'slug', 'thumbnail', 'published_at'])
                 ->where('status', 'published')
                 ->latest('published_at')
                 ->take(6)
                 ->get();
         });
 
-        // 2. Ambil Menu Utama (Cache 1 Jam)
-        $menus = Cache::remember('menus_active', 3600, function () {
-            return Menu::whereNull('parent_id')
-                ->where('is_active', true) // Diubah agar konsisten dan aman
-                ->with(['children' => function($q) {
-                    $q->where('is_active', true)->orderBy('order'); // Pastikan child juga diurutkan & aktif
-                }])
-                ->orderBy('order')
-                ->get();
-        });
-
-        // 3. Ambil Setup Beranda & Decode JSON (Cache 1 Jam)
+        // 2. Ambil Setup Beranda & Decode JSON (Cache 1 Jam)
         $beranda = Cache::remember('beranda_data', 3600, function () {
             return Beranda::where('is_active', true)
                 ->get()
@@ -62,7 +51,7 @@ class FrontPagesController extends Controller
                 });
         });
 
-        // 4. Ambil Program Studi (Cache 1 Jam)
+        // 3. Ambil Program Studi (Cache 1 Jam)
         $programStudis = Cache::remember('program_studis_active', 3600, function () {
             return ProgramStudi::where('is_active', true)->get();
         });
@@ -130,7 +119,6 @@ class FrontPagesController extends Controller
         // Lempar data ke React Frontend + SEO ke Blade
         return Inertia::render('Home', compact(
             'berita',
-            'menus',
             'programStudis',
             'beranda',
             'pengumuman',

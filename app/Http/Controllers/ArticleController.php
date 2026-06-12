@@ -100,7 +100,7 @@ class ArticleController extends Controller
 
             DB::commit(); // Simpan permanen ke database
 
-            return redirect()->route('articles.index')->with('success', 'Artikel berhasil diterbitkan!');
+            return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil diterbitkan!');
         } catch (\Exception $e) {
             DB::rollBack(); // Batalkan semua query jika terjadi error
 
@@ -183,7 +183,7 @@ class ArticleController extends Controller
 
             DB::commit();
 
-            return redirect()->route('articles.index')->with('success', 'Artikel berhasil diperbarui!');
+            return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Gagal memperbarui artikel ID ' . $article->id . ': ' . $e->getMessage());
@@ -203,7 +203,7 @@ class ArticleController extends Controller
 
             DB::commit();
 
-            return redirect()->route('articles.index')->with('success', 'Artikel berhasil dihapus!');
+            return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil dihapus!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Gagal menghapus artikel ID ' . $article->id . ': ' . $e->getMessage());
